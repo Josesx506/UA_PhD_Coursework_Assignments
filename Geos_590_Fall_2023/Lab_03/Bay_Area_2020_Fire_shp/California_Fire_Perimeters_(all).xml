@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <title>Fire Perimeters</title>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>The fire perimeter and prescribed fire feature
+services provide a
+reasonable view of the spatial distribution of past large fires but is in no
+way complete. Some fires are missing because
+historical records were lost or damaged, were too small for the minimum
+cutoffs, had inadequate documentation or have not yet been incorporated into
+the database. Due to missing perimeters this data should be used
+carefully for statistical analysis and reporting (see Use Limitation in
+metadata). Other errors with the fire perimeter
+database include duplicate fires and over-generalization. Additionally,
+over-generalization, particularly with large old fires, may show unburned
+&amp;quot;islands&amp;quot; within the final perimeter as burned. Users of the fire
+perimeter database must exercise caution in application of the data. Careful
+use of the fire perimeter database will prevent users from drawing inaccurate
+or erroneous conclusions from the data. Please contact the California
+Department of Forestry and Fire Protection’s Fire and Resource Assessment
+Program for a detailed explanation of the limitations of the data. This data is
+updated annually in the spring with fire perimeters from the previous fire
+season. As of April 2023, it represents fire22_1.  CAL FIRE (including contract counties), USDA
+Forest Service Region 5, USDI Bureau of Land Management &amp;amp; National Park
+Service, and other agencies jointly maintain a comprehensive fire perimeter GIS
+layer for public and private lands throughout the state. The data covers fires
+back to 1878. Current criteria for data collection are as
+follows: CAL FIRE (including contract counties) submit
+perimeters ≥10 acres in timber, ≥50 acres in brush, or ≥300 acres in grass,
+and/or ≥3 damaged/ destroyed residential or commercial structures, and/or
+caused ≥1 fatality. All cooperating agencies submit perimeters ≥10
+acres. Firep22_1 was released in April 2023. Three
+hundred five fires from the 2022 fire season were added to the database. The
+2021 Dotta (part of Beckwourth Complex), Greenhorn, and Hartman fire perimeters
+were added. Another 45 fires were added by USFW from 2015-2021. The 1988 Hessel
+fire was added in LNU. The 2019 Cave fire was replaced with a more detailed
+perimeter submitted by Santa Barbara County. The 2017 Hudson, 2017 Lake, 2017
+Jones, 2017 &amp;quot;37&amp;quot;, 2019 Tucker, and 2019 Refuge perimeters were
+replaced with imagery digitized perimeters from USFW. Attributes were updated
+for 32 records. One hundred ten perimeters were removed due to duplication or
+being completely contained outside of California state borders. The field
+IRWINID was added to provide a unique ID; fires before 2022 are lacking this
+attribution (with the exception of those added in this publication where
+possible). The following fires were identified as meeting our collection
+criteria, but are not included in this version and will hopefully be added in
+the next update: 2022 Cable (CAL FIRE, AEU), 2022 All American (BIA, CRA). Includes separate layers filtered by criteria
+as follows:
+ California
+     Fire Perimeters (all): Unfiltered. The entire
+     collection of wildfire perimeters in the database.  It is scale
+     dependent and starts displaying at the country level scale. 
+ Recent
+     Large Fire Perimeters (&amp;gt;=5000 acres): Filtered for wildfires greater or
+     equal to 5,000 acres for the last 5 years of fires (2018-2022), symbolized
+     with color by year and is scale dependent and starts displaying at the
+     country level scale. Year-only labels for recent large fires.
+ California
+     Fire Perimeters (1950+):  Filtered for wildfires that started in
+     1950-present.  Symbolized by decade, and display starting at country level scale.
+ Prescribed
+     Burns:  Unfiltered.  The entire collection of prescribed burn
+     perimeters in the database.  Begin displaying at county level scale.
+ Detailed metadata is included in the following documents:&amp;quot;fire22_1&amp;quot; Metadata: Metadata for Firep22_1&amp;quot;rxburn22_1&amp;quot; Metadata: Metadata for Prescribed Fires Rxburn22_1For
+any questions, please contact the data steward:Kim Wallin, GIS SpecialistCAL FIRE, Fire Resource and Assessment Program (FRAP)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+kimberly.wallin@fire.ca.gov</abstract>
+            <purpose>CAL FIRE Wildfire Perimeters and Prescribed Burns.  The service includes layers that are data subsets symbolized by size and year.  Hosted on CAL FIRE AGOL.</purpose>
+        </descript>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>wildfires</themekey>
+                <themekey>CAL FIRE</themekey>
+                <themekey>FRAP</themekey>
+                <themekey>California</themekey>
+                <themekey>fire perimeters</themekey>
+                <themekey>fire</themekey>
+                <themekey>Fire and Fuels</themekey>
+                <themekey>California Forestry and Fire Protection</themekey>
+                <themekey>CAOpenData</themekey>
+            </theme>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>The State of California and the Department of Forestry and 
+Fire Protection make no representations or warranties regarding the accuracy of data or maps.  
+Neither the State nor the Department shall be liable under any circumstances for any direct, special, 
+incidental, or consequential damages with respect to any claim by any user or third party on account of,
+ or arising from, the use of data or maps.
+For more information about this product, date or terms of use, 
+contact calfire.egis@fire.ca.gov.</useconst>
+        <datacred>CALFIRE, USDA Forest Service, other Federal Partners</datacred>
+    </idinfo>
+    <metainfo>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+    </metainfo>
+</metadata>
