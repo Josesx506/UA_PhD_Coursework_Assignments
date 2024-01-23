@@ -1,0 +1,118 @@
+---
+title: "Assignment_02"
+output:
+  pdf_document: default
+  # html_notebook: default
+---
+1. Consider the built-in data frame `chickwts`.
+    (a) How many variables in this data frame? What are the meanings of these variables? (Check the
+    help file/ r documentation if needed.)
+    (b) Draw a boxplot to illustrate the weight of different feed types. (Put all boxplots in a single plot.)
+    (c) Create a subset of the data frame called chickwtsLinseed which contains all observations for
+    which the chicks were fed linseed.
+    (d) Calculate the average weight of the chicks who were fed linseed.
+    (e) (Learn t.test() function by ?t.test if you have never used it.) Compare the weights of chicks
+    in group linseed and group sunflower by a two-sample t test. What is the p value?
+    (f) Find number of observations, mean, median and standard deviation of weight for each feed type.
+
+```{r}
+# How many variables in this data frame? What are the meanings of these variables?
+q1_df <- chickwts
+cat("Variable names are - '", paste(names(q1_df), collapse = "' and '"), "'", sep="")
+head(q1_df,5)
+```
+
+```{r}
+# Draw a boxplot to illustrate the weight of different feed types.
+# (Put all boxplots in a single plot.)
+par(cex.axis = 0.8) # Reduce the fontsize of the x and y ticks to make it fit
+boxplot(q1_df$weight ~ q1_df$feed, col = "#c79cac",
+        varwidth = FALSE, notch = FALSE, main = "Chicken Weight data",
+        ylab = "Weight at six weeks (gm)", xlab = "Feed Type", boxwex = 0.6)
+```
+
+```{r}
+# Create a subset of the data frame called chickwtsLinseed which contains all
+# observations for which the chicks were fed linseed.
+chickwtsLinseed <- q1_df[q1_df$feed == "linseed", ]
+rownames(chickwtsLinseed) <- seq_len(nrow(chickwtsLinseed))    # Reset column index
+
+# Calculate the average weight of the chicks who were fed linseed.
+cat("Average weight for linseed chicks is", mean(chickwtsLinseed$weight), "gm.")
+```
+
+```{r}
+# Compare the weights of chicks in group linseed and group sunflower by a
+# two-sample t test. What is the p value?
+chickwtsSunflower <- q1_df[q1_df$feed == "sunflower", ]
+rownames(chickwtsSunflower) <- seq_len(nrow(chickwtsSunflower))
+chickwtsTtest <- t.test(chickwtsLinseed$weight, chickwtsSunflower$weight)
+chickwtsPval <- chickwtsTtest$p.value
+cat("The p-value is", format(chickwtsPval, scientific = FALSE))
+```
+
+```{r}
+# Find number of observations, mean, median and standard deviation of weight for each feed type
+summary_stats_list <- tapply(q1_df$weight, q1_df$feed, function(x) {
+  len_df <- length(x)
+  mn_df <- mean(x)
+  medn_df <- median(x)
+  sd_df <- sd(x)
+  agg <- c(num = len_df, mean = mn_df, median = medn_df, sd = sd_df)
+  return(agg)
+})
+
+summary_df <- as.data.frame(do.call(rbind, summary_stats_list))
+print(summary_df)
+```
+
+<br><br>
+
+2. The dataset rnf6080.dat records hourly rainfall at a certain location in Canada, 1960 to 1980.
+    (a) Assign the data set in rnf6080.dat to a data frame called rain.df. (There are some missing
+    values marked by -999. Can you change them to NA?)
+    (b) What are the names of the columns of rain.df?
+    (c) Use the following command to re-label of columns of this data frame:
+    names(rain.df) <- c("year", "month", "day", seq(0,23))
+    (d) Create a new column call daily which is the sum of the 24 hourly columns.
+    (e) Find average amounts of rain fall for each month.
+
+```{r}
+# Assign rnf6080.dat to dataframe and change -999 to NA
+rain_df <- read.table('rnf6080.dat')
+rain_df[rain_df == -999] <- NA
+head(rain_df, 5)
+```
+
+```{r}
+# What are the names of the columns of rain.df?
+names(rain_df)
+```
+
+```{r}
+# Re-label the columns of the data frame
+names(rain_df) <- c("year", "month", "day", seq(0, 23))
+names(rain_df)
+```
+
+```{r}
+# Create daily daily column equal to sum of the 24 hourly columns
+library(dplyr)
+rain_df <- mutate(rain_df, daily = rowSums(rain_df[, 4:27], na.rm = TRUE))
+# rain_df$daily <- rowSums(rain_df[, 4:27], na.rm = TRUE)
+head(rain_df, 5)
+```
+
+```{r}
+# Find average amounts of rain fall for each month.
+grouped_month <- rain_df %>%
+  group_by(month) %>% # year,
+  summarize(monthly_avg = mean(daily, na.rm = TRUE), .groups = "drop") %>%
+  arrange(month)
+
+print(grouped_month)
+```
+
+```{r}
+
+```
