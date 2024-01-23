@@ -113,6 +113,133 @@ grouped_month <- rain_df %>%
 print(grouped_month)
 ```
 
-```{r}
+3. us contagious diseases is a data set in R package dslabs. It contains 6 variables with 16065
+observations. Mumps is one of 7 diseases in the column disease.
+    (a) The data set us contagious diseases is in a data frame format. Covert it to a tibble format.
+    (b) Use filter to find rows with disease Mumps and year between 1991 and 2000. Show the first 10
+    rows of your result.
+    (c) Find the top 5 states with the most Mumps cases over the 10 years from 1991 to 2000.
+    (d) Based on the data in part (b), add a column called case per mil which calculates Mumps cases
+    per population (in unit ‘cases per million people’).
+    (e) Find the top 5 states with the most Mumps cases per population on average over the 10 years from
+    1991 to 2000.
 
+```{r}
+library("dslabs")
+# Covert the dataset to a tibble format
+us_cd <- us_contagious_diseases
+cat(dim(us_cd), "\n", names(us_cd))
+us_cd <- as_tibble(us_cd)
+head(us_cd, 5)
+```
+
+```{r}
+# Use filter to find rows with disease Mumps and year between 1991
+# and 2000. Show the first 10 rows of your result
+us_cd_filt <- filter(us_cd, disease == "Mumps", (year >= 1991 & year <= 2000))
+head(us_cd_filt, 10)
+```
+
+```{r}
+# Find the top 5 states with the most Mumps cases over the 10 years from 1991 to 2000.
+tm_top_5 <- us_cd_filt %>%
+  group_by(state) %>%
+  summarize(sum_count = sum(count, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(sum_count))
+
+head(tm_top_5, 5)
+```
+
+```{r}
+# add a column called case per mil which calculates Mumps cases 
+# per population (in unit ‘cases per million people’)
+us_cd_filt_pop <- mutate(us_cd_filt, case_per_mil = (count / population))
+head(us_cd_filt_pop, 2)
+```
+
+```{r}
+# Find the top 5 states with the most Mumps cases per population on average over 
+# the 10 years from 1991 to 2000.
+cpm_top_5 <- us_cd_filt_pop %>%
+  group_by(state) %>%
+  summarize(mean_cpm = mean(case_per_mil, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(mean_cpm))
+
+head(cpm_top_5, 5)
+```
+
+4. Consider the built-in data frame pressure. There are two columns temperature and pressure.
+    (a) Construct a scatterplot with pressure on the vertical axis and temperature on the horizontal
+    axis. Are the variables related linearly or nonlinearly?
+    (b) The graph of the following function passes through the plotted points reasonably well
+    y = (0.168 + 0.007x)^20/3.
+    The differences between the pressure values predicted by the curve and the observed pressure
+    values are called residuals. Here is a way to calculate them:
+    residuals <- with(pressure, pressure - (0.168 + 0.007*temperature)^(20/3))
+    Construct a normal QQ plot of these residuals via qqnorm() and decide whether they are normally
+    distributed or whether they follow a skewed distribution.
+    (c) Now, apply the power transform y3/20 to the pressure data values. Plot these transformed values
+    against temperature. Is a linear no nonlinear relationship evident now?
+    (d) Calculate residuals for the difference between transformed pressure values and those predicted by
+    the straight line. Obtain a normal QQ plot, and decide whether the residuals follow a normal
+    distribution or not.
+
+```{r}
+# Construct a scatterplot of pressure and temperature
+pres <- pressure
+plot(pres$temperature, pres$pressure, xlab = "temperature", ylab = "pressure")
+print("The variables are non-linearly correlated")
+```
+
+```{r}
+# Fit a linear model using y = (0.168 + 0.007x)^20/3
+# Estimate the residuals and construct a normal QQ plot
+pres <- pres %>%
+  mutate(model = (0.168 + (0.007 * temperature))^(20 / 3)) %>%
+  mutate(residual = pressure - model)
+# plot(pres$temperature, pres$pressure, xlab = "temperature", ylab = "pressure")
+# lines(pres$temperature, pres$model, type = "l", col = "red")
+qqnorm(pres$residual)
+print("The data follows a skewed distribution")
+```
+
+```{r}
+# Apply the power transform y^(3/20) to the pressure data values and
+# plot it against temperatures
+pres <- pres %>%
+  mutate(pres_trans = pressure^(3 / 20)) %>%
+  mutate(residual_t = pres_trans - (0.168 + 0.007 * temperature))
+
+plot(pres$temperature, pres$pres_trans, xlab = "temperature",
+     ylab = "transformed pressure")
+print("A linear relationship is evident")
+```
+
+```{r}
+qqnorm(pres$residual_t)
+print("The residuals follow a normal distribution")
+```
+
+5. diamonds is a dataset in ggplot2 package. Read the R document on this dataset.
+    (a) Create a new categorical variable ‘size’ based on the ‘carat’ (Small:<0.5, Medium: 0.5 to 1, Large:>1).
+    (b) Group the data by ‘cut’ and ‘color’, and calculate the average price and carat for each group.
+    (c) Create a facetted scatter plot of ‘price’ versus ‘carat’, facetted by ‘cut’, and colored by ‘clarity’.
+    (d) Build a histogram of ‘price’, with each bar colored according to the ‘color’ category in the dataset.
+
+```{r}
+library(ggplot2)
+dia <- diamonds
+head(dia, 5)
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
 ```
