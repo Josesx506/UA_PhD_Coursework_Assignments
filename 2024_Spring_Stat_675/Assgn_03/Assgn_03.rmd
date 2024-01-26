@@ -61,7 +61,55 @@ the scale goes up.
     time.
 
 ```{r}
+max_sum_subarr <- function(arr) {
+  current_sum <- arr[1]
+  max_sum <- arr[1]
 
+  # Loop from VALUE at index position 2 till the end of the array
+  for (element in arr[-1]) {
+    current_sum <- max(current_sum + element, element)
+    max_sum <- max(current_sum, max_sum)
+  }
+
+  if (max_sum > 0) {
+    return(max_sum)
+  } else {
+    return(0)
+  }
+}
+
+# --------------------------------- Unit tests ---------------------------------
+unittest_mx_sum_sub <- function(func) {
+  # Case 1: Regular array
+  input1 <- c(-1, 2, 3, -4, 2)
+  expected_output1 <- 5
+  test1 <- (func(input1) == expected_output1)
+
+  # Test Case 2: All negative numbers
+  input2 <- c(-3, -7, -2, -8, -6)
+  expected_output2 <- 0
+  test2 <- (func(input2) == expected_output2)
+
+  # Test Case 3: All positive numbers
+  input3 <- c(5, 7, 2, 8, 6)
+  expected_output3 <- 28
+  test3 <- (func(input3) == expected_output3)
+
+  if (test1 && test2 && test3) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
+
+
+# ----------------------------- Benchmark tests -----------------------------
+if (unittest_mx_sum_sub(max_sum_subarr)) {
+  small_bench <- microbenchmark(max_sum_subarr(rnorm(1e2)))
+  med_bench <- microbenchmark(max_sum_subarr(rnorm(1e3)))
+  all_bench <- bind_rows(small_bench, med_bench)
+  print(all_bench)
+}
 ```
 
 
@@ -70,6 +118,30 @@ the scale goes up.
     Can you find a fast algorithm solving it?
 
 ```{r}
+
+# --------------------------------- Unit tests ---------------------------------
+unittest_mx_sum_sub_nm <- function(func) {
+  # Case 1: Regular array
+  input1 <- c(-1, 2, 3, -4, 2)
+  expected_output1 <- 2.5
+  test1 <- (func(input1) == expected_output1)
+
+  # Test Case 2: All negative numbers
+  input2 <- c(-3, -7, -2, -8, -6)
+  expected_output2 <- 0
+  test2 <- (func(input2) == expected_output2)
+
+  # Test Case 3: All positive numbers
+  input3 <- c(5, 7, 2, 8, 6)
+  expected_output3 <- 5.6
+  test3 <- (func(input3) == expected_output3)
+
+  if (test1 && test2 && test3) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
 
 ```
 
@@ -99,7 +171,7 @@ cumsum2 <- function(xarr) {
 
 
 # Create a C++ implementation for cumulative sum
-cppFunction('std::vector<double> cumsum_cpp(const std::vector<double>& data) {
+cppFunction("std::vector<double> cumsum_cpp(const std::vector<double>& data) {
   std::vector<double> result(data.size());
 
   // Initialize the first element of the result vector
@@ -111,7 +183,7 @@ cppFunction('std::vector<double> cumsum_cpp(const std::vector<double>& data) {
   }
 
   return result;
-}')
+}")
 
 # Create arrays for tests
 
@@ -119,18 +191,24 @@ test_arr_sml <- c(-10:20)
 test_arr_med <- c(-1e2:1e2)
 test_arr_big <- c(-1e4:1e4)
 
-# Validity Tests
+# Units Tests
 if (all.equal(cumsum(test_arr_sml), cumsum1(test_arr_sml), tolerance = 0)) {
-  print("Passed Test 1")
+  print("Passed Tests")
 }
 
 # Speed test
-small_bench <- microbenchmark(cumsum(test_arr_sml), cumsum1(test_arr_sml),
-                              cumsum2(test_arr_sml), cumsum_cpp(test_arr_sml))
-med_bench <- microbenchmark(cumsum(test_arr_med), cumsum1(test_arr_med),
-                            cumsum2(test_arr_med), cumsum_cpp(test_arr_med))
-big_bench <- microbenchmark(cumsum(test_arr_big), cumsum1(test_arr_big),
-                            cumsum2(test_arr_big), cumsum_cpp(test_arr_big))
+small_bench <- microbenchmark(
+  cumsum(test_arr_sml), cumsum1(test_arr_sml),
+  cumsum2(test_arr_sml), cumsum_cpp(test_arr_sml)
+)
+med_bench <- microbenchmark(
+  cumsum(test_arr_med), cumsum1(test_arr_med),
+  cumsum2(test_arr_med), cumsum_cpp(test_arr_med)
+)
+big_bench <- microbenchmark(
+  cumsum(test_arr_big), cumsum1(test_arr_big),
+  cumsum2(test_arr_big), cumsum_cpp(test_arr_big)
+)
 
 all_bench <- bind_rows(small_bench, med_bench, big_bench)
 print(all_bench)
