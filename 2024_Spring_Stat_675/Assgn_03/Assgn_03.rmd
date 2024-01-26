@@ -25,12 +25,54 @@ The sequence reaches 1 at the 8th term.
     from `-17` and show the sequence will return to `-17`. Print the whole cycle starting from `-17`.
     (e) How many different cycles can you find that involve a number -100 or above? The generalized
     Collatz conjecture is the assertion that the procedure, starting with any integer, eventually falls
-    into one of the five cycles (1) 0 → 0; (2) 1 → 4 → 2 → 1; (3)`-1` → -2 → `-1`; (4)`-5` → `-14` →
+    into one of the five cycles (1) 0 → 0; (2) 1 → 4 → 2 → 1; (3)`-1` → `-2` → `-1`; (4)`-5` → `-14` →
     `-7` → `-20` → `-10` → `-5`; (5)`-17` → `-50` → `-25` → `-74` → `-37` → `-110` → `-55` → `-164` →
     `-82` → `-41` → `-122` → `-61` → `-182` → `-91` → `-272` → `-136` → `-68` → `-34` → `-1`.
 
 ```{r}
+collatz_helper <- function(x) {
+  if ((x %% 2) == 0) {
+    x <- x / 2
+  } else if ((x %% 2) == 1) {
+    x <- x * 3 + 1
+  }
+  return(x)
+}
 
+collatz <- function(num) {
+  steps <- 1
+  array <- numeric()
+  orig <- num
+
+  if (orig == 0) {
+    array <- c(array, num)
+    return(steps)
+  }
+
+  if ((num > 0) && (num != 1)) {
+    while (num != 1) {
+      num <- collatz_helper(num)
+      array <- c(array, num)
+      steps <- steps + 1
+    }
+  }
+
+  if ((num < 0) && (length(array) == 0)) {
+    num <- collatz_helper(num)
+    array <- c(array, num)
+    steps <- steps + 1
+  }
+
+  if ((num < 0) && (length(array) == 1)) {
+    while (num != orig) {
+      num <- collatz_helper(num)
+      array <- c(array, num)
+      steps <- steps + 1
+    }
+  }
+  print(unlist(array))
+  return(steps)
+}
 ```
 
 2. This question is about number theory. We will see how the problem becomes more challenging when
@@ -49,6 +91,39 @@ the scale goes up.
     calculates the number of twin prime pairs up to an integer n. Draw a scatter plot.
 
 ```{r}
+prime_check <- function(x) {
+  if (nchar(as.character(x)) > 10) {
+    return("Reduce the input integer length to <= 10 digits")
+  } else {
+    if (x > 1) {
+      for (i in seq(2, ceiling(x / 2))) {
+        if ((x %% i) == 0) {
+          return(FALSE)
+        }
+      }
+      return(TRUE)
+
+    } else {
+      return(FALSE)
+    }
+  }
+}
+
+# Question b - part 1
+b1 <- prime_check(1234567891)
+if (b1 == TRUE) {
+  print("1234567891 is a prime number")
+} else {
+  print("1234567891 is not a prime number")
+}
+
+# Question b - part 2
+b2 <- prime_check(1234567891234567891)
+if (b2 == TRUE) {
+  print("1234567891234567891 is a prime number")
+} else {
+  print("1234567891234567891 is not a prime number or could not be processed")
+}
 
 ```
 
