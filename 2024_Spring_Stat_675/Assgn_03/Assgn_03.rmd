@@ -1,0 +1,137 @@
+---
+title: "Assignment_03"
+output:
+  pdf_document: default
+  # html_notebook: default
+---
+
+```{r}
+library(dplyr)
+library(microbenchmark)
+library(Rcpp)
+```
+
+1. Construct a sequence as follows. Start with any positive integer n. Then each term is obtained from
+the previous term: if the previous term is even, the next term is one half of the previous term. If the
+previous term is odd, the next term is 3 times the previous term plus 1. The Collatz conjecture (also
+called 3n + 1 conjecture) states that no matter what value of n, the sequence will always reach 1. For
+example, if we start from 3, we get 10 as the second term, then 5, then 16, 8, 4, 2, 1, then we stop.
+The sequence reaches 1 at the 8th term.
+    (a) Write an R function Collatz() to calculate the number of steps to reach 1 for any positive integer.
+    For example, you should get 1 for Collatz(1) and 8 for Collatz(3).
+    (b) If $1 \le n \le 100$, which n maximizes Collatz(n)? How about $1 \le n \le 1000$?
+    (c) Draw a scatter plot of the function Collatz(n) for $1 \le n \le 1000$.
+    (d) Show the conjecture is not true if we start from a negative number, say `-17`. Construct a sequence
+    from `-17` and show the sequence will return to `-17`. Print the whole cycle starting from `-17`.
+    (e) How many different cycles can you find that involve a number -100 or above? The generalized
+    Collatz conjecture is the assertion that the procedure, starting with any integer, eventually falls
+    into one of the five cycles (1) 0 → 0; (2) 1 → 4 → 2 → 1; (3)`-1` → -2 → `-1`; (4)`-5` → `-14` →
+    `-7` → `-20` → `-10` → `-5`; (5)`-17` → `-50` → `-25` → `-74` → `-37` → `-110` → `-55` → `-164` →
+    `-82` → `-41` → `-122` → `-61` → `-182` → `-91` → `-272` → `-136` → `-68` → `-34` → `-1`.
+
+```{r}
+
+```
+
+2. This question is about number theory. We will see how the problem becomes more challenging when
+the scale goes up.
+    (a) Create a function prime check that checks whether an input integer is prime or not.
+    (b) Is 1234567891 a prime number? Is 1234567891234567891 a prime number? Is the answer from R
+    reliable? (Try 1234567891234567891%%2) Does chatGPT give you a correct answer?
+    (c) Create a function prime num that lists all prime numbers up to an input integer n. (It will be
+    slow to use prime check. Check sieve of Eratosthenes in 375 notes chapter 4.)
+    (d) Many even numbers can be written as a sum of two prime numbers. For example, 4 = 2 + 2,
+    6 = 3 + 3, 8 = 3 + 5, 10 = 3 + 7 = 5 + 5, etc. Create a function prime sum that calculates
+    how many ways an even integer can be written as a sum of two prime numbers. For example,
+    prime sum(8) will return 1 and prime sum(10) will return 2. Find prime sum(400004).
+    (e) Draw a scatter plot for the function in (c). (This is related to Goldbach`s conjecture.)
+    (f) A twin prime is a pair of primes (x, y) with y = x + 2. Create a function prime twin that 
+    calculates the number of twin prime pairs up to an integer n. Draw a scatter plot.
+
+```{r}
+
+```
+
+
+3. Maximum subarray problem. Given X1, . . . , Xn, the maximum subarray problem solves
+    $$
+    S = \max_{1 \leq i < j \leq n} \sum_{k=i+1}^{j} X_k
+    $$
+    Implement several algorithms solving the maximum subarray problem. Compare the computation
+    time.
+
+```{r}
+
+```
+
+
+4. Normalized maximum subarrary problem. Given X1, . . . , Xn, the maximum subarray problem solves
+    $$T = \max_{1 \le i < j \le n} \sum_{k=i+1}^j \frac{X_k}{\sqrt{j-i}}$$
+    Can you find a fast algorithm solving it?
+
+```{r}
+
+```
+
+
+5. Implement a version of `cumsum`. Can your function beat cumsum in computation time?
+
+```{r}
+cumsum1 <- function(xarr) {
+  total <- rep(0, length(xarr))
+  sum_tot <- 0
+  for (i in seq(1, length(xarr))) {
+    sum_tot <- sum_tot + xarr[i]
+    total[i] <- sum_tot
+  }
+  return(total)
+}
+
+
+cumsum2 <- function(xarr) {
+  total <- rep(0, length(xarr))
+  total[1] <- xarr[1]
+  for (i in seq(2, length(xarr))) {
+    total[i] <- total[i - 1] + xarr[i]
+  }
+  return(total)
+}
+
+
+# Create a C++ implementation for cumulative sum
+cppFunction('std::vector<double> cumsum_cpp(const std::vector<double>& data) {
+  std::vector<double> result(data.size());
+
+  // Initialize the first element of the result vector
+  result[0] = data[0];
+
+  // Calculate the cumulative sum using a simple for loop
+  for (int i = 1; i < data.size(); ++i) {
+    result[i] = result[i - 1] + data[i];
+  }
+
+  return result;
+}')
+
+# Create arrays for tests
+
+test_arr_sml <- c(-10:20)
+test_arr_med <- c(-1e2:1e2)
+test_arr_big <- c(-1e4:1e4)
+
+# Validity Tests
+if (all.equal(cumsum(test_arr_sml), cumsum1(test_arr_sml), tolerance = 0)) {
+  print("Passed Test 1")
+}
+
+# Speed test
+small_bench <- microbenchmark(cumsum(test_arr_sml), cumsum1(test_arr_sml),
+                              cumsum2(test_arr_sml), cumsum_cpp(test_arr_sml))
+med_bench <- microbenchmark(cumsum(test_arr_med), cumsum1(test_arr_med),
+                            cumsum2(test_arr_med), cumsum_cpp(test_arr_med))
+big_bench <- microbenchmark(cumsum(test_arr_big), cumsum1(test_arr_big),
+                            cumsum2(test_arr_big), cumsum_cpp(test_arr_big))
+
+all_bench <- bind_rows(small_bench, med_bench, big_bench)
+print(all_bench)
+```
