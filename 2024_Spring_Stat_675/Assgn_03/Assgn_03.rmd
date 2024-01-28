@@ -7,6 +7,7 @@ output:
 
 ```{r}
 library(dplyr)
+library(ggplot2)
 library(microbenchmark)
 library(Rcpp)
 ```
@@ -39,16 +40,34 @@ collatz_helper <- function(x) {
   return(x)
 }
 
+
+
 collatz <- function(num) {
-  steps <- 1
+  steps <- 0
   array <- numeric()
   orig <- num
 
+  end_collatz <- c(0, 1, -1, -5, -17)
+
+  # Edge cases 0 and 1
   if (orig == 0) {
     array <- c(array, num)
-    return(steps)
+    return(list(steps = 0, intial = orig, values = unlist(array)))
   }
 
+  if (orig == 1) {
+    num <- collatz_helper(num)
+    array <- c(array, num)
+    steps <- steps + 1
+    while (num != 1) {
+      num <- collatz_helper(num)
+      array <- c(array, num)
+      steps <- steps + 1
+    }
+    return(list(steps = steps, intial = orig, values = unlist(array)))
+  }
+
+  # Regular case for positive integers
   if ((num > 0) && (num != 1)) {
     while (num != 1) {
       num <- collatz_helper(num)
@@ -57,21 +76,63 @@ collatz <- function(num) {
     }
   }
 
+  # Modified case for negative integers
   if ((num < 0) && (length(array) == 0)) {
+    array <- c(array, num)
     num <- collatz_helper(num)
     array <- c(array, num)
     steps <- steps + 1
   }
 
-  if ((num < 0) && (length(array) == 1)) {
-    while (num != orig) {
+  # Regular case for negative integers
+  if ((num < 0) && (length(array) >= 1)) {
+    while (!num %in% end_collatz) {
       num <- collatz_helper(num)
       array <- c(array, num)
       steps <- steps + 1
     }
   }
-  print(unlist(array))
-  return(steps)
+  return(list(steps = steps, intial = orig, values = unlist(array)))
+}
+
+
+max_collatz <- function(start, end) {
+  step_size <- numeric()
+  for (i in seq(start, end)) {
+    col <- collatz(i)
+    step_size <- c(step_size, col$steps)
+  }
+  return(list(n_val = c(start:end), num_steps = step_size))
+}
+
+# --------------------------------- Questions ---------------------------------
+# (a)
+print(collatz(8))
+
+# (b)
+max_100 <- max_collatz(1, 100)
+cat("The n value that maximizes collatz from 1 <= n <= 100 is",
+    which.max(max_100$num_steps))
+max_1000 <- max_collatz(1, 1000)
+cat("The n value that maximizes collatz from 1 <= n <= 1000 is",
+    which.max(max_1000$num_steps))
+
+# (c)
+plot(max_1000$n_val, max_1000$num_steps, type = "l", xlab = "n",
+     ylab = "collatz steps", lwd = 0.5, col = "#709d94",
+     main = "Number of steps for Collatz() to converge")
+
+# (d)
+tmp_val <- paste(collatz(-17)$values, collapse = " → ")
+cat(paste(strwrap(tmp_val, width = 70), collapse = "\n"))
+
+# (e)
+for (i in seq(-101, -110)) {
+  col <- collatz(i)
+  cat("------------------------ N:", i, "-----------------------\n")
+  tmp_val <- paste(col$values, collapse = " → ")
+  cat(paste(strwrap(tmp_val, width = 70), collapse = "\n"))
+  cat("\n\n")
 }
 ```
 
@@ -91,25 +152,19 @@ the scale goes up.
     calculates the number of twin prime pairs up to an integer n. Draw a scatter plot.
 
 ```{r}
-prime_check <- function(x) {
-  if (nchar(as.character(x)) > 10) {
-    return("Reduce the input integer length to <= 10 digits")
-  } else {
-    if (x > 1) {
-      for (i in seq(2, ceiling(x / 2))) {
-        if ((x %% i) == 0) {
-          return(FALSE)
-        }
-      }
-      return(TRUE)
-
-    } else {
-      return(FALSE)
-    }
+prime_check <- function(n) {
+  if (n <= 1)  return(FALSE)
+  if (n <= 3)  return(TRUE)
+  if (n %% 2 == 0 || n %% 3 == 0) return(FALSE)
+  i <- 5
+  while (i * i <= n) {
+    if (n %% i == 0 || n %% (i + 2) == 0) return(FALSE)
+    i <- i + 6
   }
+  return(TRUE)
 }
 
-# Question b - part 1
+# (b) - part 1
 b1 <- prime_check(1234567891)
 if (b1 == TRUE) {
   print("1234567891 is a prime number")
@@ -117,14 +172,98 @@ if (b1 == TRUE) {
   print("1234567891 is not a prime number")
 }
 
-# Question b - part 2
+# (b) - part 2
 b2 <- prime_check(1234567891234567891)
 if (b2 == TRUE) {
   print("1234567891234567891 is a prime number")
 } else {
-  print("1234567891234567891 is not a prime number or could not be processed")
+  print("1234567891234567891 is not a prime number")
 }
 
+# (c) - Sieve of Eratosthenes
+prime_num <- function(n) {
+  if (n > 2) {
+    sieve <- seq(2, n)
+    primes <- c()
+    for (i in 2:n){
+      if (any(sieve == i)) {
+        primes <- c(primes, i)
+        sieve <-  sieve[(sieve %% i) != 0]
+      }
+    }
+    return(primes)
+  } else {
+    stop("Input value of n should be at least 2")
+  }
+}
+
+print(prime_num(20))
+
+# (d)
+goldbach_conjecture <- function(even_num, pout = FALSE) {
+  if (even_num <= 2 || even_num %% 2 != 0) {
+    return("Number must be even and greater than 2.")
+  }
+  c <- NULL
+  sol <- NULL
+  for (i in 2:(even_num / 2)) {
+    if (prime_check(i) && prime_check(even_num - i)) {
+      c <- cbind(c, i) # nof solutions
+      sol <- rbind(sol, data.frame(pair_1 = i,
+                                   pair_2 = even_num - i))
+    }
+  }
+  if (pout) {
+    cat("The number of Goldbach's pairs for", even_num, "is", length(c), "\n")
+    cat("Some of the Goldbach's pairs for", even_num, "are\n")
+    print(head(sol, 5))
+  }
+  return(length(c))
+}
+
+goldbach_conjecture(400004, TRUE)
+
+# (e)
+# calculate some 1000 solutions
+sol <- NULL
+for (i in seq(4, 1000, by = 2)){
+  nof_solutions <- goldbach_conjecture(i)
+  sol <- rbind(sol, data.frame(n = i, nof = nof_solutions))
+}
+# plot solutions; alternating solutions
+plot(sol$n, sol$nof, type = "p", xlab = "Even number", col = "#00d5ff",
+     ylab = "Number of Solutions", main = "Goldbach's Conjecture")
+reg <- lm(nof ~ n, data = sol)
+abline(reg, col = "red")
+
+# (f)
+prime_twin <- function(n, pout = FALSE) {
+  data <- 1:n
+  prime_index <- sapply(data, prime_check)
+  all_primes <- data[prime_index]
+  twin2 <- all_primes[2:length(all_primes)][diff(all_primes == 2)]
+  twin1 <- twin2 - 2
+  bnd_cols <- cbind(twin1, twin2)
+  if (pout) {
+    cat("The number of twin pairs for", n, "is", length(bnd_cols), "\n")
+    cat("Some of the twin pairs for", n, "are\n")
+    df <- data.frame(bnd_cols)
+    print(head(df, 5))
+  }
+  return(length(bnd_cols))
+}
+
+prime_twin(1000, TRUE)
+
+sol <- NULL
+for (i in seq(1, 1000)){
+  nof_solutions <- prime_twin(i)
+  sol <- rbind(sol, data.frame(n = i, nof = nof_solutions))
+}
+
+# plot solutions; alternating solutions
+plot(sol$n, sol$nof, type = "p", xlab = "Number", col = "#1e9155",
+     ylab = "N_Pairs", main = "Number of twin primes")
 ```
 
 
@@ -136,7 +275,27 @@ if (b2 == TRUE) {
     time.
 
 ```{r}
-max_sum_subarr <- function(arr) {
+max_sum_subarr_nn <- function(arr) {
+  # n^2 loop
+  n <- length(arr)
+  mx <- -Inf  # Initialize maximum value
+
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      sum <- sum(arr[i:j])
+      mx <- max(mx, sum)  # Update maximum value if needed
+    }
+  }
+
+  if (mx > 0) {
+    return(round(mx, 3))
+  } else {
+    return(0)
+  }
+}
+
+max_sum_subarr_dp <- function(arr) {
+  # Dynamic Programming
   current_sum <- arr[1]
   max_sum <- arr[1]
 
@@ -170,21 +329,31 @@ unittest_mx_sum_sub <- function(func) {
   expected_output3 <- 28
   test3 <- (func(input3) == expected_output3)
 
-  if (test1 && test2 && test3) {
+  # Test Case 4: Regular array
+  input4 <- c(-2, -3, 4, -1, -2, 1, 5, -3)
+  expected_output1 <- 7
+  test4 <- (func(input4) == expected_output1)
+
+  if (test1 && test2 && test3 && test4) {
     return(TRUE)
   } else {
     return(FALSE)
   }
 }
 
+print(unittest_mx_sum_sub(max_sum_subarr_dp))
+print(unittest_mx_sum_sub(max_sum_subarr_nn))
+
 
 # ----------------------------- Benchmark tests -----------------------------
-if (unittest_mx_sum_sub(max_sum_subarr)) {
-  small_bench <- microbenchmark(max_sum_subarr(rnorm(1e2)))
-  med_bench <- microbenchmark(max_sum_subarr(rnorm(1e3)))
-  all_bench <- bind_rows(small_bench, med_bench)
-  print(all_bench)
-}
+small_set <- rnorm(1e2)
+med_set <- rnorm(1e3)
+small_bench <- microbenchmark(max_sum_subarr_dp(small_set),
+                              max_sum_subarr_nn(small_set))
+med_bench <- microbenchmark(max_sum_subarr_dp(med_set),
+                            max_sum_subarr_nn(med_set))
+all_bench <- bind_rows(small_bench, med_bench)
+print(all_bench)
 ```
 
 
@@ -193,12 +362,32 @@ if (unittest_mx_sum_sub(max_sum_subarr)) {
     Can you find a fast algorithm solving it?
 
 ```{r}
+# O(n^2) complexity
+max_norm_sum_subarr <- function(arr) {
+  n <- length(arr)
+  mx <- -Inf  # Initialize maximum value
+
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      subarr <- arr[i:j]
+      sum <- sum(subarr) / sqrt(j - i)
+      mx <- max(mx, sum)  # Update maximum value if needed
+      # cat(i, j, sqrt(j - i), sum, "\n")
+    }
+  }
+
+  if (mx > 0) {
+    return(round(mx, 3))
+  } else {
+    return(0)
+  }
+}
 
 # --------------------------------- Unit tests ---------------------------------
-unittest_mx_sum_sub_nm <- function(func) {
+unittest_mx_nm_sum_sub <- function(func) {
   # Case 1: Regular array
-  input1 <- c(-1, 2, 3, -4, 2)
-  expected_output1 <- 2.5
+  input1 <- c(-1, 2, -3, 5, -4, 2)
+  expected_output1 <- 2.828
   test1 <- (func(input1) == expected_output1)
 
   # Test Case 2: All negative numbers
@@ -208,7 +397,7 @@ unittest_mx_sum_sub_nm <- function(func) {
 
   # Test Case 3: All positive numbers
   input3 <- c(5, 7, 2, 8, 6)
-  expected_output3 <- 5.6
+  expected_output3 <- 14
   test3 <- (func(input3) == expected_output3)
 
   if (test1 && test2 && test3) {
@@ -218,6 +407,7 @@ unittest_mx_sum_sub_nm <- function(func) {
   }
 }
 
+print(unittest_mx_nm_sum_sub(max_norm_sum_subarr))
 ```
 
 
@@ -261,7 +451,6 @@ cppFunction("std::vector<double> cumsum_cpp(const std::vector<double>& data) {
 }")
 
 # Create arrays for tests
-
 test_arr_sml <- c(-10:20)
 test_arr_med <- c(-1e2:1e2)
 test_arr_big <- c(-1e4:1e4)
