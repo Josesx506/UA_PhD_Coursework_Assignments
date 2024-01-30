@@ -1,5 +1,5 @@
 ---
-title: "Assignment_03"
+title: "Assignment_03_JO"
 output:
   pdf_document: default
   # html_notebook: default
@@ -111,16 +111,22 @@ print(collatz(8))
 
 # (b)
 max_100 <- max_collatz(1, 100)
-cat("The n value that maximizes collatz from 1 <= n <= 100 is",
-    which.max(max_100$num_steps))
+cat(
+  "The n value that maximizes collatz from 1 <= n <= 100 is",
+  which.max(max_100$num_steps)
+)
 max_1000 <- max_collatz(1, 1000)
-cat("The n value that maximizes collatz from 1 <= n <= 1000 is",
-    which.max(max_1000$num_steps))
+cat(
+  "The n value that maximizes collatz from 1 <= n <= 1000 is",
+  which.max(max_1000$num_steps)
+)
 
 # (c)
-plot(max_1000$n_val, max_1000$num_steps, type = "l", xlab = "n",
-     ylab = "collatz steps", lwd = 0.5, col = "#709d94",
-     main = "Number of steps for Collatz() to converge")
+plot(max_1000$n_val, max_1000$num_steps,
+  type = "l", xlab = "n",
+  ylab = "collatz steps", lwd = 0.5, col = "#709d94",
+  main = "Number of steps for Collatz() to converge"
+)
 
 # (d)
 tmp_val <- paste(collatz(-17)$values, collapse = " → ")
@@ -153,12 +159,20 @@ the scale goes up.
 
 ```{r}
 prime_check <- function(n) {
-  if (n <= 1)  return(FALSE)
-  if (n <= 3)  return(TRUE)
-  if (n %% 2 == 0 || n %% 3 == 0) return(FALSE)
+  if (n <= 1) {
+    return(FALSE)
+  }
+  if (n <= 3) {
+    return(TRUE)
+  }
+  if (n %% 2 == 0 || n %% 3 == 0) {
+    return(FALSE)
+  }
   i <- 5
   while (i * i <= n) {
-    if (n %% i == 0 || n %% (i + 2) == 0) return(FALSE)
+    if (n %% i == 0 || n %% (i + 2) == 0) {
+      return(FALSE)
+    }
     i <- i + 6
   }
   return(TRUE)
@@ -185,10 +199,10 @@ prime_num <- function(n) {
   if (n > 2) {
     sieve <- seq(2, n)
     primes <- c()
-    for (i in 2:n){
+    for (i in 2:n) {
       if (any(sieve == i)) {
         primes <- c(primes, i)
-        sieve <-  sieve[(sieve %% i) != 0]
+        sieve <- sieve[(sieve %% i) != 0]
       }
     }
     return(primes)
@@ -209,8 +223,10 @@ goldbach_conjecture <- function(even_num, pout = FALSE) {
   for (i in 2:(even_num / 2)) {
     if (prime_check(i) && prime_check(even_num - i)) {
       c <- cbind(c, i) # nof solutions
-      sol <- rbind(sol, data.frame(pair_1 = i,
-                                   pair_2 = even_num - i))
+      sol <- rbind(sol, data.frame(
+        pair_1 = i,
+        pair_2 = even_num - i
+      ))
     }
   }
   if (pout) {
@@ -226,13 +242,15 @@ goldbach_conjecture(400004, TRUE)
 # (e)
 # calculate some 1000 solutions
 sol <- NULL
-for (i in seq(4, 1000, by = 2)){
+for (i in seq(4, 1000, by = 2)) {
   nof_solutions <- goldbach_conjecture(i)
   sol <- rbind(sol, data.frame(n = i, nof = nof_solutions))
 }
 # plot solutions; alternating solutions
-plot(sol$n, sol$nof, type = "p", xlab = "Even number", col = "#00d5ff",
-     ylab = "Number of Solutions", main = "Goldbach's Conjecture")
+plot(sol$n, sol$nof,
+  type = "p", xlab = "Even number", col = "#00d5ff",
+  ylab = "Number of Solutions", main = "Goldbach's Conjecture"
+)
 reg <- lm(nof ~ n, data = sol)
 abline(reg, col = "red")
 
@@ -256,14 +274,16 @@ prime_twin <- function(n, pout = FALSE) {
 prime_twin(1000, TRUE)
 
 sol <- NULL
-for (i in seq(1, 1000)){
+for (i in seq(1, 1000)) {
   nof_solutions <- prime_twin(i)
   sol <- rbind(sol, data.frame(n = i, nof = nof_solutions))
 }
 
 # plot solutions; alternating solutions
-plot(sol$n, sol$nof, type = "p", xlab = "Number", col = "#1e9155",
-     ylab = "N_Pairs", main = "Number of twin primes")
+plot(sol$n, sol$nof,
+  type = "p", xlab = "Number", col = "#1e9155",
+  ylab = "N_Pairs", main = "Number of twin primes"
+)
 ```
 
 
@@ -278,12 +298,12 @@ plot(sol$n, sol$nof, type = "p", xlab = "Number", col = "#1e9155",
 max_sum_subarr_nn <- function(arr) {
   # n^2 loop
   n <- length(arr)
-  mx <- -Inf  # Initialize maximum value
+  mx <- -Inf # Initialize maximum value
 
   for (i in 1:(n - 1)) {
     for (j in (i + 1):n) {
       sum <- sum(arr[i:j])
-      mx <- max(mx, sum)  # Update maximum value if needed
+      mx <- max(mx, sum) # Update maximum value if needed
     }
   }
 
@@ -301,8 +321,21 @@ max_sum_subarr_dp <- function(arr) {
 
   # Loop from VALUE at index position 2 till the end of the array
   for (element in arr[-1]) {
-    current_sum <- max(current_sum + element, element)
-    max_sum <- max(current_sum, max_sum)
+    # If else statement executes faster than using max
+    # current_sum <- max(current_sum + element, element)
+    # max_sum <- max(current_sum, max_sum)
+
+    if (current_sum + element < element) {
+      current_sum <- element
+    } else {
+      current_sum <- current_sum + element
+    }
+
+    if (max_sum < current_sum) {
+      max_sum <- current_sum
+    } else {
+      max_sum <- max_sum
+    }
   }
 
   if (max_sum > 0) {
@@ -348,10 +381,14 @@ print(unittest_mx_sum_sub(max_sum_subarr_nn))
 # ----------------------------- Benchmark tests -----------------------------
 small_set <- rnorm(1e2)
 med_set <- rnorm(1e3)
-small_bench <- microbenchmark(max_sum_subarr_dp(small_set),
-                              max_sum_subarr_nn(small_set))
-med_bench <- microbenchmark(max_sum_subarr_dp(med_set),
-                            max_sum_subarr_nn(med_set))
+small_bench <- microbenchmark(
+  max_sum_subarr_dp(small_set),
+  max_sum_subarr_nn(small_set)
+)
+med_bench <- microbenchmark(
+  max_sum_subarr_dp(med_set),
+  max_sum_subarr_nn(med_set)
+)
 all_bench <- bind_rows(small_bench, med_bench)
 print(all_bench)
 ```
@@ -365,13 +402,13 @@ print(all_bench)
 # O(n^2) complexity
 max_norm_sum_subarr <- function(arr) {
   n <- length(arr)
-  mx <- -Inf  # Initialize maximum value
+  mx <- -Inf # Initialize maximum value
 
   for (i in 1:(n - 1)) {
     for (j in (i + 1):n) {
       subarr <- arr[i:j]
-      sum <- sum(subarr) / sqrt(j - i)
-      mx <- max(mx, sum)  # Update maximum value if needed
+      sum <- sum(subarr) / sqrt(j + 1 - i)
+      mx <- max(mx, sum) # Update maximum value if needed
       # cat(i, j, sqrt(j - i), sum, "\n")
     }
   }
@@ -387,7 +424,7 @@ max_norm_sum_subarr <- function(arr) {
 unittest_mx_nm_sum_sub <- function(func) {
   # Case 1: Regular array
   input1 <- c(-1, 2, -3, 5, -4, 2)
-  expected_output1 <- 2.828
+  expected_output1 <- 2.309
   test1 <- (func(input1) == expected_output1)
 
   # Test Case 2: All negative numbers
@@ -397,7 +434,7 @@ unittest_mx_nm_sum_sub <- function(func) {
 
   # Test Case 3: All positive numbers
   input3 <- c(5, 7, 2, 8, 6)
-  expected_output3 <- 14
+  expected_output3 <- 12.522
   test3 <- (func(input3) == expected_output3)
 
   if (test1 && test2 && test3) {
@@ -450,7 +487,63 @@ cppFunction("std::vector<double> cumsum_cpp(const std::vector<double>& data) {
   return result;
 }")
 
-# Create arrays for tests
+# -------------------- A3P5 implementation --------------------
+stat_675_cumsum <- function(x) {
+  if (length(x) == 1) {
+    return(x)
+  }
+  sx <- x
+  for (i in 2:length(x)) {
+    sx[i] <- sx[i] + sx[i - 1]
+  }
+  return(sx)
+}
+
+stat_675_cumsum2 <- function(x) {
+  if (length(x) == 1) {
+    return(x)
+  }
+  sx <- x
+  x0 <- x[1]
+  for (i in 2:length(x)) {
+    x0 <- x0 + sx[i]
+    sx[i] <- x0
+  }
+  return(sx)
+}
+
+stat_675_cumsum3 <- function(x) {
+  n <- length(x)
+  if (n < 10) {
+    return(stat_675_cumsum2(x))
+  }
+  s <- floor(sqrt(n))
+  X <- matrix(c(x, rep(0, s * (s + 2) - n)), s, s + 2)
+  for (i in 2:s) {
+    X[i, ] <- X[i, ] + X[i - 1, ]
+  }
+  for (i in 2:(s + 2)) {
+    X[, i] <- X[, i] + X[s, i - 1]
+  }
+  return(as.vector(X)[1:n])
+}
+
+stat_675_cumsum4 <- function(x) {
+  n <- length(x)
+  if (n < 10) {
+    return(stat_675_cumsum2(x))
+  }
+  s <- floor(sqrt(n))
+  X <- matrix(c(x, rep(0, s * (s + 2) - n)), s + 2, s, byrow = TRUE)
+  for (i in 2:s) {
+    X[, i] <- X[, i] + X[, i - 1]
+  }
+  y <- stat_675_cumsum2(X[, s])
+  X[-1, ] <- X[-1, ] + y[-(s + 2)]
+  return(as.vector(t(X))[1:n])
+}
+
+# -------------------- Create arrays for tests --------------------
 test_arr_sml <- c(-10:20)
 test_arr_med <- c(-1e2:1e2)
 test_arr_big <- c(-1e4:1e4)
@@ -463,15 +556,21 @@ if (all.equal(cumsum(test_arr_sml), cumsum1(test_arr_sml), tolerance = 0)) {
 # Speed test
 small_bench <- microbenchmark(
   cumsum(test_arr_sml), cumsum1(test_arr_sml),
-  cumsum2(test_arr_sml), cumsum_cpp(test_arr_sml)
+  cumsum2(test_arr_sml), cumsum_cpp(test_arr_sml),
+  stat_675_cumsum(test_arr_sml),stat_675_cumsum2(test_arr_sml),
+  stat_675_cumsum3(test_arr_sml), stat_675_cumsum4(test_arr_sml)
 )
 med_bench <- microbenchmark(
   cumsum(test_arr_med), cumsum1(test_arr_med),
-  cumsum2(test_arr_med), cumsum_cpp(test_arr_med)
+  cumsum2(test_arr_med), cumsum_cpp(test_arr_med),
+  stat_675_cumsum(test_arr_med),stat_675_cumsum2(test_arr_med),
+  stat_675_cumsum3(test_arr_med), stat_675_cumsum4(test_arr_med)
 )
 big_bench <- microbenchmark(
   cumsum(test_arr_big), cumsum1(test_arr_big),
-  cumsum2(test_arr_big), cumsum_cpp(test_arr_big)
+  cumsum2(test_arr_big), cumsum_cpp(test_arr_big),
+  stat_675_cumsum(test_arr_big),stat_675_cumsum2(test_arr_big),
+  stat_675_cumsum3(test_arr_big), stat_675_cumsum4(test_arr_big)
 )
 
 all_bench <- bind_rows(small_bench, med_bench, big_bench)
