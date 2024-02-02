@@ -4,10 +4,15 @@ output:
   pdf_document: default
 ---
 
+```{r}
+library(ggplot2)
+set.seed(808)
+```
+
 1. Consider a density function $f(x) = 1 - |x| for -1 \le x \le 1$.
     (a) Create a function which can generate n IID random variables from the density f(x) by inverse
     transformation method.
-    (b) Create a function which can generate n IID random variables from the density f(x) by acceptancerejection
+    (b) Create a function which can generate n IID random variables from the density f(x) by acceptance rejection
     method.
     (c) If X and Y independently follow standard uniform distribution, then Z = X - Y follows a
     distribution with density f(x). Given this fact, create a function which can generate n IID
@@ -15,6 +20,74 @@ output:
     (d) Draw histograms to check your random number generators. Do your histograms look correct?
 
 ```{r}
+# (a) Inverse Transformation Method
+inverse_transform <- function(n) {
+  u <- runif(n)
+  x <- ifelse(u <= 0.5, sqrt(2 * u) - 1, 1 - sqrt(2 * (1 - u)))
+  return(x)
+}
+
+# Generate n random variables
+n <- 1000
+rv_it <- inverse_transform(n)
+
+
+
+# (b) Acceptance-Rejection Method
+random_acceptance_rejection <- function(n) {
+  c <- 2  # Upper bound on f(x)/g(x)
+  x <- numeric(n)
+  i <- 1
+  while (i <= n) {
+    u1 <- runif(1)
+    u2 <- runif(1)
+    x_candidate <- -1 + 2 * u1
+    if (u2 <= (1 - abs(x_candidate)) / (c * 0.5)) {
+      x[i] <- x_candidate
+      i <- i + 1
+    }
+  }
+  return(x)
+}
+
+# Generate n random variables
+rv_ar <- random_acceptance_rejection(n)
+
+
+
+# (c) Direct Transformation Method
+random_direct_transformation <- function(n) {
+  x <- runif(n)
+  y <- runif(n)
+  z <- ifelse(y <= x, x - y, y - x)
+  return(z)
+}
+
+# Generate n random variables
+rv_dt <- random_direct_transformation(n)
+
+
+
+# (d) Plot and compare all the histograms
+par(mfrow = c(2, 2))
+
+y <- seq(-1, 1, .01)
+
+hist(rv_it, breaks = 30, xlab = "x",
+  freq = FALSE, main = "Inverse Transformation Method",
+  col = "lightblue", xlim = c(-1, 1)
+)
+lines(y, 1 - abs(y)) # Density  curve
+
+hist(rv_ar, freq = FALSE, breaks = 30, xlab = "x",
+     main = "Acceptance-Rejection Method", col = "lightgreen", xlim = c(-1, 1))
+lines(y, 1 - abs(y)) # Density  curve
+
+hist(rv_dt, freq = FALSE, breaks = 30, xlab = "x",
+     main = "Direct Transformation Method", col = "lightcoral", xlim = c(0, 1))
+lines(y, 1 - abs(y)) # Density  curve
+
+par(mfrow = c(1, 1))  # Reset plotting parameters
 ```
 
 2. Let $X_1,..., X_m$ be a random sample from normal distribution with mean $\mu$ and variance $\sigma^2$. 
@@ -24,11 +97,60 @@ $S_{m}^{2} = \frac{1} {m-1} \displaystyle\sum_{i=1}^{m} (X_i - \overline X)^2$ b
     follows t distribution with degrees of freedom m - 1. Use this fact to write a function to generate random 
     variables with t distribution: input a sample size n and degrees of freedom d, output n IID random numbers 
     from t distribution with degrees of freedom d.
-    (b) Let n = 1, 000 and d = 10. Draw 1,000 random numbers using (a) and compare the histogram
+    (b) Let n = 1000 and d = 10. Draw 1000 random numbers using (a) and compare the histogram
     with the true density of t distribution. (check function dt for density of t distribution.)
-    (c) Plot the empirical CDF of 1,000 random numbers in (b), and compare it with the true CDF.
+    (c) Plot the empirical CDF of 1000 random numbers in (b), and compare it with the true CDF.
 
 ```{r}
+# (a)
+# t_distribution_generator <- function(n, df) {
+#   # Generate normal samples
+#   z <- rnorm(n, mean = 0, sd = 1)
+
+#   # Calculate Chi-squared samples
+#   chi2 <- rchisq(n, df = df)
+
+#   # Apply the formula
+#   t <- z / sqrt(chi2 / df)
+
+#   return(t)
+# }
+
+t_distribution_generator <- function(n, df) {
+  m <- 0
+  sd <- 1
+  x <- rnorm(n, m, sd)  # Generate standard normal random variables
+#   xm <- (1 / n) * sum(x)
+#   sm <- (1 / (n - 1)) * sum((xm - x)^2)
+  xm <- mean(x)
+  sm <- var(x)
+  t <- (xm - sd) / sqrt(sm / n)
+
+  return(t)
+}
+
+# (b)
+n <- 1000
+df <- 10
+
+# Generate samples and true density
+samples <- t_distribution_generator(n, df)
+x <- seq(-5, 5, length = n)
+density <- function(x)  dt(x, df = df)
+
+# Plot histogram and density
+hist(samples, main = "Histogram of t-distributed samples", breaks = 20)
+curve(density, from = -5, to = 5, add = TRUE, col = "red", lwd = 2)
+# cat(length(density), "\n")
+
+# (c)
+# Calculate empirical CDF
+ecdf <- ecdf(samples)
+
+# Plot empirical and true CDF
+plot(ecdf, main = "Empirical CDF vs. True CDF", xlab = "x", ylab = "P(X <= x)")
+cat(pt(x, df = df), "n")
+# curve(pt(x, df = df), add = TRUE, col = "red", lwd = 2)
 ```
 
 3. Here are three ways to generate standard normal N(0, 1) random variables from standard uniform
