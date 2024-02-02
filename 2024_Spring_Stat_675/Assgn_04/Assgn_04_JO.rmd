@@ -1,0 +1,84 @@
+---
+title: "Assignment_04_JO"
+output:
+  pdf_document: default
+---
+
+1. Consider a density function $f(x) = 1 - |x| for -1 \le x \le 1$.
+    (a) Create a function which can generate n IID random variables from the density f(x) by inverse
+    transformation method.
+    (b) Create a function which can generate n IID random variables from the density f(x) by acceptancerejection
+    method.
+    (c) If X and Y independently follow standard uniform distribution, then Z = X - Y follows a
+    distribution with density f(x). Given this fact, create a function which can generate n IID
+    random variables from the density f(x) by direct transformation method.
+    (d) Draw histograms to check your random number generators. Do your histograms look correct?
+
+```{r}
+```
+
+2. Let $X_1,..., X_m$ be a random sample from normal distribution with mean $\mu$ and variance $\sigma^2$. 
+Let $\overline X_m = \frac{1} {n} \displaystyle\sum_{i=1}^{m} X_i$ be the sample mean, and 
+$S_{m}^{2} = \frac{1} {m-1} \displaystyle\sum_{i=1}^{m} (X_i - \overline X)^2$ be sample variance.
+    (a) Probability theory tells us that $T = \frac{\overline X_m - \mu} {\sqrt{\frac{S_{m}^{2}} {m}}}$
+    follows t distribution with degrees of freedom m - 1. Use this fact to write a function to generate random 
+    variables with t distribution: input a sample size n and degrees of freedom d, output n IID random numbers 
+    from t distribution with degrees of freedom d.
+    (b) Let n = 1, 000 and d = 10. Draw 1,000 random numbers using (a) and compare the histogram
+    with the true density of t distribution. (check function dt for density of t distribution.)
+    (c) Plot the empirical CDF of 1,000 random numbers in (b), and compare it with the true CDF.
+
+```{r}
+```
+
+3. Here are three ways to generate standard normal N(0, 1) random variables from standard uniform
+distribution U(0, 1).
+    (I) Box-Muller Algorithm.
+        (i) Generate $U_1, U_2 \stackrel{\text{IID}}{\sim} U(0, 1)$
+        (ii) Define $X_1 = \sqrt{-2 log U_1} cos(2 \pi U_2)$ and $X_2 = \sqrt{2 log U_1} sin(2 \pi U_2)$.
+        Then $X_1, X_2 \stackrel{\text{IID}}{\sim} N(0, 1)$.
+    (II)  Acceptance-Rejection Algorithm.
+        (i) Generate random variables from standard Cauchy distribution by inverse transformation method.
+        (ii) Generate standard normal variables from Cauchy distribution by Acceptance-Rejection method.
+    (III) Acceptance-Rejection Algorithm 2: 
+        (i) Generate random variables from double-exponential distribution by inverse transformation method.
+        (ii) Generate standard normal variables from double-exponential distribution by Acceptance-Rejection method.
+    
+    (a) Write a functions to implement Algorithm I with input n, and output x, which is a vector of n
+    IID standard normal random variables.
+    (b) For each of Algorithms II and III, find constant c, such that the acceptance-rejection algorithm gets
+    maximal acceptance probability. Find the mean (average) number of trials in order to generate
+    one standard normal variable. Implement the algorithm and create a function with input n, and
+    output x, a vector of n IID standard normal random variables.
+    (c) Draw histograms to check your random number generators in (a) and (b). Do your histograms
+    look correct?
+
+```{r}
+```
+
+4. The unit sphere $S^2$ in Euclidean space $\mathbb{R}^3$ is a set defined by equation $x^2_1 + x^2_2 + x^2_3 = 1$.
+    (a) Follow the steps below to create a function to generate n IID random vector uniformly distributed
+    on the unit sphere S2. (i) To generate one random vector uniformly distributed in the unit sphere
+    $S^2$, start with 3 IID random numbers $Z_1, Z_2, Z_3$ from standard normal distribution. Define
+    $X_i = Z_i / \sqrt{Z^2_1 + Z^2_2 + Z^2_3}$ for each i. Then $(X_1,X_2,X_3)$ is a random vector uniformly distributed
+    in $S^2$. (ii) By a loop or matrix operations, you can generate n random vectors.
+    (b) For two random vectors uniformly distributed in $S^2$, what is the expected distance between them?
+    Do not calculate it theoretically. Do a simulation to estimate the expected distance. What is the
+    standard error of your estimate?
+    (c) In part (a), if you generate $Z_1, Z_2, Z_3$ from uniform distribution over the interval $[-1, 1]$ instead of
+    the standard normal distribution, and define $(X_1,X_2,X_3)$ the same way, you can also get random
+    vectors on the unit sphere $S^2$. Give some numerical evidence.
+
+```{r}
+```
+
+5. (a) Write a function with input n and d and output n IID random vector uniformly distributed within
+    d-dimensional unit ball (with radius 1).
+    (b) For two random vectors in 3D unit ball, what is the expected distance between them? Do not
+    calculate it theoretically. Do a simulation to estimate the expected distance.
+    (c) Let $\rho_d$ be the ratio between the volume of a unit ball and the volume of a cube with side 2, in
+    Rd. Estimate $\rho_d$ for $d = 2, ..., 5$.
+    (d) Search online and find the exact values of $\rho_d$. Compare it with your estimate.
+
+```{r}
+```
