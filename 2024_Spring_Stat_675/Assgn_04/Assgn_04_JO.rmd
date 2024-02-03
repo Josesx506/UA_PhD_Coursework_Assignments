@@ -26,7 +26,6 @@ inverse_transform <- function(n) {
   x <- ifelse(u <= 0.5, sqrt(2 * u) - 1, 1 - sqrt(2 * (1 - u)))
   return(x)
 }
-
 # Generate n random variables
 n <- 1000
 rv_it <- inverse_transform(n)
@@ -49,7 +48,6 @@ random_acceptance_rejection <- function(n) {
   }
   return(x)
 }
-
 # Generate n random variables
 rv_ar <- random_acceptance_rejection(n)
 
@@ -62,11 +60,8 @@ random_direct_transformation <- function(n) {
   z <- ifelse(y <= x, x - y, y - x)
   return(z)
 }
-
 # Generate n random variables
 rv_dt <- random_direct_transformation(n)
-
-
 
 # (d) Plot and compare all the histograms
 par(mfrow = c(2, 2))
@@ -103,29 +98,13 @@ $S_{m}^{2} = \frac{1} {m-1} \displaystyle\sum_{i=1}^{m} (X_i - \overline X)^2$ b
 
 ```{r}
 # (a)
-# t_distribution_generator <- function(n, df) {
-#   # Generate normal samples
-#   z <- rnorm(n, mean = 0, sd = 1)
-
-#   # Calculate Chi-squared samples
-#   chi2 <- rchisq(n, df = df)
-
-#   # Apply the formula
-#   t <- z / sqrt(chi2 / df)
-
-#   return(t)
-# }
-
 t_distribution_generator <- function(n, df) {
-  m <- 0
-  sd <- 1
-  x <- rnorm(n, m, sd)  # Generate standard normal random variables
-#   xm <- (1 / n) * sum(x)
-#   sm <- (1 / (n - 1)) * sum((xm - x)^2)
-  xm <- mean(x)
-  sm <- var(x)
-  t <- (xm - sd) / sqrt(sm / n)
-
+  # Generate normal samples
+  z <- rnorm(n)
+  # Calculate Chi-squared samples
+  chi2 <- rchisq(n, df = df)
+  # Apply the formula
+  t <- z / sqrt(chi2 / df)
   return(t)
 }
 
@@ -136,12 +115,11 @@ df <- 10
 # Generate samples and true density
 samples <- t_distribution_generator(n, df)
 x <- seq(-5, 5, length = n)
-density <- function(x)  dt(x, df = df)
+theoretical_density <- dt(x, df = df)
 
 # Plot histogram and density
-hist(samples, main = "Histogram of t-distributed samples", breaks = 20)
-curve(density, from = -5, to = 5, add = TRUE, col = "red", lwd = 2)
-# cat(length(density), "\n")
+hist(samples, main = "T-distribution samples", breaks = 20, freq = FALSE)
+lines(x, theoretical_density, col = "red", lwd = 2)
 
 # (c)
 # Calculate empirical CDF
@@ -149,8 +127,7 @@ ecdf <- ecdf(samples)
 
 # Plot empirical and true CDF
 plot(ecdf, main = "Empirical CDF vs. True CDF", xlab = "x", ylab = "P(X <= x)")
-cat(pt(x, df = df), "n")
-# curve(pt(x, df = df), add = TRUE, col = "red", lwd = 2)
+lines(x, pt(x, df = df), col = "red", lwd = 2)
 ```
 
 3. Here are three ways to generate standard normal N(0, 1) random variables from standard uniform
@@ -162,7 +139,7 @@ distribution U(0, 1).
     (II)  Acceptance-Rejection Algorithm.
         (i) Generate random variables from standard Cauchy distribution by inverse transformation method.
         (ii) Generate standard normal variables from Cauchy distribution by Acceptance-Rejection method.
-    (III) Acceptance-Rejection Algorithm 2: 
+    (III) Acceptance-Rejection Algorithm 2.
         (i) Generate random variables from double-exponential distribution by inverse transformation method.
         (ii) Generate standard normal variables from double-exponential distribution by Acceptance-Rejection method.
     
@@ -176,6 +153,34 @@ distribution U(0, 1).
     look correct?
 
 ```{r}
+# (a) Box-Muller
+box_muller_algo <- function(n) {
+  u1 <- runif(n)
+  u2 <- runif(n)
+  x1 <- sqrt(-2 * log(u1)) * cos(2 * pi * u2)
+  x2 <- sqrt(-2 * log(u1)) * sin(2 * pi * u2)
+  return(c(x1, x2))
+}
+
+
+
+# (b)
+# Cauchy distribution inverse-transform method
+inverse_cauchy <- function(n, sigma = 1, mu = 0) {
+  u <- runif(n)
+  ca <- sigma * tan(pi * (u - (1 / 2))) + mu
+  return(ca)
+}
+
+
+# (d) Histograms
+n <- 1000
+x_bm <- box_muller_algo(n)
+
+par(mfrow = c(3, 1))  # Plot multiple histograms
+hist(x_bm, main = "Box-Muller")
+
+par(mfrow = c(1, 1))  # Reset plotting parameters
 ```
 
 4. The unit sphere $S^2$ in Euclidean space $\mathbb{R}^3$ is a set defined by equation $x^2_1 + x^2_2 + x^2_3 = 1$.
