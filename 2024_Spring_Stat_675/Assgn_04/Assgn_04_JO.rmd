@@ -7,6 +7,7 @@ output:
 ```{r}
 library(ggplot2)
 set.seed(808)
+# knitr::opts_chunk$set(fig.width = 8, fig.height = 12)
 ```
 
 1. Consider a density function $f(x) = 1 - |x| for -1 \le x \le 1$.
@@ -118,7 +119,8 @@ x <- seq(-5, 5, length = n)
 theoretical_density <- dt(x, df = df)
 
 # Plot histogram and density
-hist(samples, main = "T-distribution samples", breaks = 20, freq = FALSE)
+hist(samples, main = "T-distribution samples", breaks = 20,
+     freq = FALSE, ylim = c(0, 0.4))
 lines(x, theoretical_density, col = "red", lwd = 2)
 
 # (c)
@@ -152,7 +154,7 @@ distribution U(0, 1).
     (c) Draw histograms to check your random number generators in (a) and (b). Do your histograms
     look correct?
 
-```{r}
+```{r fig.height = 8, fig.width = 6}
 # (a) Box-Muller
 box_muller_algo <- function(n) {
   u1 <- runif(n)
@@ -171,14 +173,73 @@ inverse_cauchy <- function(n, sigma = 1, mu = 0) {
   ca <- sigma * tan(pi * (u - (1 / 2))) + mu
   return(ca)
 }
+# Acceptance-rejection Cauchy distribution
+# ar_cauchy <- function(n) {
+#   result <- numeric(n)
+#   i <- 1                 # Succesful counts
+#   trials <- 1
+#   while (i <= n) {
+#     u1 <- runif(1)
+#     u2 <- runif(1)
+#     x_can <- tan(pi * (u1 - 0.5))
 
+#     if (u2 <= sqrt(2 / pi) * exp(-0.5 * x_can^2) / (1 + x_can^2)) {
+#       result[i] <- x_can
+#       i <- i + 1
+#     }
+
+#     trials <- trials + 1
+#   }
+#   return(list(mean_trials = mean(trials), n_trials = trials,
+#               n_var = result))
+# }
+
+ar_cauchy <- function(n) {
+  trials <- numeric(n)
+  result <- numeric(n)
+
+  for (i in 1:n) {
+    accept <- FALSE
+    while (!accept) {
+      u1 <- runif(1)
+      u2 <- runif(1)
+
+      x <- tan(pi * (u1 - 0.5))
+
+      if (u2 <= sqrt(2 / pi) * exp(-0.5 * x^2) / (1 + x^2)) {
+        result[i] <- x
+        accept <- TRUE
+      } else {
+        trials[i] <- trials[i] + 1
+      }
+    }
+  }
+
+  return(list(mean_trials = mean(trials), n_trials = trials,
+              n_var = result))
+}
 
 # (d) Histograms
 n <- 1000
 x_bm <- box_muller_algo(n)
+x_cauchy_it <- inverse_cauchy(n)
+x_cauchy_ar <- ar_cauchy(n)
+cat("The mean number of trials is", x_cauchy_ar$mean_trials, ".\n")
 
 par(mfrow = c(3, 1))  # Plot multiple histograms
-hist(x_bm, main = "Box-Muller")
+hist(x_bm, main = "Box-Muller", breaks = 20)
+
+hist(x_cauchy_it, main = "Cauchy Inverse Transform", breaks = 20,
+     freq = FALSE)
+# hist(x_cauchy_ar$n_var, main = "Cauchy Acceptance Rejection", breaks = 20,
+#      freq = FALSE)
+
+# Add the true density curve of the Cauchy distribution
+x_vals <- seq(-2, 2, length.out = n)
+true_density_cauchy <- dcauchy(x_vals)
+true_density_cauchy1 <- 1 / (pi * (1 + x_vals^2))
+lines(x_vals, true_density_cauchy, col = "red", lwd = 2)
+lines(x_vals, true_density_cauchy1, col = "#52986c", lwd = 2)
 
 par(mfrow = c(1, 1))  # Reset plotting parameters
 ```
