@@ -58,7 +58,7 @@ rv_ar <- random_acceptance_rejection(n)
 random_direct_transformation <- function(n) {
   x <- runif(n)
   y <- runif(n)
-  z <- ifelse(y <= x, x - y, y - x)
+  z <- x - y
   return(z)
 }
 # Generate n random variables
@@ -80,7 +80,7 @@ hist(rv_ar, freq = FALSE, breaks = 30, xlab = "x",
 lines(y, 1 - abs(y)) # Density  curve
 
 hist(rv_dt, freq = FALSE, breaks = 30, xlab = "x",
-     main = "Direct Transformation Method", col = "lightcoral", xlim = c(0, 1))
+     main = "Direct Transformation Method", col = "lightcoral", xlim = c(-1, 1))
 lines(y, 1 - abs(y)) # Density  curve
 
 par(mfrow = c(1, 1))  # Reset plotting parameters
