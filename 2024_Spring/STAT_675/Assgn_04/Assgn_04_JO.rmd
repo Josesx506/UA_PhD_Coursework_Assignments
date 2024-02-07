@@ -174,71 +174,62 @@ inverse_cauchy <- function(n, sigma = 1, mu = 0) {
   return(ca)
 }
 # Acceptance-rejection Cauchy distribution
-# ar_cauchy <- function(n) {
-#   result <- numeric(n)
-#   i <- 1                 # Succesful counts
-#   trials <- 1
-#   while (i <= n) {
-#     u1 <- runif(1)
-#     u2 <- runif(1)
-#     x_can <- tan(pi * (u1 - 0.5))
-
-#     if (u2 <= sqrt(2 / pi) * exp(-0.5 * x_can^2) / (1 + x_can^2)) {
-#       result[i] <- x_can
-#       i <- i + 1
-#     }
-
-#     trials <- trials + 1
-#   }
-#   return(list(mean_trials = mean(trials), n_trials = trials,
-#               n_var = result))
-# }
+fx <- function(x) {
+  v <- 1 / sqrt(2 * pi) * exp(-0.5 * x^2)
+  return(v)
+}
+gx <- function(x) {
+  v <- 1 / pi / (1 + x^2)
+  return(v)
+}
+c <- sqrt(2 * pi) * exp(-1 / 2)
+# Acceptance Criteria normal distribution
+# if (u2 <= (fx(x_can) / gx(x_can) / c)) {
 
 ar_cauchy <- function(n) {
-  trials <- numeric(n)
   result <- numeric(n)
+  i <- 1                 # Succesful counts
+  trials <- 1
+  while (i <= n) {
+    u1 <- runif(1)
+    u2 <- runif(1)
+    x_can <- tan(pi * (u1 - 0.5))
 
-  for (i in 1:n) {
-    accept <- FALSE
-    while (!accept) {
-      u1 <- runif(1)
-      u2 <- runif(1)
-
-      x <- tan(pi * (u1 - 0.5))
-
-      if (u2 <= sqrt(2 / pi) * exp(-0.5 * x^2) / (1 + x^2)) {
-        result[i] <- x
-        accept <- TRUE
-      } else {
-        trials[i] <- trials[i] + 1
-      }
+    if (u2 <= (1 / (pi * (1 + x_can^2)))) {
+      result[i] <- x_can
+      i <- i + 1
     }
-  }
 
+    trials <- trials + 1
+  }
   return(list(mean_trials = mean(trials), n_trials = trials,
               n_var = result))
 }
+
 
 # (d) Histograms
 n <- 1000
 x_bm <- box_muller_algo(n)
 x_cauchy_it <- inverse_cauchy(n)
 x_cauchy_ar <- ar_cauchy(n)
+x_vals <- seq(-5, 5, length.out = n) # For true density curve
 cat("The mean number of trials is", x_cauchy_ar$mean_trials, ".\n")
 
-par(mfrow = c(3, 1))  # Plot multiple histograms
+# Plot multiple histograms
+par(mfrow = c(3, 1))
 hist(x_bm, main = "Box-Muller", breaks = 20)
 
-hist(x_cauchy_it, main = "Cauchy Inverse Transform", breaks = 20,
-     freq = FALSE)
-# hist(x_cauchy_ar$n_var, main = "Cauchy Acceptance Rejection", breaks = 20,
-#      freq = FALSE)
-
-# Add the true density curve of the Cauchy distribution
-x_vals <- seq(-2, 2, length.out = n)
+# Plot inverse transform Cauchy with the true density curve
+hist(x_cauchy_it, main = "Cauchy Inverse Transform", breaks = "FD",
+     freq = FALSE, xlim = c(-5, 5))
 true_density_cauchy <- dcauchy(x_vals)
-true_density_cauchy1 <- 1 / (pi * (1 + x_vals^2))
 lines(x_vals, true_density_cauchy, col = "red", lwd = 2)
+
+# Plot acceptance rejection Cauchy with the true density curve
+hist(x_cauchy_ar$n_var, main = "Cauchy Acceptance Rejection", breaks = 30,
+     freq = FALSE, xlim = c(-5, 5))
+# Another option for true density
+true_density_cauchy1 <- 1 / (pi * (1 + x_vals^2))
 lines(x_vals, true_density_cauchy1, col = "#52986c", lwd = 2)
 
 par(mfrow = c(1, 1))  # Reset plotting parameters
