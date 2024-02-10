@@ -1,0 +1,76 @@
+---
+title: "Assignment_05_JO"
+output:
+  pdf_document: default
+---
+
+```{r}
+library(ggplot2)
+set.seed(808)
+```
+
+1. A chord of a circle is a straight line segment whose endpoints both lie on the circle. Conduct a simulation study on 
+the distribution of the length of a random chord on unit circle.
+    (a) "random endpoints" method: Choose two random points on the circumference of the unit circle and draw the chord joining 
+    them. (In fact, you may fix one endpoint and assume the other uniformly distributed on the circle). Write a function with 
+    input n and output the lengths of n random chords.
+    (b) "random midpoint" method: Choose a random point (uniformly distributed) within the circle and construct a chord with the 
+    chosen point as its midpoint. Write a function with input n and output the lengths of n random chords.
+    (c) Conduct a simulation study to estimate the probability that the length of a random chord is greater than $\sqrt{3}$. Do 
+    you get the same probability using both chord generation methods? (You may search the keywords Bertrand paradox for more 
+    information.)
+
+```{r}
+```
+
+2. Random vectors generation from multivariate Gaussian distribution I: general case.
+    (a) Implement several random vector generators which return n IID random vectors from Gaussian distribution with mean 
+    $\mu$ and covariance $\Sigma$. Try the three approaches: eigenvalue decomposition. singular value decomposition, and 
+    Choleski factorization.
+    (b) Search for R packages and functions which can generate random vectors from Gaussian distribu-tion.
+    (c) Compare these generators in terms of computation time (and quality if you could).
+
+```{r}
+```
+
+3. Random vectors generation from multivariate Gaussian distribution II: special cases. Implement random vector generators 
+which generate Gaussian vectors from specific covariance structures listed below. Can you make your implementations more 
+efficient than the generic generators?
+    (a) Compound Symmetric Covariance $\Sigma = (\sigma_{ij})$ with $\sigma_{ii} = 1$ and $\sigma_{ij} = \rho$ when $i \neq j$ 
+    where $0 \le p \le 1$.
+    (b) AR(1) (Auto Regressive order 1) model $\Sigma = (\sigma_{ij})$ with $\sigma_{ij} = \rho^{|i-j|}$ where 
+    $|\rho| < 1$.
+    (c) Block Covariance $\Sigma = L\Omega L^{T}$ where $\Omega$ is a K x K positive-definite matrix, $L$ is a p x K label
+    matrix such that each row of $L$ consists of one '1' and K - 1 '0's.
+
+```{r fig.height = 8, fig.width = 6}
+```
+
+4. Projective center limit theorem says that the projection of a uniform distribution on the sphere in $\mathbb{R}^n$ of radius
+$\sqrt{n}$ onto a line converges to the standard normal distribution as $n \rightarrow  \infty$. Show some numeric evidence of this theorem.
+
+```{r}
+
+```
+
+5. Marcenko-Pastur law. Let $X$ be an n x p random matrix with IID entries of mean 0 and variance
+    1. Define $\hat \Sigma_{n} = \frac {1} {n} X^{T}X$ and let $\lambda_1 \ge \lambda_2 \ge ... \ge \lambda_p$ be the eigenvalues of 
+    $\hat \Sigma_{n}$. As $p,n \rightarrow \infty$ with $\frac {p} {n} \rightarrow \lambda \in (0, \infty)$, the empirical 
+    distribution of the eigenvalues converges to the Marcenko-Pastur distribution with density:
+
+    $$f(x) = \frac {1} {2\pi} \frac {\sqrt {(\lambda_+ - x)(x - \lambda_-)}} {\lambda x} 1_{x \in [\lambda_+,\lambda_-]}$$
+
+    where $\lambda_{\pm} = (1 \pm \sqrt{\lambda})^2$. On the other hand, the classical asymptotic theory states that all 
+    $\lambda_j \rightarrow 1$ as $n \rightarrow \infty$ and $p$ remains the same. Draw a histogram of the eigenvalues for a random matrix $X$ with 
+    standard normal entries and $(n, p) = (1000, 500)$. Which asymptotic theory is more useful in this case? 
+    (Reference: High-Dimensional Statistics by Wainwright Section 1.2.2)
+
+```{r}
+```
+
+6. Tracy-Widom law. For an n X p random matrix X with IID standard normal entries, as both n and p tend to infinity with their 
+ratio n/p converging to a constant, the asymptotic distribution of the largest eigenvalue of the sample covariance 
+$\hat \Sigma_n = \frac{1} {n} X^{T}X$ is described by the Tracy-Widom law (that is quite complicated and omitted here).
+    (a) Find a fast way to calculate the largest eigenvalue of a matrix.
+    (b) Plot the histograms of the largest eigenvalues of 1,000 independent random matrices with IID standard normal entries 
+    for $(n, p) = (100,50), (1000,500)$ and $(10000,5000)$.
