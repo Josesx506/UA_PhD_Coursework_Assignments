@@ -6,7 +6,9 @@ output:
 
 ```{r}
 library(ggplot2)
-set.seed(808)
+library(gridExtra)
+library(patchwork)
+set.seed(675) # For reproducibility
 ```
 
 1. A chord of a circle is a straight line segment whose endpoints both lie on the circle. Conduct a simulation study on 
@@ -18,9 +20,177 @@ the distribution of the length of a random chord on unit circle.
     chosen point as its midpoint. Write a function with input n and output the lengths of n random chords.
     (c) Conduct a simulation study to estimate the probability that the length of a random chord is greater than $\sqrt{3}$. Do 
     you get the same probability using both chord generation methods? (You may search the keywords Bertrand paradox for more 
-    information.)
+    information.) - No, I didn't.
 
 ```{r}
+# Simulation circle dimensions 
+xx0=0; # center of disk 
+yy0=0; 
+r=1;   # disk radius
+# Create points for circle
+t <- seq(0, 2*pi, len = 200);
+xp <- r*cos(t);
+yp <- r*sin(t);
+
+# Function to generate random chords using Random Endpoint (Random Endpoints)
+generate_chords_rnd_ept <- function(n) {
+  thetaA1 <- 2 * pi * runif(n)  # choose angular component uniformly
+  thetaA2 <- 2 * pi * runif(n)  # choose angular component uniformly
+  
+  # calculate segment endpoints
+  xxA1 <- xx0 + r * cos(thetaA1)
+  yyA1 <- yy0 + r * sin(thetaA1)
+  xxA2 <- xx0 + r * cos(thetaA2)
+  yyA2 <- yy0 + r * sin(thetaA2)
+  
+  # calculate midpoints of segments
+  xxA0 <- (xxA1 + xxA2) / 2
+  yyA0 <- (yyA1 + yyA2) / 2
+  
+  # Convert to data frame
+  chord_data_ept <- data.frame(x1 = xxA1, y1 = yyA1, x2 = xxA2, y2 = yyA2)
+  midpoint_data <- data.frame(x = xxA0, y = yyA0)
+  
+  # Calculate lengths of chords
+  chord_lengths <- sqrt((xxA1 - xxA2)^2 + (yyA1 - yyA2)^2)
+  
+  # Return chord data, chord lengths, and midpoints
+  return(list(chords = chord_data_ept,
+              chord_lengths = chord_lengths,
+              midpoints = midpoint_data))
+}
+
+# Function to generate random chords using Random Midpoint (Random Midpoint)
+generate_chords_rnd_mpt <- function(n) {
+  thetaC <- 2 * pi * runif(n)  # choose angular component uniformly
+  pC <- r * sqrt(runif(n))     # choose radial component
+  qC <- sqrt(r^2 - pC^2)       # distance to circle edge (along line)
+  
+  # calculate trig values
+  sin_thetaC <- sin(thetaC)
+  cos_thetaC <- cos(thetaC)
+  
+  # calculate segment endpoints
+  xxC1 <- xx0 + pC * cos_thetaC + qC * sin_thetaC
+  yyC1 <- yy0 + pC * sin_thetaC - qC * cos_thetaC
+  xxC2 <- xx0 + pC * cos_thetaC - qC * sin_thetaC
+  yyC2 <- yy0 + pC * sin_thetaC + qC * cos_thetaC
+  
+  # calculate midpoints of segments
+  xxC0 <- (xxC1 + xxC2) / 2
+  yyC0 <- (yyC1 + yyC2) / 2
+  
+  # Convert to data frame
+  chord_data_mpt <- data.frame(x1 = xxC1, y1 = yyC1, x2 = xxC2, y2 = yyC2)
+  midpoint_data <- data.frame(x = xxC0, y = yyC0)
+  
+  # Calculate lengths of chords
+  chord_lengths <- sqrt((xxC1 - xxC2)^2 + (yyC1 - yyC2)^2)
+  
+  # Return chord data, chord lengths, and midpoints
+  return(list(chords = chord_data_mpt,
+              chord_lengths = chord_lengths,
+              midpoints = midpoint_data))
+}
+
+# Plotting using ggplot
+plot_chords_midpoints <- function(chord_data, midpoint_data, title_chords, 
+                                  title_midpoints, chord_color, mpt_col) {
+  # Background Circle
+  plot_circle <- ggplot(data = data.frame(x = c(xx0 + xp), 
+                        y = c(yy0 + yp)), aes(x, y)) +
+    geom_path(color = 'black') +
+    theme_void() +
+    labs(title = title_chords) +
+    coord_equal()
+  # Chord Lines
+  plot_chords <- plot_circle +
+    geom_segment(data = chord_data, aes(x = x1, y = y1, xend = x2, yend = y2), 
+                 color = chord_color, linewidth = 0.05) +
+    coord_equal()
+  # Chord Midpoints
+  plot_midpoints <- plot_circle +
+    geom_point(data = midpoint_data, aes(x, y), color = mpt_col, shape = 20, size = 0.2) +
+    coord_equal()
+  
+  return(list(plot_chords, plot_midpoints))
+}
+
+# Small Simulation for plotting
+n <- 500  # Number of simulations
+
+# Generate random chords using Random Endpoint
+chords_rnd_ept <- generate_chords_rnd_ept(n)
+chord_data_rnd_ept <- chords_rnd_ept$chords
+midpoint_data_rnd_ept <- chords_rnd_ept$midpoints
+
+# Generate random chords using Random Midpoint
+chords_rnd_mpt <- generate_chords_rnd_mpt(n)
+chord_data_rnd_mpt <- chords_rnd_mpt$chords
+midpoint_data_rnd_mpt <- chords_rnd_mpt$midpoints
+
+# Plot for both Solutions
+plots_a <- plot_chords_midpoints(chord_data_rnd_ept, midpoint_data_rnd_ept, 
+                                  'Chords Rnd. Endpt.', 'Midpoints Rnd. Endpt.', 
+                                  'red', 'red')
+plots_c <- plot_chords_midpoints(chord_data_rnd_mpt, midpoint_data_rnd_mpt, 
+                                  'Chords Rnd. Midpt.', 'Midpoints Rnd. Midpt.', 
+                                  'green', 'green')
+
+# Arrange the plots
+plot_layout <- (plots_a[[1]] | plots_a[[2]]) / (plots_c[[1]] | plots_c[[2]])
+# Show the plots
+plot_layout
+
+
+
+# ------------------------- Large Simulation for probabilites -------------------------
+n <- 5000  # Number of simulations
+
+# Generate random chords using Random Endpoint
+chords_rnd_ept <- generate_chords_rnd_ept(n)
+
+# Generate random chords using Random Midpoint
+chords_rnd_mpt <- generate_chords_rnd_mpt(n)
+
+# Estimate probability that the length of a random chord is greater than sqrt(3)
+prob_rnd_ept <- sum(chords_rnd_ept$chord_lengths > sqrt(3)) / n
+prob_rnd_mpt <- sum(chords_rnd_mpt$chord_lengths > sqrt(3)) / n
+
+# Output probabilities
+cat("Probability (Random Endpoint):", prob_rnd_ept, "\n")
+cat("Probability (Random Midpoint):", prob_rnd_mpt, "\n")
+
+# Plot density plots for both methods
+# Combine data for both methods
+combined_data <- data.frame(
+  x = c(chords_rnd_ept$chord_lengths, chords_rnd_mpt$chord_lengths),
+  method = rep(c("Rnd. Endpts", "Rnd. Midpts"), each = n)
+)
+# Plot density curves for both methods on the same plot
+p1 <- ggplot(combined_data, aes(x = x, fill = method)) +
+  geom_density(alpha = 0.5) +
+  scale_x_continuous(limits = c(0, 2)) +
+  labs(title = "Density Plot of Chord Lengths", x = "Length") +
+  theme_bw() +
+  theme(legend.position = "bottom",legend.title=element_blank()) +
+  scale_size_manual(values = c("Rnd. Endpts" = 2, "Rnd. Midpts" = 2))
+
+# Calculate and plot proportions exceeding sqrt(3)
+# Combine proportions into a data frame
+prop_data <- data.frame(
+  method = c("Random Endpoints", "Random Midpoint"),
+  prop = c(prob_rnd_ept, prob_rnd_mpt)
+)
+# Create the bar plot using the data frame
+p2 <- ggplot(prop_data, aes(x = method, y = prop)) +
+  geom_bar(stat = "identity", fill = c("blue", "orange")) +
+  labs(title = "Proportion of Chords > sqrt(3)", x = "", y = "Proportion") +
+  theme_bw()
+
+# grid.arrange(p1, p2, nrow = 1)
+hist_layout <- (p1 | p2)
+hist_layout
 ```
 
 2. Random vectors generation from multivariate Gaussian distribution I: general case.
@@ -43,14 +213,13 @@ efficient than the generic generators?
     (c) Block Covariance $\Sigma = L\Omega L^{T}$ where $\Omega$ is a K x K positive-definite matrix, $L$ is a p x K label
     matrix such that each row of $L$ consists of one '1' and K - 1 '0's.
 
-```{r fig.height = 8, fig.width = 6}
+```{r}
 ```
 
 4. Projective center limit theorem says that the projection of a uniform distribution on the sphere in $\mathbb{R}^n$ of radius
 $\sqrt{n}$ onto a line converges to the standard normal distribution as $n \rightarrow  \infty$. Show some numeric evidence of this theorem.
 
 ```{r}
-
 ```
 
 5. Marcenko-Pastur law. Let $X$ be an n x p random matrix with IID entries of mean 0 and variance
