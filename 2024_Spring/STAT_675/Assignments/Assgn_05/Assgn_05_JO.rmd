@@ -194,7 +194,6 @@ p2 <- ggplot(prop_data, aes(x = method, y = prop)) +
   labs(title = "Proportion of Chords > sqrt(3)", x = "", y = "Proportion") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5))
-  
 
 # grid.arrange(p1, p2, nrow = 1)
 hist_layout <- (p1 | p2)
@@ -212,18 +211,18 @@ hist_layout
 mvnormal_eigendec <- function(mu, Sigma, n) {
   # Extract dimensions
   d <- nrow(Sigma)
-  
+
   # Eigenvalue/eigenvector decomposition
   eigen <- eigen(Sigma)
   eigenvalues <- eigen$values
   eigenvectors <- eigen$vectors
-  
+
   # Square root of eigenvalues
   sqrt_eigenvalues <- sqrt(eigenvalues)
-  
+
   # Generate standard normal samples
   Z <- matrix(rnorm(n * d), nrow = n, ncol = d)
-  
+
   # Return transformed samples
   return(mu + eigenvectors %*% diag(sqrt_eigenvalues) %*% t(Z))
 }
@@ -231,19 +230,19 @@ mvnormal_eigendec <- function(mu, Sigma, n) {
 mvnormal_svd <- function(mu, Sigma, n) {
   # Extract dimensions
   d <- nrow(Sigma)
-  
+
   # Singular value decomposition
   svd <- svd(Sigma)
   U <- svd$u
   S <- svd$d
   Vt <- svd$v
-  
+
   # Square root of singular values
   sqrt_S <- sqrt(S)
-  
+
   # Generate standard normal samples
   Z <- matrix(rnorm(n * d), nrow = n, ncol = d)
-  
+
   # Return transformed samples
   return(mu + U %*% diag(sqrt_S) %*% t(Z))
 }
@@ -254,10 +253,10 @@ mvnormal_choleski <- function(mu, Sigma, n) {
 
   # Choleski factor of positive definite covariance matrix
   L <- chol(Sigma)
-  
+
   # Generate standard normal samples
   Z <- matrix(rnorm(n * d), nrow = n, ncol = d)
-  
+
   # Return transformed samples
   return(mu + L %*% t(Z))
 }
@@ -281,15 +280,15 @@ plot_distribution_grid <- function(data_list, titles) {
   colMeans(data_list)
   var(data_list)
   dst <- data.frame(data_list)
-  str(dst) 
-  
+  str(dst)
+
   ggplot(dst , aes(x = X1, y=X2)) +
     geom_point(alpha = .2, size=0.2) +
     geom_density_2d() +
     theme_bw() +
     theme(plot.title = element_text(hjust = 0.5)) +
     labs(title = titles)
-} 
+}
 
 # Define titles for the plots
 titles <- c("RVT Norm", "Eigen Decomposition", "SVD", "Choleski")
@@ -311,21 +310,22 @@ efficient than the generic generators?
     where $0 \le p \le 1$.
     (b) AR(1) (Auto Regressive order 1) model $\Sigma = (\sigma_{ij})$ with $\sigma_{ij} = \rho^{|i-j|}$ where 
     $|\rho| < 1$.
-    (c) Block Covariance $\Sigma = L\Omega L^{T}$ where $\Omega$ is a K x K positive-definite matrix, $L$ is a p x K label
-    matrix such that each row of $L$ consists of one '1' and K - 1 '0's.
+    (c) Block Covariance $\Sigma = L\Omega L^{T} + D$ where $\Omega$ is a K x K positive-definite matrix, 
+    $D = diag(\sigma_{1}^{2}, . . . , \sigma_{p}^{2})$, $L$ is a p x K label matrix such that each row of $L$ consists of 
+    one '1' and K - 1 '0's.
 
 ```{r}
 generate_compound_symmetric <- function(n, p, rho) {
   # Generate standard multivariate Gaussian random vector
   Z <- matrix(rnorm(n * p), nrow = n, ncol = p)
-  
+
   # Adjust covariance matrix
   Sigma <- diag(1, p)
   Sigma[lower.tri(Sigma)] <- rho
-  
+
   # Cholesky decomposition of covariance matrix
   L <- chol(Sigma)
-  
+
   # Generate random vectors with the desired covariance structure
   return(Z %*% L)
 }
@@ -333,32 +333,40 @@ generate_compound_symmetric <- function(n, p, rho) {
 generate_ar1 <- function(n, p, rho) {
   # Generate standard multivariate Gaussian random vector
   Z <- matrix(rnorm(n * p), nrow = n, ncol = p)
-  
+
   # Create Toeplitz covariance matrix
   Sigma <- toeplitz(rho^abs(1:p - 1))
-  
+
   # Cholesky decomposition of covariance matrix
   L <- chol(Sigma)
-  
+
   # Generate random vectors with the desired covariance structure
   return(Z %*% L)
 }
 
-generate_block_covariance <- function(n, p, K, Omega) {
+generate_block_covariance_d <- function(n, p, K, Omega, sig_sq) {
   # Generate standard multivariate Gaussian random vector
   Z <- matrix(rnorm(n * K), nrow = n, ncol = K)
-  
+
   # Cholesky decomposition of Omega
   L <- chol(Omega)
-  
+
   # Create label matrix L
   L <- matrix(0, nrow = p, ncol = K)
   for (i in 1:p) {
     L[i, sample(1:K, 1)] <- 1
   }
-  
+
+  # Perform dot product
+  s_x <- Z %*% t(L) %*% L
+
+  # Add diagonal matrix D
+  for (i in 1:p) {
+    s_x[, i] <- s_x[, i] + sqrt(sig_sq[i]) * rnorm(n)
+  }
+
   # Generate random vectors with the desired covariance structure
-  return(Z %*% t(L) %*% L)
+  return(s_x)
 }
 
 
@@ -376,16 +384,17 @@ data_ar1 <- generate_ar1(n, p, rho_ar1)
 
 # Generate data for block covariance
 K <- 3
-Omega <- diag(1, K)  # Identity matrix for simplicity
-data_block <- generate_block_covariance(n, p, K, Omega)
+Omega <- diag(1, K)   # Identity matrix for simplicity
+sig_sq <- c(0.2)      # Define the diagonal elements of the D matrix
+data_block <- generate_block_covariance_d(n, p, K, Omega, sig_sq)
 
 # Create data frames for ggplot
 df_cs <- data.frame(Value = c(data_cs),
-                     Distribution = rep("Compound Symmetric", n * p))
+                    Distribution = rep("Compound Symmetric", n * p))
 df_ar1 <- data.frame(Value = c(data_ar1),
-                      Distribution = rep("AR(1)", n * p))
+                     Distribution = rep("AR(1)", n * p))
 df_block <- data.frame(Value = c(data_block),
-                        Distribution = rep("Block Covariance", n * p))
+                       Distribution = rep("Block Covariance", n * p))
 
 # Combine data frames
 df_combined <- rbind(df_cs, df_ar1, df_block)
@@ -399,37 +408,36 @@ ggplot(df_combined, aes(x = Value, fill = Distribution)) +
   theme_bw() +
   theme(legend.position = "bottom",legend.title=element_blank())
 
-# These implementations should be more efficient than the generic generators by taking 
-# advantage of the specific covariance structures
+# These implementations should be more efficient than the
+# generic generators by taking advantage of the specific
+# covariance structures
+par(mfrow = c(1, 1))
 ```
 
 4. Projective center limit theorem says that the projection of a uniform distribution on the sphere in $\mathbb{R}^n$ of radius
 $\sqrt{n}$ onto a line converges to the standard normal distribution as $n \rightarrow  \infty$. Show some numeric evidence of this theorem.
 
 ```{r fig.height = 3.4, fig.width = 6}
-# Load the StereoMorph library
-library(StereoMorph)
-
 # Function to generate random points on a sphere in n-dimensional space
 generate_sphere_points <- function(N, dm) {
   # Generate random spherical coordinates
   theta <- runif(N, 0, 2 * pi)
   phi <- acos(1 - 2 * runif(N))
-  
+
   # Calculate Cartesian coordinates
   x <- sqrt(dm) * sin(phi) * cos(theta)
   y <- sqrt(dm) * sin(phi) * sin(theta)
   z <- sqrt(dm) * cos(phi)
-  
+
   # Return matrix of points
   return(cbind(x, y, z))
 }
 
 # Number of random points on the sphere
-N <- 1000
+N <- 800
 
-# Dimensionality of the sphere (can be increased for higher dimensions)
-dm <- 100
+# Dimensionality of the sphere
+dm <- 80
 # Generate random points on the sphere
 sphere_points <- generate_sphere_points(N, dm)
 
@@ -448,12 +456,14 @@ scatter3D(sphere_points[, 1], sphere_points[, 2], sphere_points[, 3],
 
 # Plot histogram of projected points and compare with standard normal distribution
 hist(projected_points, freq = FALSE, main = "Linearly Projected Sphere Points",
-     xlab = "Value", ylab = "Density", breaks=30, xlim = c(-5, 5), bty='L')
+     xlab = "Value", ylab = "Density", breaks = 30, xlim = c(-5, 5), bty = "L")
 curve(dnorm(x), add = TRUE, col = "red", lwd = 2, n = N)
-par(xpd=TRUE) # turn off clipping
-legend("top", legend = c("Proj. Pts.", "Std. Norm."), inset=c(1,0),
-       col = c("black", "red"), lwd = c(1, 2), xpd=TRUE, horiz=TRUE, bty="n")
+par(xpd = TRUE) # turn off clipping
+legend("top", legend = c("Proj. Pts.", "Std. Norm."), inset = c(1, 0),
+       col = c("black", "red"), lwd = c(1, 2), xpd = TRUE,
+       horiz = TRUE, bty = "n")
 # par(xpd=FALSE)
+par(mfrow = c(1, 1))
 ```
 
 5. Marcenko-Pastur law. Let $X$ be an n x p random matrix with IID entries of mean 0 and variance

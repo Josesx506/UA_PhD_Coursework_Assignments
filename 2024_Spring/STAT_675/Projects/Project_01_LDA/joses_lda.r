@@ -7,7 +7,7 @@ set.seed(675)
 
 
 # Create plot background
-# plot(NULL, pch=20, xlab='Sepal Length', ylab='Sepal Width', xlim=c(4,8), ylim=c(1.5,4.5))
+plot(NULL, pch=20, xlab='Sepal Length', ylab='Sepal Width', xlim=c(4,8), ylim=c(1.5,4.5))
 
 species <- c("setosa", "versicolor", "virginica")
 species_col <- c("blue", "red", "green")
