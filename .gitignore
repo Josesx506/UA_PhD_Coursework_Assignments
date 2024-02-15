@@ -7,6 +7,10 @@ Geos_590_Fall_2023/.DS_Store
 */*/*.pdf
 */*/*/*.pdf
 */*/*/*/*.pdf
+__pycache__
+*/__pycache__
+*/*/__pycache__
+*/*/*/__pycache__
 2023_Fall_Geos_590/Final_Project/InSAR_Data
 2023_Fall_Geos_590/Final_Project/Figures
 2024_Spring/STAT_675/Assgn_*/Assgn_*.ipynb
