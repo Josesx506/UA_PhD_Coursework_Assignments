@@ -1,0 +1,9 @@
+No.	Trend	Plunge	Longitude	Latitude	Elevation	Units	Day	Month	Year	Notes	Label	Strabo Type	Strabo quality
+0	48	53	0	0	0	m	15	2	2024				0
+1	60	53	0	0	0	m	15	2	2024				0
+2	39	53	0	0	0	m	15	2	2024				0
+3	32	53	0	0	0	m	15	2	2024				0
+4	44	53	0	0	0	m	15	2	2024				0
+5	68	55	0	0	0	m	15	2	2024				0
+6	66	54	0	0	0	m	15	2	2024				0
+7	35	54	0	0	0	m	15	2	2024				0
