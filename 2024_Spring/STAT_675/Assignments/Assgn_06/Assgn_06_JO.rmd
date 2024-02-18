@@ -1,0 +1,388 @@
+---
+title: "Assignment_06_JO"
+subtitle: "Monte Carlo Methods in Inference."
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+set.seed(172)
+# Set options to prevent scientific notation
+options(scipen = 999)
+# knitr::opts_chunk$set(fig.width = 8, fig.height = 12)
+```
+<b>Self-study materials</b>: STAT 675 notes Chapter 5 or DATA 375 notes Chapter 6. Textbook Chapter
+
+1. The density function of exponential distribution Exp($\lambda$) with rate parameter $\lambda$ is.
+$$ 
+f_\lambda(x) = \begin{cases}
+  \lambda e^{-\lambda x,} & x \ge 0; \\
+  0, & \text{otherwise}.
+\end{cases}
+$$
+Let $X_{1},...,X_{n}$ be IID from Exp($\lambda$).
+    (a) What is the method of moments estimator (MME) for $\lambda$?
+    (b) Let $\lambda$ = 2. Estimate the bias of the MME using 1,000 replicates for 
+    $n = 10, 20, 50, 100, 1000$. What is the trend of the estimated bias when we increase the sample size n?
+    (c) For $n = 20$, estimate the bias of the MME using 100 replicates, 1,000 replicates, 10,000 
+    replicates and 100,000 replicates. What is the trend of the estimated bias when we increase the number 
+    of replicates?
+    (d) Do you think the MME is unbiased?
+
+```{r}
+# Define a function to calculate the bias of MME
+calculate_bias <- function(n, lambda, num_replicates) {
+  biases <- numeric(num_replicates)
+  for (i in 1:num_replicates) {
+    sample <- rexp(n, rate = lambda)
+    mme <- 1 / mean(sample)
+    biases[i] <- abs(mme - lambda)
+  }
+  return(mean(biases))
+}
+
+# (b) Estimate the bias for different sample sizes
+lambda <- 2
+sample_sizes <- c(10, 20, 50, 100, 1000)
+biases_sample_sizes <- sapply(sample_sizes, function(n) {
+  calculate_bias(n, lambda, 1000)
+})
+results_df <- data.frame(Sample_Size = sample_sizes, Bias = biases_sample_sizes)
+print(results_df)
+
+# (c) Estimate the bias for different numbers of replicates (n = 20)
+num_replicates <- c(100, 1000, 10000, 100000)
+bias_num_replicates <- sapply(num_replicates, function(rep) {
+  calculate_bias(20, lambda, rep)
+})
+repl_df <- data.frame(Replicates = num_replicates, Bias = bias_num_replicates)
+print(repl_df)
+
+```
+
+2. Let $X_{1},...,X_{n}$ be a random sample from uniform distribution $[0; \theta]$ with density function
+$$ 
+f_(x) = \begin{cases}
+  \frac {1}{\theta}, & 0 \le x \le \theta; \\
+  0, & \text{otherwise}.
+\end{cases}
+$$
+We want to compare two estimators $\hat \theta_{1} = 2 \overline X$ (method of moments estimator) and 
+$\hat \theta_{2} = X_{(n)} = \max \{X_{1},...,X_{n}\}$ (MLE).
+  (a) Is $\hat \theta_{1}$ unbiased? Why? Please provide some theoretical calculation.
+  (b) Is $\hat \theta_{2}$ unbiased? Why? Please provide some theoretical insight (if the calculation is 
+  too complicated for you).
+  (c) Fix $n = 20, \theta = 2$. Generate 1,000 independent replicates of the sample and compare the biases
+  of two estimators numerically.
+  (d) Use the same data as in (c) to compare the variances and MSEs of two estimators numerically.
+  What is your conclusion (which estimator is better in terms of MSE)?
+  (e) Use the same data as in (c), plot densities of two estimators in a single figure.
+  (f) Repeat (e) with different values of $n$, say, $n = 2, 5, 20, 100$.
+  (g) Summarize your findings on the quality of these two estimators.
+
+  *(a) **Bias of $\hat \theta_{1} = 2 \overline X$.**\
+  MME is biased, and we can calculate the bias as follows:
+
+  $$
+  \begin{aligned}
+  E[\hat{\theta}_1] = E[2 \overline{X}] = 2E[\overline{X}] \\
+  2 \int_0^\theta x \cdot \frac{1}{\theta} dx = 2 \cdot \frac{\theta}{2} \\
+  E[\hat{\theta}_1] = 2 \cdot \frac{\theta}{2} = \boxed{\theta}
+  \end{aligned}
+  $$
+
+  *(b) **Bias of $\hat \theta_{2} = X_{(n)}$.**\
+  The bias of $\hat \theta_{2}$ depends on the sample size (n). Small sample sizes are more significantly 
+  biased, however, as n increases, the probability of the maximum sample value being close to the true 
+  $\theta$ becomes higher.
+
+```{r}
+# Function to calculate biases, variances, and MSEs
+calculate_metrics <- function(n, theta, replicates) {
+  biases_theta1 <- numeric(replicates)
+  biases_theta2 <- numeric(replicates)
+  variances_theta1 <- numeric(replicates)
+  variances_theta2 <- numeric(replicates)
+  mses_theta1 <- numeric(replicates)
+  mses_theta2 <- numeric(replicates)
+
+  for (i in 1:replicates) {
+    sample <- runif(n, 0, theta)
+    theta1 <- 2 * mean(sample)
+    theta2 <- max(sample)
+
+    biases_theta1[i] <- abs(theta1 - theta)
+    biases_theta2[i] <- abs(theta2 - theta)
+    variances_theta1[i] <- var(sample) * (2 / n)^2
+    variances_theta2[i] <- (theta^2 / (n + 2)) * (1 - (n - 1) / (n + 1))
+    mses_theta1[i] <- biases_theta1[i]^2 + variances_theta1[i]
+    mses_theta2[i] <- biases_theta2[i]^2 + variances_theta2[i]
+  }
+
+  return(data.frame(
+    Biases_theta1 = biases_theta1,
+    Biases_theta2 = biases_theta2,
+    Variances_theta1 = variances_theta1,
+    Variances_theta2 = variances_theta2,
+    MSEs_theta1 = mses_theta1,
+    MSEs_theta2 = mses_theta2
+  ))
+}
+
+# (c) (d)
+n <- 20
+theta <- 2
+replicates <- 1000
+metrics <- calculate_metrics(n, theta, replicates)
+
+#(c) Compare biases numerically
+bias_data <- matrix(c(mean(metrics$Biases_theta1),
+                      mean(metrics$Biases_theta2)), nrow = 2)
+colnames(bias_data) <- c("Bias")
+rownames(bias_data) <- c("Theta1", "Theta2")
+as.table(bias_data)
+
+#(d) Compare variances and MSEs numerically
+other_data <- matrix(c(mean(metrics$Variances_theta1),
+                       mean(metrics$Variances_theta2),
+                       mean(metrics$MSEs_theta1),
+                       mean(metrics$MSEs_theta2)), nrow = 2, ncol = 2)
+colnames(other_data) <- c("Variance", "MSE")
+rownames(other_data) <- c("Theta1", "Theta2")
+as.table(other_data)
+
+# (e)
+data_plot <- data.frame(
+  Estimator = rep(c("Theta1", "Theta2"), each = replicates),
+  Bias = c(metrics$Biases_theta1, metrics$Biases_theta2)
+)
+ggplot(data_plot, aes(x = Bias, fill = Estimator)) +
+  geom_density(alpha = 0.5) +
+  labs(title = bquote(paste("Biases for ", theta[1], " & ", theta[2],
+                            " (n = ", .(n), ")", sep = ""))) +
+  scale_fill_manual(values = c("Theta1" = "#F8766D", "Theta2" = "#00BFC4"),
+                    labels = c(bquote(theta[1]), bquote(theta[2])))
+
+# (f) Repeat for different sample sizes
+sample_sizes <- c(2, 5, 20, 100)
+results <- list()
+for (n in sample_sizes) {
+  results[[as.character(n)]] <- calculate_metrics(n, theta, replicates)
+}
+
+# Plot densities of biases for different sample sizes
+plot_list <- lapply(seq_along(results), function(n, i) {
+  df <- results[[i]]
+  data_plot <- data.frame(
+    Estimator = rep(c("Theta1", "Theta2"), each = replicates),
+    Bias = c(df$Biases_theta1, df$Biases_theta2),
+    Sample_Size = rep(c(n[[i]], n[[i]]), each = replicates)
+  )
+  ggplot(data_plot, aes(x = Bias, fill = Estimator)) +
+    geom_density(alpha = 0.5) +
+    labs(title = bquote(paste("Biases for ", theta[1], " & ", theta[2],
+                              " (n = ", .(n[[i]]), ")", sep = ""))) +
+    theme_minimal() +
+    theme(legend.position = "right",
+          legend.key.width = unit(0.01, "npc"),
+          legend.key.height = unit(0.02, "npc"),
+          legend.margin = margin(l = 0, r = 0)) +
+    scale_fill_manual(values = c("Theta1" = "#F8766D", "Theta2" = "#00BFC4"),
+                      labels = c(bquote(theta[1]), bquote(theta[2]))) +
+    guides(fill = guide_legend(title = NULL))
+}, n = names(results))
+
+grid.arrange(grobs = plot_list, ncol = 2)
+```
+    *(g) **Summarize findings**\
+      - **MME $\hat \theta_{1}$** is consitently biased by $\frac {\theta} {2}$, regardless of the sample 
+      size.\
+      - **MLE $\hat \theta_{2}$** exhibits varying bias depending on $n$, potentially underestimating 
+      $\theta$ for small $n$ and becoming asymptotically unbiased for large $n$.
+
+3. R function t.test() is helpful to conduct t-test and construct confidence intervals.
+    (a) Generate 1,000 independent random samples from $N(5, 25)$ with sample size $n = 15$. For each
+    sample, find a two-sided 95% confidence interval for the mean using t.test(). What is the
+    average length of the confidence intervals? What is the empirical coverage rate?
+    (b) Check the confident interval in (a) can be recovered by 
+        c(mean(x)-qt(0.975,df=n-1)*sd(x)/sqrt(n), 
+        mean(x)+qt(0.975,df=n-1)*sd(x)/sqrt(n)) 
+    for a data vector x with length n. (Simply generate an x and compare the two confidence intervals. 
+    There might be some small numeric errors.)
+    (c) Replace $N(5, 25)$ to an exponential distribution $Exp(\frac {1} {5})$ and conduct the same 
+    experiment as in (a). What is the empirical coverage rate?
+    (d) Repeat (c) for $n = 100$. What is the empirical coverage rate? When will you recommend using
+    t.test() to construct confidence intervals if the data is not from normal distribution?
+
+```{r}
+# (a)
+n <- 15
+samples <- replicate(1000, rnorm(n, mean = 5, sd = 5))
+conf_intervals <- apply(samples, 2, function(x) t.test(x)$conf.int)
+avg_length <- mean(diff(t(conf_intervals)))
+coverage_rate <- mean(apply(samples, 2, function(x) {
+  true_mean <- mean(x)
+  true_mean >= conf_intervals[1,] & true_mean <= conf_intervals[2, ]
+}))
+
+cat("Average length of confidence intervals:", avg_length, "\n")
+cat("Empirical coverage rate:", coverage_rate, "\n")
+
+# (b)
+x <- rnorm(n, mean = 5, sd = 5)
+manual_ci <- c(mean(x) - qt(0.975, df = n - 1) *
+                 sd(x) / sqrt(n), mean(x) + qt(0.975, df = n - 1)
+               * sd(x) / sqrt(n))
+manual_ci
+t.test_ci <- t.test(x)$conf.int
+t.test_ci
+
+# (c)
+samples_exp <- replicate(1000, rexp(n, rate = 1/5))
+conf_intervals_exp <- apply(samples_exp, 2, function(x) t.test(x)$conf.int)
+coverage_rate_exp <- mean(apply(samples_exp, 2, function(x) {
+  true_mean <- mean(x)
+  true_mean >= conf_intervals_exp[1,] & true_mean <= conf_intervals_exp[2, ]
+}))
+cat("Empirical coverage rate (exponential distribution):",
+    coverage_rate_exp, "\n")
+
+# (d)
+n <- 100
+samples_exp_large <- replicate(1000, rexp(n, rate = 1 / 5))
+conf_intervals_exp_large <- apply(samples_exp_large,
+                                  2, function(x) t.test(x)$conf.int)
+coverage_rate_exp_large <- mean(apply(samples_exp_large, 2, function(x) {
+  true_mean <- mean(x)
+  true_mean >= conf_intervals_exp_large[1, ] &
+    true_mean <= conf_intervals_exp_large[2, ]
+}))
+cat("Empirical coverage rate (exponential distribution, n = 100):",
+    coverage_rate_exp_large, "\n")
+```
+
+4. Suppose that we want to test $H_{0} : \mu = 2$ versus $H_{1} : \mu > 2$ based on a random sample 
+$X_{1},...,X_{n}$, where $\mu = EX_{1}$. For simplicity, we assume that $X_{1} \sim N(\mu, 1)$. 
+Then the test statistic is $Z =\sqrt{n}(\overline X - 2)$.
+    (a) If we reject $H_{0}$ when $\overline X > 2.5$, use simulation based on 1,000 replicates to find 
+    type I errors for $n = 5, 10, 50, and 100$.
+    (b) If we reject $H_{0}$ when $Z > 1.645$, use simulation based on 1,000 replicates to find type I 
+    errors for $n = 5, 10, 50, and 100$.
+    (c) Let $n = 20$, use simulation based on 1,000 replicates to draw the power curve for a test with
+    significant level 5%.
+    (d) Let $\mu = 2.1$, use simulation based on 1,000 replicates to draw a plot for power versus sample 
+    size for a test with significant level 5%. Based on the power curve, approximate the sample size such
+    that the power can achieve 99%.
+
+```{r}
+# Function to calculate test statistic Z
+calculate_z <- function(sample_mean, n) {
+  sqrt(n) * (sample_mean - 2)
+}
+
+# Function to perform hypothesis test and calculate type I error rate
+hypot_test <- function(mu, n, threshold) {
+  sample_means <- replicate(1000, mean(rnorm(n, mean = mu, sd = 1)))
+  rejections <- sample_means > threshold
+  return(mean(rejections))
+}
+
+# (a) Type I error rates for different sample sizes using sample mean criterion
+cat("Type I error rates using sample mean criterion:\n")
+for (n in c(5, 10, 50, 100)) {
+  type_I_error_rate <- hypot_test(mu = 2, n = n, threshold = 2.5)
+  cat("Sample size:", n, "| Type I error rate:", type_I_error_rate, "\n")
+}
+
+# (b) Type I error rates for different sample sizes using test statistic Z criterion
+cat("\nType I error rates using test statistic Z criterion:\n")
+for (n in c(5, 10, 50, 100)) {
+  type_I_error_rate <- hypot_test(mu = 2, n = n, threshold = qnorm(0.95))
+  cat("Sample size:", n, "| Type I error rate:", type_I_error_rate, "\n")
+}
+
+# (c) Power curve for sample size 20
+power_curve <- numeric()
+for (mu in seq(2, 2.5, by = 0.01)) {
+  type_II_error_rate <- 1 - hypot_test(mu = mu,
+                                                    n = 20,
+                                                    threshold = qnorm(0.95))
+  power_curve <- c(power_curve, 1 - type_II_error_rate)
+}
+plot(seq(2, 2.5, by = 0.01), power_curve, type = "l",
+     xlab = "True mean (mu)", ylab = "Power",
+     main = "Power curve for sample size 20")
+
+# (d) Power versus sample size for achieving 99% power
+power <- numeric()
+sample_sizes <- seq(5, 200, by = 5)
+for (n in sample_sizes) {
+  type_II_error_rate <- 1 - hypot_test(mu = 2.1,
+                                                    n = n,
+                                                    threshold = qnorm(0.95))
+  power <- c(power, 1 - type_II_error_rate)
+}
+plot(sample_sizes, power, type = "l", xlab = "Sample Size",
+     ylab = "Power", main = "Power vs Sample Size for 99% Power")
+abline(h = 0.99, col = "red", lty = 2)
+```
+
+5. Let $X_{1},...,X_{n}$ be a random sample from uniform distribution $[0; \theta]$ with density function
+$$ 
+f_(x) = \begin{cases}
+  \frac {1}{\theta}, & 0 \le x \le \theta; \\
+  0, & \text{otherwise}.
+\end{cases}
+$$
+We want to test 
+$$
+H_{0} : \theta = 5 \text{ versus } H_{1} : \theta > 5
+$$ 
+using the order statistic $\hat \theta_{n} = X_{(n)} = \max \{X_{1},...,X_{n}\}$
+    (a) If we reject $H_{0}$ when $\hat \theta_{n} > 4.95$, conduct a simulation study based on 1,000 
+    replicates to estimate the type I errors for $n$ = 5, 40, and 100.
+    (b) If we reject $H_{0}$ when $\hat \theta_{n} > 5 x (0.95)^{\frac {1} {n}}$, conduct a simulation study 
+    based on 1,000 replicates to estimate the type I errors for $n$ = 5, 40, and 100.
+    (c) Fix $n$ = 40, and consider the decision rule that rejects $H_{0}$ when 
+    $\hat \theta_{n} > 5 x (0.95)^{\frac {1} {n}}$ . Use simulation based on 1,000 replicates to draw the 
+    power curve on $\theta \in [5, 6]$.
+
+```{r}
+# Function to perform hypothesis test and calculate type I error rate
+hypot_test <- function(theta, n, threshold) {
+  max_values <- replicate(1000, max(runif(n, min = 0, max = theta)))
+  rejections <- max_values > threshold
+  return(mean(rejections))
+}
+
+# (a) Type I error rates for different sample sizes using threshold 4.95
+cat("Type I error rates for threshold 4.95:\n")
+for (n in c(5, 40, 100)) {
+  type_I_error_rate <- hypot_test(theta = 5, n = n, threshold = 4.95)
+  cat("Sample size:", n, "| Type I error rate:", type_I_error_rate, "\n")
+}
+
+# (b) Type I error rates for different sample sizes using threshold 5 * (0.95)^(1/n)
+cat("\nType I error rates for threshold 5 * (0.95)^(1/n):\n")
+for (n in c(5, 40, 100)) {
+  threshold <- 5 * (0.95)^(1 / n)
+  type_I_error_rate <- hypot_test(theta = 5, n = n, threshold = threshold)
+  cat("Sample size:", n, "| Type I error rate:", type_I_error_rate, "\n")
+}
+
+# (c) Power curve for sample size 40
+theta_values <- seq(5, 6, by = 0.01)
+power_curve <- numeric()
+for (theta in theta_values) {
+  threshold <- 5 * (0.95)^(1 / 40)
+  type_II_error_rate <- 1 - hypot_test(theta = theta,
+                                       n = 40, threshold = threshold)
+  power_curve <- c(power_curve, 1 - type_II_error_rate)
+}
+plot(theta_values, power_curve, type = "l", xlab = "Theta",
+     ylab = "Power", main = "Power curve for sample size 40")
+```
