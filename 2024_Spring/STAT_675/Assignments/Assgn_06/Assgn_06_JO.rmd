@@ -33,6 +33,7 @@ Let $X_{1},...,X_{n}$ be IID from Exp($\lambda$).
     of replicates?
     (d) Do you think the MME is unbiased?
 
+    **(a) $MME (\hat \lambda) = \frac {1} {mean(x)}$
 ```{r}
 # Define a function to calculate the bias of MME
 calculate_bias <- function(n, lambda, num_replicates) {
@@ -62,6 +63,8 @@ bias_num_replicates <- sapply(num_replicates, function(rep) {
 repl_df <- data.frame(Replicates = num_replicates, Bias = bias_num_replicates)
 print(repl_df)
 
+# (d) 
+print("The bias is almost the same irrespective of the replicates")
 ```
 
 2. Let $X_{1},...,X_{n}$ be a random sample from uniform distribution $[0; \theta]$ with density function
@@ -109,12 +112,16 @@ calculate_metrics <- function(n, theta, replicates) {
   variances_theta2 <- numeric(replicates)
   mses_theta1 <- numeric(replicates)
   mses_theta2 <- numeric(replicates)
+  mme_theta1 <- numeric(replicates)
+  mle_theta2 <- numeric(replicates)
 
   for (i in 1:replicates) {
     sample <- runif(n, 0, theta)
     theta1 <- 2 * mean(sample)
     theta2 <- max(sample)
 
+    mme_theta1[i] <- theta1
+    mle_theta2[i] <- theta2
     biases_theta1[i] <- abs(theta1 - theta)
     biases_theta2[i] <- abs(theta2 - theta)
     variances_theta1[i] <- var(sample) * (2 / n)^2
@@ -124,6 +131,8 @@ calculate_metrics <- function(n, theta, replicates) {
   }
 
   return(data.frame(
+    mme = mme_theta1,
+    mle = mle_theta2,
     Biases_theta1 = biases_theta1,
     Biases_theta2 = biases_theta2,
     Variances_theta1 = variances_theta1,
@@ -158,11 +167,11 @@ as.table(other_data)
 # (e)
 data_plot <- data.frame(
   Estimator = rep(c("Theta1", "Theta2"), each = replicates),
-  Bias = c(metrics$Biases_theta1, metrics$Biases_theta2)
+  Value = c(metrics$mme, metrics$mle)
 )
-ggplot(data_plot, aes(x = Bias, fill = Estimator)) +
+ggplot(data_plot, aes(x = Value, fill = Estimator)) +
   geom_density(alpha = 0.5) +
-  labs(title = bquote(paste("Biases for ", theta[1], " & ", theta[2],
+  labs(title = bquote(paste("Densities for ", theta[1], " & ", theta[2],
                             " (n = ", .(n), ")", sep = ""))) +
   scale_fill_manual(values = c("Theta1" = "#F8766D", "Theta2" = "#00BFC4"),
                     labels = c(bquote(theta[1]), bquote(theta[2])))
@@ -179,12 +188,12 @@ plot_list <- lapply(seq_along(results), function(n, i) {
   df <- results[[i]]
   data_plot <- data.frame(
     Estimator = rep(c("Theta1", "Theta2"), each = replicates),
-    Bias = c(df$Biases_theta1, df$Biases_theta2),
+    Value = c(df$mme, df$mle),
     Sample_Size = rep(c(n[[i]], n[[i]]), each = replicates)
   )
-  ggplot(data_plot, aes(x = Bias, fill = Estimator)) +
+  ggplot(data_plot, aes(x = Value, fill = Estimator)) +
     geom_density(alpha = 0.5) +
-    labs(title = bquote(paste("Biases for ", theta[1], " & ", theta[2],
+    labs(title = bquote(paste("Densities for ", theta[1], " & ", theta[2],
                               " (n = ", .(n[[i]]), ")", sep = ""))) +
     theme_minimal() +
     theme(legend.position = "right",
@@ -221,32 +230,34 @@ grid.arrange(grobs = plot_list, ncol = 2)
 ```{r}
 # (a)
 n <- 15
-samples <- replicate(1000, rnorm(n, mean = 5, sd = 5))
+samples <- replicate(1000, rnorm(n, mean = 5, sd = 25))
 conf_intervals <- apply(samples, 2, function(x) t.test(x)$conf.int)
-avg_length <- mean(diff(t(conf_intervals)))
+avg_length <- mean(apply(conf_intervals, 2, diff))
+
+# Calculate average length and empirical coverage rate
 coverage_rate <- mean(apply(samples, 2, function(x) {
   true_mean <- mean(x)
-  true_mean >= conf_intervals[1,] & true_mean <= conf_intervals[2, ]
+  true_mean >= conf_intervals[1, ] & true_mean <= conf_intervals[2, ]
 }))
 
 cat("Average length of confidence intervals:", avg_length, "\n")
 cat("Empirical coverage rate:", coverage_rate, "\n")
 
-# (b)
-x <- rnorm(n, mean = 5, sd = 5)
+# (b) Normal distribution
+x <- rnorm(n, mean = 5, sd = 25)
 manual_ci <- c(mean(x) - qt(0.975, df = n - 1) *
                  sd(x) / sqrt(n), mean(x) + qt(0.975, df = n - 1)
                * sd(x) / sqrt(n))
-manual_ci
+cat("The manual conf. int. are", manual_ci, "\n")
 t.test_ci <- t.test(x)$conf.int
-t.test_ci
+cat("The t-test conf. int. are", t.test_ci, "\n")
 
-# (c)
-samples_exp <- replicate(1000, rexp(n, rate = 1/5))
+# (c) Exponential Distribution
+samples_exp <- replicate(1000, rexp(n, rate = 1 / 5))
 conf_intervals_exp <- apply(samples_exp, 2, function(x) t.test(x)$conf.int)
 coverage_rate_exp <- mean(apply(samples_exp, 2, function(x) {
   true_mean <- mean(x)
-  true_mean >= conf_intervals_exp[1,] & true_mean <= conf_intervals_exp[2, ]
+  true_mean >= conf_intervals_exp[1, ] & true_mean <= conf_intervals_exp[2, ]
 }))
 cat("Empirical coverage rate (exponential distribution):",
     coverage_rate_exp, "\n")
@@ -308,9 +319,8 @@ for (n in c(5, 10, 50, 100)) {
 # (c) Power curve for sample size 20
 power_curve <- numeric()
 for (mu in seq(2, 2.5, by = 0.01)) {
-  type_II_error_rate <- 1 - hypot_test(mu = mu,
-                                                    n = 20,
-                                                    threshold = qnorm(0.95))
+  type_II_error_rate <- 1 - hypot_test(mu = mu, n = 20,
+                                       threshold = qnorm(0.95))
   power_curve <- c(power_curve, 1 - type_II_error_rate)
 }
 plot(seq(2, 2.5, by = 0.01), power_curve, type = "l",
@@ -321,9 +331,8 @@ plot(seq(2, 2.5, by = 0.01), power_curve, type = "l",
 power <- numeric()
 sample_sizes <- seq(5, 200, by = 5)
 for (n in sample_sizes) {
-  type_II_error_rate <- 1 - hypot_test(mu = 2.1,
-                                                    n = n,
-                                                    threshold = qnorm(0.95))
+  type_II_error_rate <- 1 - hypot_test(mu = 2.1, n = n,
+                                       threshold = qnorm(0.95))
   power <- c(power, 1 - type_II_error_rate)
 }
 plot(sample_sizes, power, type = "l", xlab = "Sample Size",
