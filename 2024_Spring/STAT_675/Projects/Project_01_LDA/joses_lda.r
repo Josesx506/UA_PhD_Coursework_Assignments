@@ -74,6 +74,7 @@ within_between_scatter <- function(X, groups) {
   mean_ovr <- colMeans(X, na.rm = TRUE)          # Mean of all features
   s_w <- matrix(0, nrow = n_feat, ncol = n_feat) # within-class matrix
   s_b <- matrix(0, nrow = n_feat, ncol = n_feat) # Between class matrix
+  # s_b2 <- list()
 
   for (c in unique(groups)) {
     class_indices <- which(groups == c)
@@ -83,17 +84,25 @@ within_between_scatter <- function(X, groups) {
     # ----------------------------- Within Groups -----------------------------
     # Subtract each feature for unique classes from the class mean
     # Add the dot product of the transposed subtraction
-    mean_sub <- t(x_c - x_c_mn) %*% (x_c - x_c_mn)
-    s_w <- s_w + mean_sub                          # Update s_w
+    mean_sub <- x_c - x_c_mn
+    dot_prod_mean_sub <- t(mean_sub) %*% mean_sub
+    s_w <- s_w + dot_prod_mean_sub                 # Update s_w
 
     # ----------------------------- Between Groups -----------------------------
     n_c <- nrow(x_c)                               # Num samples per class
     # Subtract each class mean from the overall mean
     # Reshape class mean - overall mean
+    # mean_diff <- x_c_mn - mean_ovr
+    # diff_sub <- n_c * outer(mean_diff, mean_diff)
+    # s_b2[[c]] <- diff_sub
     mean_diff <- matrix((x_c_mn - mean_ovr), ncol = 1, nrow = n_feat)
-    diff_sub <- n_c * mean_diff %*% t(mean_diff)
+    diff_sub <- n_c * (mean_diff %*% t(mean_diff))
     s_b <- s_b + diff_sub                          # Update s_b
   }
+
+  # s_b2 <- Reduce(`+`, s_b2)
+  # print(s_b2)
+  # print(s_b)
 
   return(list(s_w = s_w,
               s_b = s_b))
@@ -108,49 +117,6 @@ lda_fit <- function(model, X, groups) {
   # Extract number of components and dimensions
   n_components <- model$n_components
 
-  # ------------------------------------------------------------------------------
-  # # Compute class means
-  # means_k <- lapply(unique(groups), function(x) {
-  #   x_cls <- X[groups == x, ]
-  #   colMeans(x_cls)
-  # })
-
-  # # Compute within-class scatter matrices (Sks)
-  # Sks <- lapply(unique(groups), function(i) {
-  #   x_cls <- X[groups == i, ]
-  #   sub <- t(x_cls) - means_k[[i]]
-  #   (t(sub) %*% sub)
-  # })
-  # Sks_concatenated <- do.call(rbind, Sks)
-  # Sw <- Reduce(`+`, Sks_concatenated) # Total within-class scatter matrix
-  # print(Sw)
-
-  # # Compute class priors
-  # Nk <- sapply(X, nrow)
-  # N <- sum(Nk)
-
-  # # Compute total mean
-  # sum_ <- Reduce(`+`, lapply(X, colSums))
-  # m <- sum_ / N
-
-  # # Compute between-class scatter matrix (SB)
-  # SB <- lapply(unique(groups), function(i) {
-  #   sub_ <- means_k[[i]] - m
-  #   Nk[i] * tcrossprod(sub_)
-  # })
-  # SB <- Reduce(`+`, SB)
-
-  # # Solve the generalized eigenvalue problem
-  # matrix <- solve(Sw) %*% SB
-  # eigen_decomp <- eigen(matrix)
-
-  # # Sort eigenvalues and eigenvectors
-  # idx <- order(eigen_decomp$values, decreasing = TRUE)
-  # sorted_eig_values <- eigen_decomp$values[idx]
-  # sorted_eig_vectors <- eigen_decomp$vectors[, idx]
-  # print(sorted_eig_vectors[, 1:n_components])
-  # ------------------------------------------------------------------------------
-
   # Calculate the covariance matrices
   cv_mtx <- within_between_scatter(X, groups)
   s_w <- cv_mtx$s_w    # Extract within-class scatter matrix
@@ -159,13 +125,13 @@ lda_fit <- function(model, X, groups) {
   # Solve the generalized eigenvalue problem -
   # np.linalg.eig(np.linalg.inv(s_w).dot(s_b))
   eigen_decomp <- eigen(solve(s_w) %*% s_b)
-  eig_vec <- t(eigen_decomp$vectors)           # Eigenvectors
-  eig_val <- eigen_decomp$values               # Eigenvalues
+  eig_vec <- eigen_decomp$vectors           # Eigenvectors
+  eig_val <- eigen_decomp$values            # Eigenvalues
   # Get indices of reverse sorted abs eigenvalues
-  idxs <- order(abs(eig_val), decreasing = TRUE)  # rev(order(abs(eig_val)))
+  idxs <- order(eig_val, decreasing = TRUE)
   # Sort the eigen values and vectors using the derived indices
   eig_val <- eig_val[idxs]
-  eig_vec <- eig_vec[idxs, ]
+  eig_vec <- eig_vec[, idxs]
   # Extract the biggest eigenvectors depending on num LDA components
   discriminant_vectors <- eig_vec[1:n_components, ]
 
@@ -178,10 +144,7 @@ lda_fit <- function(model, X, groups) {
   cls_covrs <- lapply(unique(groups), function(g) {
     x_cls <- X[groups == g, ]
     x_proj <- x_cls %*% t(discriminant_vectors)
-    print(s_w)
-    print(s_b)
-    print(discriminant_vectors)
-    cov(x_proj)
+    cov(abs(x_proj))
   })
   # cls_mlhbd <- lapply(unique(groups), function(g) {
   #   x_cls <- X[groups == g, ]
@@ -335,11 +298,16 @@ for (i in 1:n_tests) {
   x_test <- split_data$x_test
   y_test <- split_data$y_test
 
+  x_train_scaled <- scale(x_train)
+  x_test_scaled <- scale(x_test,
+    center = attr(x_train_scaled, "scaled:center"),
+    scale = attr(x_train_scaled, "scaled:scale"))
+
   # Create and fit LDA model
   lda_model <- LDA(n_components = 2)
-  lda_model <- lda_fit(lda_model, x_train, y_train)
+  lda_model <- lda_fit(lda_model, x_train_scaled, y_train)
   # Can return class probabilities or predicted classes
-  y_pred <- lda_predict(lda_model, x_test, proba = FALSE)
+  y_pred <- lda_predict(lda_model, x_test_scaled, proba = FALSE)
   # Convert the encoded labels back to species names for reference (if needed)
   rnmd_pred <- species_labels[y_pred]
 
@@ -349,12 +317,6 @@ for (i in 1:n_tests) {
   mass_model <- lda(y_train ~ ., data = train_data, prior = c(1, 1, 1) / 3)
   pred_class <- predict(mass_model, newdata = test_data)$class
 
-  conf_matrix <- table(rnmd_pred, y_test)
-  rownames(conf_matrix) <- species_labels
-  colnames(conf_matrix) <- species_labels
-  cat("\n######### The Manual LDA prediction confusion matrix #########\n",
-      i, "\n")
-  print(conf_matrix)
   # Average misclassfication error
   cust_mis_err[i] <- mean(rnmd_pred != y_test)
   mass_mis_err[i] <- mean(pred_class != y_test)
@@ -372,7 +334,7 @@ cat("The misclassification standard error for the MASS lda is", mass_se, "\n")
 
 #################################### Load large dataset ####################################
 data('sorlie', package = 'datamicroarray')   # Breast Cancer Dataset
-alon_df <- as.data.frame(alon)
+# alon_df <- as.data.frame(alon)
 
 
 #################################### Large Class Test ####################################
