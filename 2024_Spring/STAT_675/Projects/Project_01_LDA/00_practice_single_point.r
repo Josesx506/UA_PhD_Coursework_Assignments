@@ -3,12 +3,12 @@ library(MASS)
 
 
 # Create plot background
-# plot(NULL, pch=20, xlab='Sepal Length', ylab='Sepal Width', xlim=c(4,8), ylim=c(1.5,4.5))
+plot(NULL, pch=20, xlab='Sepal Length', ylab='Sepal Width', xlim=c(4,8), ylim=c(1.5,4.5))
 
 species <- c("setosa", "versicolor", "virginica")
 species_col <- c("blue", "red", "green")
 names(species_col) <- species
-# legend("topright", species, pch = 20, col = species_col)
+legend("topright", species, pch = 20, col = species_col)
 
 ellipse <- function(s, t) {
   u <- c(s, t) - center
@@ -16,7 +16,7 @@ ellipse <- function(s, t) {
 }
 
 
-#################################### SINGLE TEST POINT ANALYSIS ####################################
+#################################### SINGLE TEST POINT ANALYSIS #############
 x0 <- c(6.2, 4)       # Test selection point
 f0 <- rep(NA, 3)      # Function likelihood
 names(f0) <- species
@@ -53,4 +53,4 @@ names(prior.prob) <- species      # Add column names for each class
 Bayes.prob <- f0 * prior.prob / sum(f0 * prior.prob) # Compute Bayes prob
 Bayes.prob <- round(Bayes.prob, 3)            # Round off Bayes prob per class
 # The point belongs to the class with the highest probability
-#########################################################################################################
+##############################################################################
