@@ -323,3 +323,23 @@ mass_se <- round(sd(mass_mis_err) / sqrt(n_tests), 4)
 cat("The misclassification standard error for the custom lda is", cust_se, "\n")
 cat("The misclassification standard error for the MASS lda is", mass_se, "\n")
 ################################################################################
+
+
+library(datamicroarray)
+set.seed(675)
+options(scipen = 5)
+
+# Load the chris dataset. 217 rows, 3 classes, 1413 features
+data("golub", package = "datamicroarray")
+glb <- data.frame(golub$x)
+glb$Sp <- golub$y
+
+library(dplyr)
+
+# Group by the "group" column and count the occurrences of each group
+count_df <- glb %>% 
+  group_by(Sp) %>% 
+  summarise(count = n())
+
+# View the resulting dataframe
+print(count_df)

@@ -9,7 +9,7 @@ library(datamicroarray)
 set.seed(675)
 options(scipen = 5)
 
-# Load the chris dataset. 217 rows, 3 classes, 1413 features
+# Load the golub dataset. 72 rows, 2 classes, 7130 features
 data("golub", package = "datamicroarray")
 glb <- data.frame(golub$x)
 glb$Sp <- golub$y
@@ -26,11 +26,11 @@ y_test <- split_data$y_test
 
 
 # Create and fit LDA model
-lda_model <- ldajo(ncomp = 2)
-lda_model <- ldajo_fit(lda_model, x_train, y_train)
-y_pred <- lda_predict(lda_model, x_test, proba = FALSE)
-conf_matrix <- table(y_pred, y_test)
-print(conf_matrix)
+# lda_model <- ldajo(ncomp = 2)
+# lda_model <- ldajo_fit(lda_model, x_train, y_train)
+# y_pred <- lda_predict(lda_model, x_test, proba = FALSE)
+# conf_matrix <- table(y_pred, y_test)
+# print(conf_matrix)
 
 train_data <- data.frame(x_train, y_train)
 test_data <- data.frame(x_test, y_test)

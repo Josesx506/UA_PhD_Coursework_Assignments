@@ -1,22 +1,24 @@
-# Set the working directory to the script directory
+# BiocManager::install("mlbench")
 script_dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(script_dir)
 source("01_cust_lda.r")
 
+# Load libraries
 library(cowplot)
 library(ggplot2)
 library(MASS)
+library(mlbench)
 set.seed(675)
 
-
-####################### IRIS Dataset #######################
-iris <- data.frame(rbind(iris3[, , 1], iris3[, , 3], iris3[, , 2]),
-                   Sp = rep(c("setosa", "virginica", "versicolor"), rep(50, 3)))
-
+# Load dataset
+data("PimaIndiansDiabetes")
+classic <- PimaIndiansDiabetes
+# Rename the label column to Sp
+names(classic)[names(classic) == "diabetes"] <- "Sp"
 
 ###################### Test the model on one realization #######################
 # Split data into training and test sets
-split_data <- train_test_split(iris, train_size = 0.67)
+split_data <- train_test_split(classic, train_cols = 8, train_size = 0.90)
 # Extract the results
 x_train <- split_data$x_train
 y_train <- split_data$y_train
@@ -41,7 +43,7 @@ print(conf_matrix)
 ########################## Compare MASS LDA ##########################
 train_data <- data.frame(x_train, y_train)
 test_data <- data.frame(x_test, y_test)
-mass_model <- lda(y_train ~ ., data = train_data, prior = rep(1, 3) / 3)
+mass_model <- lda(y_train ~ ., data = train_data, prior = c(1, 1) / 2)
 pred_class <- predict(mass_model, newdata = test_data)$class
 mass_result <- cbind.data.frame(pred_class, Actual_class = y_test)
 cfm_mass <- table(mass_result)
@@ -58,7 +60,7 @@ mass_mis_err  <- numeric((n_tests))
 
 for (i in 1:n_tests) {
   # Split data into training and test sets
-  split_data <- train_test_split(iris, train_size = 0.67)
+  split_data <- train_test_split(classic, train_cols = 8, train_size = 0.85)
 
   # Extract the training data
   x_train <- split_data$x_train
@@ -79,7 +81,7 @@ for (i in 1:n_tests) {
   # Create and fit the mass model data
   train_data <- data.frame(x_train, y_train)
   test_data <- data.frame(x_test, y_test)
-  mass_model <- lda(y_train ~ ., data = train_data, prior = c(1, 1, 1) / 3)
+  mass_model <- lda(y_train ~ ., data = train_data, prior = c(1, 1) / 2)
   pred_class <- predict(mass_model, newdata = test_data)$class
 
   # Average misclassfication error
@@ -132,5 +134,5 @@ combined_plot <- plot_grid(plot, plot2, labels = c("A", "B"), ncol = 2)
 
 
 # Save the plot
-ggsave("hist_plot_iris.png", combined_plot, width = 10, height = 6, dpi = 300)
+ggsave("hist_plt_classic.png", combined_plot, width = 10, height = 6, dpi = 300)
 ################################################################################
