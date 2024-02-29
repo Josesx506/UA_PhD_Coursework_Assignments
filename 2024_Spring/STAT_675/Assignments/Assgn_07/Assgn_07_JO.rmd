@@ -255,6 +255,95 @@ print(se_law)
     (c) Redo (b) for $n = 256$.
 
 ```{r}
+# Function to generate random samples from a standard normal distribution
+gen_nor_smp <- function(n, repl) {
+  replicate(repl, rnorm(n))
+}
+
+# Function to generate random samples from a standard exponential distribution
+gen_exp_smp <- function(n, repl) {
+  replicate(repl, rexp(n))
+}
+
+# Function to calculate z-score with known variance
+zscore_known_var <- function(data) {
+  n <- length(data)
+  lower <- mean(data) - 1.96 * 1 / sqrt(n)
+  upper <- mean(data) + 1.96 * 1 / sqrt(n)
+  return(c(lower, upper))
+}
+
+# Function to calculate z-score with unknown variance
+zscore_unkwn_var <- function(data) {
+  n <- length(data)
+  lower <- mean(data) - 1.96 * sd(data) / sqrt(n)
+  upper <- mean(data) + 1.96 * sd(data) / sqrt(n)
+  return(c(lower, upper))
+}
+
+tscore <- function(data, alpha = 0.05) {
+  n <- length(data)
+  dof <- n - 1 # Degree of freedom
+  t <- qt(1 - alpha / 2, df = dof)
+  margin_of_error <- t * sd(data) / sqrt(n)
+  lower <- mean(data) - margin_of_error
+  upper <- mean(data) + margin_of_error
+  return(c(lower, upper))
+}
+
+# Function to perform bootstrap
+bootstrap_f <- function(data, alpha = 0.05) {
+  n <- length(data)
+  bts_est <- replicate(1000, mean(sample(data, n, replace = TRUE)))
+  quantile(bts_est, c(alpha / 2, 1 - alpha / 2))
+}
+
+# Calculate coverage probability and average length of confidence intervals
+calculate_metrics <- function(intvls, true_mean) {
+  cvg_prob <- mean(intvls[, 1] <= true_mean & intvls[, 2] >= true_mean)
+  avg_length <- mean(intvls[, 2] - intvls[, 1])
+  return(c(cvg_prob, avg_length))
+}
+
+# Function to run the simulation
+n_repl <- 100
+run_simulation <- function(distr, n, repli = n_repl, alpha = 0.05) {
+  intervals <- array(NA, dim = c(4, repli, 2))
+  # True mean for standard normal and exponential distributions
+  true_mean <- ifelse(distr == "normal", 0, 1)
+
+  for (i in 1:repli) {
+    smp <- if (distr == "normal") {
+      gen_nor_smp(n, 1)
+    } else {
+      gen_exp_smp(n, 1)
+    }
+    intervals[, i, ] <- rbind(zscore_known_var(smp),
+                              zscore_unkwn_var(smp),
+                              tscore(smp, alpha),
+                              bootstrap_f(smp, alpha))
+  }
+  metrics <- apply(intervals, 1, calculate_metrics, true_mean = true_mean)
+  rownames(metrics) <- c("Coverage Prob.", "Avg. Length")
+  colnames(metrics) <- c("Z-score (Known Var)", "Z-score (Unknown Var)",
+                         "T-score", "Bootstrap")
+  return(metrics)
+}
+
+# Run simulation for standard normal distribution with n = 16
+sim_rst_nor_n16 <- run_simulation("normal", n = 16)
+# "Standard Normal Distribution (n = 16):"
+print(sim_rst_nor_n16)
+
+# Run simulation for standard exponential distribution with n = 16
+sim_rst_exp_n16 <- run_simulation("exponential", n = 16)
+# "Standard Exponential Distribution (n = 16):"
+print(sim_rst_exp_n16)
+
+# Run simulation for standard exponential distribution with n = 256
+sim_rst_exp_n256 <- run_simulation("exponential", n = 256)
+# "Standard Exponential Distribution (n = 256):"
+print(sim_rst_exp_n256)
 ```
 
 5. The data set *PlantGrowth* contains weights of plants grown under control and two different treatment
