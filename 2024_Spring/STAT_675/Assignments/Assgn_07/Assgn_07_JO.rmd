@@ -1,0 +1,385 @@
+---
+title: "Assignment_07_JO"
+subtitle: "Bootstrap and Other Resampling Methods."
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+```{r}
+library(bootstrap)
+library(boot)
+library(ggplot2)
+library(gridExtra)
+library(MASS)
+set.seed(1)
+```
+**Self-study materials**: STAT 675 notes Chapter 9; Textbook Chapters 7 and 8; Computer Age Statistical
+Inference Chapters 10 and 11. Please make sure that all results are reproducible.
+
+1. Let $X_1, ..., X_n$ be IID from $N(0, 1)$. We know $\overline{X} ~ N(0, \frac {1} {n})$. In particular, 
+$\overline {X}$ is an unbiased estimator to the mean parameter with standard deviation $\frac {1} {\sqrt {n}}$. 
+In the following questions, use bootstrap and Jackknife methods to access the quality of sample mean as 
+an estimator to the population mean.
+    (a) Generate a random sample by set.seed(1); x <- rnorm(16). Use bootstrap method (say, 1,000
+    bootstrap samples) to estimate bias and standard deviation of the sample mean.
+    (b) Generate a random sample by set.seed(1); x <- rnorm(16). Use Jackknife method to estimate
+    bias and standard deviation of the sample mean.
+    (c) Repeat (a) 100 times with 100 independent repl of random samples. Do you think the
+    bootstrap method works in this case?
+    (d) Does bootstrap do a better job with a larger n, say n = 256?
+    (e) Repeat (c) and (d) using standard exponential distribution instead of normal.
+```{r}
+# Function to calculate sample mean
+sample_mean <- function(x) {
+  return(mean(x))
+}
+
+# Function to perform bootstrap
+bootstrap <- function(x, B) {
+  n <- length(x)
+  boot_means <- numeric(B)
+  for (i in 1:B) {
+    boot_sample <- sample(x, size = n, replace = TRUE)
+    boot_means[i] <- sample_mean(boot_sample)
+  }
+  bias <- mean(boot_means) - mean(x)
+  standard_deviation <- sd(boot_means)
+  return(c(bias, standard_deviation))
+}
+
+# Function to perform Jackknife
+jackknife <- function(x) {
+  n <- length(x)
+  jck_est <- numeric(n)
+  for (i in 1:n) {
+    jck_est[i] <- mean(x[-i])
+  }
+  bias <- mean(jck_est) - mean(x)
+  standard_deviation <- sqrt((n - 1) / n * sum((jck_est - mean(jck_est))^2))
+  return(c(bias, standard_deviation))
+}
+
+# (a) Bootstrap method
+x <- rnorm(16)
+btstp_rst <- bootstrap(x, 1000)
+
+# (b) Jackknife method
+jck_rst <- jackknife(x)
+
+# (c) Bootstrap method 100 times
+btstp_rsts <- replicate(100, {
+  x <- rnorm(16)
+  bootstrap(x, 1000)
+})
+mean_bias <- mean(btstp_rsts[1, ])
+mean_stdv <- mean(btstp_rsts[2, ])
+
+# (d) Bootstrap method with n = 256
+x <- rnorm(256)
+boot_rst_n256 <- bootstrap(x, 1000)
+
+# (e) Bootstrap method with standard exponential distribution
+btstp_rsts_exp <- replicate(100, {
+  x_exp <- rexp(16)
+  bootstrap(x_exp, 1000)
+})
+mn_bias_exp <- mean(btstp_rsts_exp[1, ])
+mn_stdv_exp <- mean(btstp_rsts_exp[2, ])
+# --------------------------------------------
+x_exp <- rexp(256)
+bt_rst_exp_n256 <- bootstrap(x_exp, 1000)
+
+# Output the results
+print("Bootstrap does a better job with a larger n")
+results <- matrix(c(btstp_rst[1], btstp_rst[2],
+                    jck_rst[1], jck_rst[2],
+                    mean_bias, mean_stdv,
+                    boot_rst_n256[1], boot_rst_n256[2],
+                    mn_bias_exp, mn_stdv_exp,
+                    bt_rst_exp_n256[1], bt_rst_exp_n256[2]
+                  ), nrow = 2, ncol = 6)
+results <- round(results, 4)
+colnames(results) <- c("Btstrp",
+                       "Jcknf",
+                       "Bt_nor(x100)",
+                       "Bt_nor(n=256)",
+                       "Bt_exp(x100)",
+                       "Bt_exp(n=256)")
+rownames(results) <- c("Bias", "Variance")
+results <- as.table(results)
+print(results)
+```
+
+2. Consider sample median as an estimator to the median. Repeat the last problem.
+
+```{r}
+# Function to calculate sample mean
+sample_median <- function(x) {
+  return(median(x))
+}
+
+# Function to perform bootstrap
+bootstrap <- function(x, B) {
+  n <- length(x)
+  boot_means <- numeric(B)
+  for (i in 1:B) {
+    boot_sample <- sample(x, size = n, replace = TRUE)
+    boot_means[i] <- sample_median(boot_sample)
+  }
+  bias <- mean(boot_means) - mean(x)
+  standard_deviation <- sd(boot_means)
+  return(c(bias, standard_deviation))
+}
+
+# Function to perform Jackknife
+jackknife <- function(x) {
+  n <- length(x)
+  jck_est <- numeric(n)
+  for (i in 1:n) {
+    jck_est[i] <- mean(x[-i])
+  }
+  bias <- mean(jck_est) - mean(x)
+  standard_deviation <- sqrt((n - 1) / n * sum((jck_est - mean(jck_est))^2))
+  return(c(bias, standard_deviation))
+}
+
+# (a) Bootstrap method
+x <- rnorm(16)
+btstp_rst <- bootstrap(x, 1000)
+
+# (b) Jackknife method
+jck_rst <- jackknife(x)
+
+# (c) Bootstrap method 100 times
+btstp_rsts <- replicate(100, {
+  x <- rnorm(16)
+  bootstrap(x, 1000)
+})
+mean_bias <- mean(btstp_rsts[1, ])
+mean_stdv <- mean(btstp_rsts[2, ])
+
+# (d) Bootstrap method with n = 256
+x <- rnorm(256)
+boot_rst_n256 <- bootstrap(x, 1000)
+
+# (e) Bootstrap method with standard exponential distribution
+btstp_rsts_exp <- replicate(100, {
+  x_exp <- rexp(16)
+  bootstrap(x_exp, 1000)
+})
+mn_bias_exp <- mean(btstp_rsts_exp[1, ])
+mn_stdv_exp <- mean(btstp_rsts_exp[2, ])
+# --------------------------------------------
+x_exp <- rexp(256)
+bt_rst_exp_n256 <- bootstrap(x_exp, 1000)
+
+# Output the results
+cat("A larger n doesn't improve the quality of bootstrap ",
+    "because the resampling isn't ordered", sep = "")
+results <- matrix(c(btstp_rst[1], btstp_rst[2],
+                    jck_rst[1], jck_rst[2],
+                    mean_bias, mean_stdv,
+                    boot_rst_n256[1], boot_rst_n256[2],
+                    mn_bias_exp, mn_stdv_exp,
+                    bt_rst_exp_n256[1], bt_rst_exp_n256[2]
+                  ), nrow = 2, ncol = 6)
+results <- round(results, 4)
+colnames(results) <- c("Btstrp",
+                       "Jcknf",
+                       "Bt_nor(x100)",
+                       "Bt_nor(n=256)",
+                       "Bt_exp(x100)",
+                       "Bt_exp(n=256)")
+rownames(results) <- c("Bias", "Variance")
+results <- as.table(results)
+print(results)
+```
+
+3. Redo examples 9.2 and 9.3 in lecture notes with parametric bootstrap.
+
+```{r}
+# Question 9.2 and 9.3
+# Extract data
+lsat <- law$LSAT
+gpa <- law$GPA
+true_corr <- cor(lsat, gpa) # True correlation coefficient
+
+# Non parametric bootstrap for comparison
+r <- function(x, i) {
+  cor(x[i, 1], x[i, 2])
+}
+obj <- boot(data = law, statistic = r, R = 2000)
+npmt <- obj$t
+npmt_bias <- mean(npmt - true_corr)
+
+# Perform parametric bootstrap
+n <- length(lsat)           # Sample size
+nr <- 2000                  # Number of repl
+se_rp <- numeric(nr)        # Storage for repl
+
+for (b in 1:nr) {
+  # Simulate data from a bivariate normal distribution based on the
+  # observed means, variances, and correlation
+  sim_data <- mvrnorm(n, c(mean(lsat), mean(gpa)),
+                      var(cbind(lsat, gpa)),
+                      Sigma = matrix(c(var(lsat),
+                                       cor(lsat, gpa) * sd(lsat) * sd(gpa),
+                                       cor(lsat, gpa) * sd(lsat) * sd(gpa),
+                                       var(gpa)), nrow = 2, ncol = 2))
+  # Extract simulated data
+  sim_lsat <- sim_data[, 1]
+  sim_gpa <- sim_data[, 2]
+  # Calculate correlation coefficient on simulated data
+  se_rp[b] <- cor(sim_lsat, sim_gpa)
+}
+par_bias <- mean(se_rp - true_corr)
+
+# Estimated standard error for both cases
+se_law <- matrix(c(sd(npmt), npmt_bias,
+                   sd(se_rp), par_bias),
+                 nrow = 2, ncol = 2)
+colnames(se_law) <- c("Non Parametric", "Parametric")
+rownames(se_law) <- c("Standard Error (correlation)", "Bias")
+se_law <- as.table(se_law)
+print(se_law)
+```
+
+4. Let $X_1, ..., X_n$ be IID from a distribution F.
+    (a) Let F be the standard normal distribution and n = 16. Construct 95% confidence intervals by zscore
+    method (assuming variance is known), z-score method for large samples (assuming variance
+    is unknown), t-score method, and bootstrap methods you learned from the class. Compare these
+    methods in terms of coverage probability and average length of the interval using 100 repl.
+    (b) Redo (a) for standard exponential distribution with $n = 16$.
+    (c) Redo (b) for $n = 256$.
+
+```{r}
+```
+
+5. The data set *PlantGrowth* contains weights of plants grown under control and two different treatment
+conditions. We want to compare the plant weights between the control group and treatment
+    (a) Formulate the null hypothesis that there is no difference in mean plant weight between the two
+    groups. Conduct a permutation test with 10,000 permutations to test the null hypothesis. Calculate
+    the p-value. What is the p-value from two sample t test?
+
+```{r}
+# Load the PlantGrowth dataset
+data(PlantGrowth)
+
+# Extract the plant weights for the control and treatment groups
+control_weights <- PlantGrowth$weight[PlantGrowth$group == "ctrl"]
+treatment_weights <- PlantGrowth$weight[PlantGrowth$group == "trt1"]
+
+# Formulate the null hypothesis: There is no difference in mean
+#                                plant weight between the two groups
+# Compute the observed difference in means between the two groups
+observed_diff <- mean(treatment_weights) - mean(control_weights)
+
+# Define the length of the control group
+ctrl_len <- length(control_weights)
+
+# Permutation Test
+n_perm <- 10000
+perm_diffs <- numeric(n_perm)
+for (i in 1:n_perm) {
+  # Randomly permute the group labels
+  perm_group <- sample(c(control_weights, treatment_weights))
+  # Compute the difference in means for the permuted groups
+  perm_diffs[i] <- mean(perm_group[1:ctrl_len]) -
+    mean(perm_group[(ctrl_len + 1):length(perm_group)])
+}
+# Calculate the p-value for the permutation test
+pval_perm_t <- mean(abs(perm_diffs) >= abs(observed_diff))
+
+# Two-Sample t-test
+t_test_result <- t.test(treatment_weights, control_weights)
+p_value_t_test <- t_test_result$p.value
+
+# Print the results
+compare_2 <- matrix(c(pval_perm_t, p_value_t_test), ncol = 1)
+rownames(compare_2) <- c("Permutation Test p-value",
+                         "Two-Sample t-test p-value")
+colnames(compare_2) <- c("ctrl vs trmt")
+compare_2 <- as.table(compare_2)
+print(compare_2)
+```
+
+6. The data set *mtcars* was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption
+and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+    (a) Find the correlation matrix of the 11 variables in the data set.
+    (b) Conduct a permutation test to test whether there is association between mpg and qsec. (Randomly
+    shuffle the qsec values 10,000 times, each time calculating the Pearson correlation coefficient
+    between the shuffled qsec and original mpg. Calculate the p-value based on how many times the
+    observed correlation coefficient from the shuffled data exceeds the actual correlation coefficient.)
+    What is the p-value? Compare the result with cor.test().
+    (c) Conduct a permutation test to test whether there is association between wt and qsec. What is
+    the p-value? Compare the result with cor.test().
+
+```{r}
+# Load the mtcars dataset
+data(mtcars)
+
+# Compute the correlation matrix
+corr_mat <- cor(mtcars)
+
+# Print the correlation matrix
+print(corr_mat)
+```
+
+```{r}
+# Conduct Permutation Tests
+# Number of permutations
+n_perm <- 10000
+
+####### Test whether there is association between mpg and qsec #######
+# Define the observed correlation coefficient between mpg and qsec
+observed_corr <- cor(mtcars$mpg, mtcars$qsec)
+# Initialize a vector to store correlation coefficients from permutations
+perm_corrs <- numeric(n_perm)
+# Permutation test
+for (i in 1:n_perm) {
+  # Shuffle the qsec values
+  shuffled_qsec <- sample(mtcars$qsec)
+  # Compute the corr. coef. between the shuffled qsec and original mpg
+  perm_corrs[i] <- cor(mtcars$mpg, shuffled_qsec)
+}
+# Calculate the p-value based on the number of times
+# observed correlation exceeds permuted correlations
+pval_mpeg_qsec <- mean(abs(perm_corrs) >= abs(observed_corr))
+
+
+
+
+####### Test whether there is association between wt and qsec #######
+# Define the observed correlation coefficient between wt and qsec
+observed_corr_wt_qsec <- cor(mtcars$wt, mtcars$qsec)
+# Initialize a vector to store correlation coefficients from permutations
+perm_corrs_wt_qsec <- numeric(n_perm)
+# Permutation test
+for (i in 1:n_perm) {
+  # Shuffle the qsec values
+  shuffled_qsec <- sample(mtcars$qsec)
+  # Compute the correlation coefficient between wt and shuffled qsec
+  perm_corrs_wt_qsec[i] <- cor(mtcars$wt, shuffled_qsec)
+}
+# Calculate the p-value based on the number of times
+# observed correlation exceeds permuted correlations
+pval_wt_qsec <- mean(abs(perm_corrs_wt_qsec) >=
+                       abs(observed_corr_wt_qsec))
+```
+
+```{r}
+# Perform correlation test using cor.test()
+ct_mpg_qsec <- cor.test(mtcars$mpg, mtcars$qsec) # mpg & qsec
+ct_wt_qsec <- cor.test(mtcars$wt, mtcars$qsec)   # wt & qsec
+
+# Print comparison table
+compare <- matrix(c(pval_mpeg_qsec, ct_mpg_qsec$p.value,
+                    pval_wt_qsec, ct_wt_qsec$p.value),
+                  nrow = 2, ncol = 2)
+colnames(compare) <- c("mpg vs qsec", "wt vs qsec")
+rownames(compare) <- c("Permutation Test", "cor.test()")
+compare <- as.table(compare)
+print(compare)
+```
