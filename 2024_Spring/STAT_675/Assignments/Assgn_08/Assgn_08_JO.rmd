@@ -80,7 +80,8 @@ theta_anti <- mean(f(x_smp_anti))
 var_anti <- var(f(x_smp_anti)) / n         # antithetic var. est.
 
 # Calculate variance reduction percentage
-var_red_pct <- 100 * (1 - var_anti / var_mc)
+# var_red_pct <- 100 * (1 - var_anti / var_mc)
+var_red_pct <- 100 * ((var_mc-var_anti)/var_mc)
 
 # Report results
 results <- matrix(c(theta_mc, theta_anti, var_mc, var_anti),
@@ -184,10 +185,32 @@ print(estimates)
 
 # Part (c)
 # Estimate the variance of theta hat
-var_hat <- var(f(x_smp)) / n  # variance estimate
-cat("Variance estimate of theta:", var_hat, "\n")
+var_mc <- var(f(x_smp)) / n  # variance estimate
+cat("Variance estimate of theta:", var_mc, "\n")
 
 # Part (d)
+# Antithetic variables approach
+x_smp_av <- c(runif(n/2), 1 - runif(n/2))  # antithetic variables
+theta_av <- mean(f(x_smp_av))
+var_av <- var(f(x_smp_av)) / n
+var_red_av <- 100 * (1 - var_av / var_mc)
+
+# Define the control variate function
+cv <- function(x) x^2 * exp(-x^2)
+# Generate samples for control variates
+x_smp_cv <- f(x_smp) + cv(x_smp) * (x_smp - 1/2)
+theta_hat_cv <- mean(x_smp_cv)
+var_cv <- var(x_smp_cv) / n
+var_red_cv <- 100 * (1 - var_cv / var_mc)
+
+# Importance Sampling
+
+
+# Report the variance reduction percentage
+var_red_mat <- matrix(c(var_red_av, var_red_cv), ncol=2, nrow = 1)
+colnames(var_red_mat) <- c("Antithetic Variables", "Control Variates")
+rownames(var_red_mat) <- c("Variance Reduction (%)")
+print(var_red_mat)
 ```
 
 5. Consider the problem of integrating 3 dimensional standard normal density over the unit ball. (The
