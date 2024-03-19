@@ -1,0 +1,198 @@
+---
+title: "Assignment_08_JO"
+subtitle: "Monte Carlo Integration and Variance Reduction."
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+```{r}
+set.seed(675)
+# options(scipen = 3)
+```
+Please answer the following questions and submit both R codes and the results. Make all results reproducible.
+
+1. Let $\theta = \int_{0}^{2} e^{-x}dx$
+    (a) Compute a Monte Carlo estimate $\hat{\theta_1}$ by sampling 1,000 random variables from uniform distribution
+    U(0, 2), and estimate the variance of $\hat{\theta_1}$.
+    (b) Note that $\theta = P(X \le 2) = E1_{\{X \le 2\}}$ where X is a random variable from standard exponential
+    distribution. Find another Monte Carlo estimator $\hat{\theta_2}$ by sampling 1,000 random variables from
+    standard exponential distribution.
+    (c) Compare the variances of $\hat{\theta_1}$ and $\hat{\theta_2}$. Which estimator is more efficient?
+```{r}
+# Define the integrand function
+f <- function(x) exp(-x)
+
+# Part (a)
+n <- 1000  # number of samples
+x_smp <- runif(n, min = 0, max = 2)  # sampling U(0, 2)
+theta_hat_1 <- mean(f(x_smp)) * 2
+var_hat_1 <- var(f(x_smp)) * 2^2 # var. estimate
+
+# Part (b)
+x_smp_exp <- rexp(n)  # exp distr
+theta_hat_2 <- mean(x_smp_exp <= 2)
+var_hat_2 <- var(x_smp_exp <= 2)
+
+# Part (c)
+results <- matrix(c(var_hat_1, var_hat_2),
+                  nrow = 1, ncol = 2)
+colnames(results) <- c("Uniform dist", "Exponential dist.")
+rownames(results) <- c("Variance")
+print(results)
+
+# Comparing efficiencies
+if (var_hat_1 < var_hat_2) {
+  cat("Uniform distribution estimator is more efficient.\n")
+} else if (var_hat_1 > var_hat_2) {
+  cat("Exponential distribution estimator is more efficient.\n")
+} else {
+  cat("Both estimators have the same efficiency.\n")
+}
+```
+
+2. Let $\theta = \int_{0}^{1} x^2e^{-x^2}dx$.
+    (a) Draw a graph of the function $f(x) = x^2e^{-x^2}$ on the interval [0,1].
+    (b) Use simple Monte Carlo method to estimate $\theta$. Set $n = 1000$. Estimate the variance of the estimator.
+    (c) Use antithetic variable approach to reduce the variance. Report the (estimated) variance reduction percentage.
+```{r}
+# Define the integrand function
+f <- function(x) x^2 * exp(-x^2)
+
+# Part (a)
+x_values <- seq(0, 1, length.out = 100)
+plot(x_values, f(x_values), type = "l",
+     xlab = "x", ylab = "f(x)",
+     main = "Graph of f(x) = x^2 * exp(-x^2)")
+
+# Part (b)
+n <- 1000
+x_smp <- runif(n)            # unif sampling U(0, 1)
+theta_mc <- mean(f(x_smp))
+var_mc <- var(f(x_smp)) / n  # variance estimate
+
+# Part (c)
+# Antithetic variable approach
+x_smp_anti <- c(runif(n / 2, 0, 0.5),
+                1 - runif(n / 2, 0, 0.5))  # antithetic variables
+theta_anti <- mean(f(x_smp_anti))
+var_anti <- var(f(x_smp_anti)) / n         # antithetic var. est.
+
+# Calculate variance reduction percentage
+var_red_pct <- 100 * (1 - var_anti / var_mc)
+
+# Report results
+results <- matrix(c(theta_mc, theta_anti, var_mc, var_anti),
+                  nrow = 2, ncol = 2)
+colnames(results) <- c("Estimate", "Variance")
+rownames(results) <- c("Monte Carlo", "Antithetic")
+results <- round(results, 7)
+print(results)
+cat("Percentage of variance reduction over Monte Carlo: ",
+    round(var_red_pct, 3), "%\n", sep = "")
+```
+
+3. Use Monte Carlo integration techniques to estimate the integral $\mu = \int_{-1}^{1}g(x)dx$ where 
+$g(x) = \frac {1-x^2} {(1+x^2)^3}$.
+    (a) Plot the graph of $g(x)$ on interval [-1, 1].
+    (b) Use simple Monte Carlo method to estimate $\mu$ and estimate the variance of the estimator. Set
+    $n = 1000$.
+    (c) Use importance sampling method to estimate the integral. Estimate the percentage of variance
+    reduction over the simple Monte Carlo method.
+```{r}
+# Define the integrand function
+g <- function(x) (1 - x^2) / (1 + x^2)^3
+
+# Part (a)
+x_values <- seq(-1, 1, length.out = 100)
+plot(x_values, g(x_values), type = "l",
+     xlab = "x", ylab = "g(x)",
+     main = "Graph of g(x)")
+
+# Part (b)
+n <- 1000  # number of samples
+x_smp <- runif(n, -1, 1)           # unif sampling U(-1, 1)
+mu_mc <- mean(g(x_smp)) * 2
+var_mc <- var(g(x_smp)) * 2^2 / n  # variance estimate
+
+# Part (c)
+# Proposal distribution is a normal distribution centered at 0
+prop_dens <- function(x) dnorm(x, mean = 0, sd = 1)
+prop_smp <- function(n) rnorm(n, mean = 0, sd = 1)
+
+# Generate samples from the proposal distribution
+x_smp_imp <- prop_smp(n)
+
+# Generate normalized the weights
+weights_fun <- function(x) g(x) / prop_dens(x)
+weights <- weights_fun(x_smp_imp)
+weights <- weights / sum(weights)
+
+# Estimate mu and var using importance sampling
+mu_imp <- mean(g(x_smp_imp) / prop_dens(x_smp_imp))
+var_imp <- var(g(x_smp_imp) * weights)# * 2^2 / n
+
+
+# Calculate variance reduction percentage
+var_red_pct <- 100 * (1 - var_imp / var_mc)
+
+# Report results
+results <- matrix(c(mu_mc, mu_imp, var_mc, var_imp),
+                  nrow = 2, ncol = 2)
+colnames(results) <- c("mu estimate", "variance")
+rownames(results) <- c("Monte Carlo", "Importance Sampling")
+results <- round(results, 7)
+print(results)
+
+cat("Percentage of variance reduction over Monte Carlo: ",
+    round(var_red_pct, 3), "%\n", sep = "")
+```
+
+4. Let $\theta = \int_{0}^{1} \frac {sin x} {x}dx$
+    (a) Plot the function $f(x) =  \frac {sin x} {x}$ on the interval (0, 1).
+    (b) Compute a Monte Carlo estimate $\hat{\theta}$ by sampling 1000 random variables from uniform distribution
+    U(0, 1). Compare $\hat{\theta}$ with the result obtained from `integrate()`.
+    (c) Estimate the variance of $\hat{\theta}$.
+    (d) Try all of the three variance reduction methods you learned and report the variance reduction percentages.
+```{r}
+# Define the integrand function
+f <- function(x) {
+  ifelse(x == 0, 1, sin(x) / x)
+}
+
+# Part (a)
+# Plot the function
+# x = 0 is omitted to avoid singularity
+x_values <- seq(0.01, 1, length.out = 1000)
+plot(x_values, f(x_values), type = "l",
+     xlab = "x", ylab = "f(x)", main = "Graph of f(x)")
+
+# Part (b)
+# Monte Carlo estimation
+n <- 1000
+x_smp <- runif(n)                   # unif sampling U(0, 1)
+theta_mc <- mean(f(x_smp))
+theta_intg <- integrate(f, 0, 1)$value  # Exact value using integrate()
+
+# Compare results
+estimates <- matrix(c(theta_mc, theta_intg),
+                    nrow = 1, ncol = 2)
+colnames(estimates) <- c("Monte Carlo", "integrate()")
+rownames(estimates) <- c("Theta Estimate")
+print(estimates)
+
+# Part (c)
+# Estimate the variance of theta hat
+var_hat <- var(f(x_smp)) / n  # variance estimate
+cat("Variance estimate of theta:", var_hat, "\n")
+
+# Part (d)
+```
+
+5. Consider the problem of integrating 3 dimensional standard normal density over the unit ball. (The
+result should be the probability that a $\chi^{2}_{3}$ random variable is smaller than 1.) Use some methods you
+learned (both deterministic and MC methods) to approximate the integral. Please do not reduce the
+3d integration problem to a 1d problem. Which method do you recommend?
+```{r}
+```
