@@ -43,10 +43,10 @@ generate_changepoint_array <- function(n = 1000, m = 50, n_sd = 2) {
                           / (m / 2)) * (end_index - i + 1)
   }
 
-
   # Calculate the mean of the entire distribution and signal segment
   entire_mean <- mean(data)
   signal_mean <- mean(data[start_index:end_index])
+  norm_sum <- sum(data[start_index:end_index]) / sqrt(m)
 
   # Return results
   return(list(m_start = signal_start,
@@ -54,6 +54,7 @@ generate_changepoint_array <- function(n = 1000, m = 50, n_sd = 2) {
               sig_mean = signal_mean,
               org_mean = original_mean,
               mrg_mean = entire_mean,
+              norm_sum = norm_sum,
               timeseries = data))
 }
 
@@ -101,4 +102,28 @@ plot_changepoint_ts <- function(result, color = "blue", lw = 1, fs = 14,
     }
   }
   print(p)
+}
+
+
+max_norm_subarray <- function(x) {
+  #' Get the maximum normalized subarray within a sequenc
+  #' Big-O complexity is (n^2)
+  #' Example
+  #' result <- generate_changepoint_array()
+  #' max_sub <- max_norm_subarray(result$timeseries)
+
+  n <- length(x)
+  maxx <- max(cumsum(x) / sqrt(1:n))
+  left <- 1
+  right <- which.max(cumsum(x) / sqrt(1:n))
+  for (i in 2:n) {
+    current_max <- max(cumsum((x[i:n]) / sqrt(1:(n + 1 - i))))
+    if (current_max > maxx) {
+      maxx <- current_max
+      left <- i
+      right <- which.max(cumsum((x[i:n]) / sqrt(1:(n + 1 - i)))) + i - 1
+    }
+  }
+  mu <- mean(x[left:right])
+  return(list(statistic = maxx, start = left, end = right, mu = mu))
 }
