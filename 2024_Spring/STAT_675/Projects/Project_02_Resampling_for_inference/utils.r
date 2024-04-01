@@ -124,6 +124,38 @@ max_norm_subarray <- function(x) {
       right <- which.max(cumsum((x[i:n]) / sqrt(1:(n + 1 - i)))) + i - 1
     }
   }
+  norm_sum <- sum(x[left:right]) / sqrt(right - left + 1)
   mu <- mean(x[left:right])
   return(list(statistic = maxx, start = left, end = right, mu = mu))
+}
+
+max_norm_subarray_gs <- function(x) {
+  n <- length(x)
+
+  maxx <- -Inf
+
+  left <- 1
+  right <- 1
+
+  for (i in 1:(n - 1)) {
+    for (j in (i + 1):n) {
+      sum_val <- sum(x[i:j])
+      len <- j - i + 1
+      norm_sum <- sum_val / sqrt(len)
+      if (norm_sum > maxx) {
+        maxx <- norm_sum
+        left <- i
+        right <- j
+      }
+    }
+  }
+  return(list(statistic = maxx, start = left, end = right))
+}
+
+
+scaled_t <- function(nt, df) {
+  x <- rt(nt, df = df)
+  var_x <- var(x)
+  rescaled_x <- x / sqrt(var_x)
+  return(rescaled_x)
 }

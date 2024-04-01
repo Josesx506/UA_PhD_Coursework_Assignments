@@ -1,0 +1,16 @@
+---
+title: "formula_15"
+output:
+  pdf_document: default
+  # html_notebook: default
+---
+1. 
+\begin{multline*}
+H_0 : \theta_1 =\cdot \cdot \cdot = \theta_n,\ versus \\
+H_1 : \theta_1 =\cdot \cdot \cdot =\theta_l = \theta_{r+1} = \cdot \cdot \cdot  = \theta_n \\
+\neq \theta_{l+1} =\cdot \cdot \cdot = \theta_r\ \text{for a pair l < r.}
+\end{multline*}
+
+
+```{r}
+```

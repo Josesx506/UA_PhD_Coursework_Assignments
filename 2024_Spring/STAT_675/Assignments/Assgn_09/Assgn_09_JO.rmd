@@ -146,8 +146,8 @@ combined_plot <- grid.arrange(line_plot, histogram_plot, ncol = 1)
 
 3. Textbook Exercise 9.6. Rao [220, Sec. 5g] presented an example on genetic linkage of 197 animals
     in four categories. The group sizes are (125, 18, 20, 34). Assume that the probabilities of the 
-    corresponding multinomial distribution are $(frac {1} {2} + frac {\theta} {4}, 
-    frac {1 - \theta} {4}, frac {1 - \theta} {4}, frac {\theta} {4})$
+    corresponding multinomial distribution are 
+    $$(\frac {1} {2} + \frac {\theta} {4}, \frac {1 - \theta} {4}, \frac {1 - \theta} {4}, \frac {\theta} {4})$$
     Estimate the posterior distribution of $\theta$ given the observed sample, using the Random-walk
     Metropolis sampler.
 ```{r}
