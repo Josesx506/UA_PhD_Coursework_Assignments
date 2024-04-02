@@ -5,7 +5,7 @@ source("utils.r")
 set.seed(675)
 
 
-n_sim <- 1000  # Number of simulations
+n_sim <- 10000 # Number of simulations
 x_len <- 1000  # Length of each sample
 sig_lv <- 0.05 # Significance level. 5% threshold for rejecting null
 
