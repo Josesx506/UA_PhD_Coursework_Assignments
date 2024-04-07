@@ -1,5 +1,8 @@
+import laspy
 import mplstereonet as st
 import numpy as np
+from numpy import sqrt,power,pi,radians,degrees,sin,cos
+from pyproj import CRS, Transformer
 
 def dip_direction_to_strike(dip_direction: int):
     '''
@@ -57,3 +60,60 @@ def calc_planar_daylight(strike,dip):
     pde_angle=45-p_plunge/2.-10**-9
 
     return np.around(pde_plunge,2), np.around(pde_bearing,2), np.around(pde_angle,2)
+
+
+def convert_las_crs_to_projected_coords(filepath,input_crs,output_crs,inp_fmt=".laz",out_fmt=".las"):
+    """
+    Convert a lat and longitude coordinate reference system point cloud
+    into a projected coordinate reference system. 
+    The point cloud format should be .las or .laz
+    The function saves the new file and returns None
+
+    Args:
+        filepath (str): path to the point cloud las file
+        input_crs (int): EPSG code for input coordinate reference system
+        output_crs (int): EPSG code for output coordinate reference system
+
+    Returns:
+        None
+
+    Example
+    convert_las_crs_to_projected_coords("CableMnt_RA_2019_Pointcloud.laz",4326,26912)
+    """
+    las = laspy.read(filepath)
+
+    # Define original and desired CRS
+    orig_crs = CRS(f"EPSG:{input_crs}")
+    proj_crs = CRS(f"EPSG:{output_crs}")
+
+    crs_trans = Transformer.from_crs(orig_crs, proj_crs, always_xy=True)
+    x_trans, y_trans = crs_trans.transform(las.x,las.y)
+
+    # Update coordinates in LAS file. Get the median center of the point cloud
+    mx = np.quantile(x_trans,0.5)
+    my = np.quantile(y_trans,0.5)
+    las.header.offset = np.array([mx, my, 1.0000e+03])      #np.array([5.2620e+05, 3.5747e+06, 1.0000e+03])
+    las.header.scales = np.array([0.001, 0.001, 0.001])
+    las.x = x_trans
+    las.y = y_trans
+
+    las.header.add_crs(proj_crs)
+    out_path = filepath.split("/")
+    out_path[-1] = f"Proj_EPSG_{output_crs}_" + out_path[-1]
+    out_path[-1] = out_path[-1].replace(inp_fmt,out_fmt)
+    out_path = "/".join(out_path)
+
+    las.write(out_path)
+
+    return None
+
+
+def sigma_stress_theta1(k1,r,theta):
+    """
+    Estimate stress for mode 1 stress intensity factors
+
+    Different theta values are provided, and the angle with the maximum
+    stress is the crack growth angle
+    """
+    mode1 = (k1 / sqrt(2*pi*r)) * power(cos(radians(theta/2)), 3)
+    return mode1

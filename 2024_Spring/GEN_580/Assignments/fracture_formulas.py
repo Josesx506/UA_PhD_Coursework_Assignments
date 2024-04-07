@@ -58,9 +58,7 @@ def k_one(stress,crack_len):
     k1 = stress * sqrt(pi*crack_len)
     return k1
 
-def sig_theta1(k1,r,theta):
-    mode1 = (k1 / sqrt(2*pi*r)) * power(cos(radians(theta/2)), 3)
-    return mode1
+
 
 def sig_theta2(k2,r,theta):
     p1 = -k2 / sqrt(2*pi*r)
