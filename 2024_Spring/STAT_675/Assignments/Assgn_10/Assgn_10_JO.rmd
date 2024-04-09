@@ -1,0 +1,126 @@
+---
+title: "Assignment_10_JO"
+subtitle: "Optimization and EM Algorithm."
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+```{r}
+set.seed(675)
+library(ggplot2)
+library(gridExtra)
+```
+Please answer the following questions and submit both R codes and the results. Make all results repro- ducible.
+
+1. Implement secant method and use it to find the maximiser of $f(x) = \frac {log x} {1+x}$ by 
+finding the root of $f'(x)$.
+```{r}
+# Define the function f(x)
+f <- function(x) {
+  return(log(x) / (1 + x))
+}
+
+# Define the derivative of f(x)
+f_prime <- function(x) {
+  return((1 - log(x) + x) / (1 + x)^2)
+}
+
+# Secant method to find the root of a function
+secant_method <- function(f, x0, x1, tol = 1e-8, max_iter = 1000) {
+  for (i in 1:max_iter) {
+    x_next <- x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))
+    if (abs(x_next - x1) < tol) {
+      return(x_next)
+    }
+    x0 <- x1
+    x1 <- x_next
+  }
+  warning("Maximum number of iterations reached")
+  return(x_next)
+}
+
+# Find the root of f'(x)
+root <- secant_method(f_prime, 1.0, 2.0)
+
+# Maximiser of f(x) is where f'(x) = 0, so the value of x is the root we found
+maximizer <- root
+
+# Check if maximizer is valid
+if (maximizer > 0) {
+  cat("Maximizer of f(x) is:", maximizer, "\n")
+  cat("Maximum value of f(x) is:", f(maximizer), "\n")
+} else {
+  cat("Maximizer not found in the domain of f(x)\n")
+}
+
+```
+
+2. Define $f(x) = 2 log x + \sqrt {log(x + 1)} - x$.
+    (a) Draw a plot of the function $f(x)$ over the interval (0, 10).
+    (b) Use one of the build-in functions in R to find the maximizer of $f(x)$.
+    (c) Implement by yourself one of the methods in Chapter 11 (bisection, Newton's, or secant 
+    method) to find the maximizer of $f(x)$. Make sure that your maximizer is accurate up to 
+    3 digits after the decimal point.
+```{r}
+# Define the function f(x)
+f <- function(x) {
+  return(2 * log(x) + sqrt(log(x + 1)) - x)
+}
+
+# Define the derivative of f(x)
+f_prime <- function(x) {
+  return((2 / x) + (sqrt(log(x + 1)) / (2 * (x + 1))) - 1)
+}
+
+# (a) Plot the function f(x) over the interval (0, 10)
+x_values <- seq(0.01, 10, by = 0.01)  # Generate x values
+y_values <- f(x_values)  # Calculate corresponding y values
+
+plot(x_values, y_values, type = "l",
+     col = "blue", xlab = "x", ylab = "f(x)",
+     main = "Plot of f(x)")
+
+# (b) Use uniroot function to find the maximizer of f(x)
+result <- uniroot(f_prime, lower = 1, upper = 4)$root
+
+# Round maximizer to 3 decimal places
+max_value <- round(result, digits = 3)
+
+# Print maximizer
+cat("Maximizer of f(x) (up to 3 decimal places):", max_value, "\n")
+
+# (c) Define the function for Newton's method
+
+```
+
+3. Consider the multinomial distribution with four outcomes
+    $$ M(n, \frac {1}{2} + \frac {\theta}{4}, \frac {1}{4}(1-\theta), \frac {1}{4}(1-\theta), 
+    \frac {\theta}{4}),\ \ \theta \in (0,1) $$
+    (a) Given an observation $(x_1, x_2, x_3, x_4)$, write down the log-likelihood function $l(\theta)$.
+    (b) If n = 197 and x = (125, 18, 20, 34), evaluate the MLE of $\theta$ by solving $l(\theta) = 0$. (You can solve it by hand.)
+    (c) Write a program to find the maximizer of $l(\theta)$ by Newton's method, starting with $\theta^0 = 0.5$.
+    (d) Write a program to find the maximizer of $l(\theta)$ by Fisher scoring approach (Lecture notes Page 210), starting with $\theta^0 = 0.5$.
+    (e) Write a program to find the maximizer of $l(\theta)$ by the EM algorithm, starting with $\theta^0 = 0.5$.
+    (Hint: If the first cell $x_1$ can be split into two cells $z_1, z_2$, we get multinomial distribution with
+    five outcomes
+    $$ (z_1, z_2, x_2, x_3, x_4)  M(n, \frac {1}{2} + \frac {\theta}{4}, \frac {1}{4}(1-\theta), \frac {1}{4}(1-\theta), 
+    \frac {\theta}{4}),\ \ \theta \in (0,1) $$
+    The log likelihood function is much easier, and the MLE can be calculated if $z_1$ and $z_2$ are known.)
+    (f) Given a flat prior, approximate the posterior mean of $\theta$ using one of MCMC methods. (This is  essentially a 
+    question from last assignment.)
+    
+    Note: Use n = 197 and x = (125, 18, 20, 34) when solving c-e. For c-e, write down the codes and 
+    the iteration times needed to converge to the solution up to $10^{-4}$.
+```{r}
+```
+
+4. Consider a sample of size n from a mixture distribution with unknown weights
+    $$X_i ~ \theta N(0, 1) + (1 - \theta) N(2, 2),\ i = 1, 2, ..., n.$$
+    (a) Describe an EM procedure to evaluate the MLE $\hat {\theta}$.
+    (b) Calculate the MLE using the EM algorithm on a simulated dataset with $n = 25, \theta = 0.3$.
+```{r}
+# Print log and theta values
+# Don't estimate the mean or variance parameters
+```
