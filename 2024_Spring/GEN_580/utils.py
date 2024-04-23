@@ -108,6 +108,35 @@ def convert_las_crs_to_projected_coords(filepath,input_crs,output_crs,inp_fmt=".
     return None
 
 
+def distance_along_profile_proj_crs(x1, y1, x2, y2, num_points):
+    """
+    Calculate the distance along a profile between two sets of x and y points.
+    
+    Parameters:
+        x1 (array-like): x-coordinates of the first set of points.
+        y1 (array-like): y-coordinates of the first set of points.
+        x2 (array-like): x-coordinates of the second set of points.
+        y2 (array-like): y-coordinates of the second set of points.
+        num_points (int): Number of points to discretize the profile.
+        
+    Returns:
+        distances (array): Array containing the distance along the profile at each discretized point.
+    """
+    # Interpolate points along the profile
+    x_interp = np.linspace(x1, x2, num_points)
+    y_interp = np.linspace(y1, y2, num_points)
+    
+    # Calculate the distance between adjacent points
+    dx = np.diff(x_interp)
+    dy = np.diff(y_interp)
+    distances = np.sqrt(dx**2 + dy**2)
+    
+    # Calculate cumulative distance
+    cumulative_distances = np.cumsum(distances)
+    
+    return cumulative_distances
+
+
 def sigma_stress_theta1(k1,r,theta):
     """
     Estimate stress for mode 1 stress intensity factors
