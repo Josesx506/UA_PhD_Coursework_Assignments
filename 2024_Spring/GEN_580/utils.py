@@ -146,3 +146,17 @@ def sigma_stress_theta1(k1,r,theta):
     """
     mode1 = (k1 / sqrt(2*pi*r)) * power(cos(radians(theta/2)), 3)
     return mode1
+
+
+def dip_to_slope(dip_angle):
+    """
+    Convert dip angle in degrees to slope.
+    
+    Parameters:
+        dip_angle (float): The dip angle in degrees.
+        
+    Returns:
+        slope (float): The slope of the line.
+    """
+    slope = np.tan(dip_angle * (np.pi / 180))
+    return slope
