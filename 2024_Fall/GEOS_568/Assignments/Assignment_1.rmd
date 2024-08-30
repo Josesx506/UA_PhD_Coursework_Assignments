@@ -1,0 +1,184 @@
+---
+title: "GEOS 568: Advanced Seismology HW1. Due: 9/12/24"
+subtitle: "Name: Joses Omojola"
+output:
+  pdf_document: default
+---
+
+1. Show that $\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left(u_{i,j} + u_{j,i} \right)\delta x_{j} + \frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}$. 
+    Begin by showing that  
+    
+    $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$.  
+
+__Proof__: $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$  
+
+Consider the following determinant where $\epsilon_{ijk} \epsilon_{jlm}$ is shortened to $\Delta$:
+$$
+\Delta = \begin{bmatrix} 
+\delta_{ij} & \delta_{jj} & \delta_{kj} \\
+\delta_{il} & \delta_{jl} & \delta_{kl} \\
+\delta_{im} & \delta_{jm} & \delta_{km}
+\end{bmatrix} 
+$$
+
+We can expand this determinant using the Laplace expansion along the first row:
+$$
+\Delta = \delta_{ij} \begin{bmatrix}
+\delta_{jl} & \delta_{kl} \\
+\delta_{jm} & \delta_{km}
+\end{bmatrix} - \delta_{jj} \begin{bmatrix}
+\delta_{il} & \delta_{kl} \\
+\delta_{im} & \delta_{km}
+\end{bmatrix} + \delta_{kj} \begin{bmatrix}
+\delta_{il} & \delta_{jl} \\
+\delta_{im} & \delta_{jm}
+\end{bmatrix}
+$$
+Now we can evaluate the 2x2 determinants:
+$$
+\Delta = \delta_{ij}(\delta_{jl} \delta_{km} - \delta_{jm} \delta_{kl}) -
+\delta_{jj}(\delta_{il} \delta_{km} - \delta_{im} \delta_{kl}) + 
+\delta_{kj}(\delta_{il} \delta_{jm} - \delta_{im} \delta_{jl})
+$$
+We can expand the terms to get
+$$
+\Delta = \delta_{ij}\delta_{jl}\delta_{km} - \delta_{ij}\delta_{jm}\delta_{kl} - 
+\delta_{jj}(\delta_{il} \delta_{km} - \delta_{im} \delta_{kl}) +
+\delta_{kj}\delta_{il}\delta_{jm} - \delta_{kj}\delta_{im}\delta_{jl}
+$$
+Using the kronecker delta summation property where $\delta_{ik}\delta_{kj} = \delta_{ij}$. 
+The index k is deleted because both expressions contain index k and the expression becomes
+contracted.  
+
+We can then simplify expressions $\delta_{ij}\delta_{jl}\delta_{km} = \delta_{il}\delta_{km}$,
+and apply this summation property to relevant terms.
+$$
+\Delta = (\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) -
+\delta_{jj}(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) +
+(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})
+$$
+From the cumulative summation property of a kronecker delta, we also know that $\delta_{jj} = n$,
+and that in a 3D space, we can sum over the repeated index $j$ from 1 to 3, giving
+$\delta_{jj} = \delta_{11} + \delta_{22} + \delta_{33} = 3$. We can rewrite our equation as 
+$$
+\Delta = (\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) -
+3(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) +
+(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})
+$$
+where we can factor out the common term $(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})$
+$$
+\Delta = (1-n+1)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) = (2-3)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})
+$$
+to get 
+$$
+\begin{aligned}
+\Delta = -1(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) \\
+\therefore \boldsymbol{\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}}
+\end{aligned}
+$$  
+
+**To prove the main equation:**  
+
+We can rewrite the left-hand side as 
+$$
+\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = u_{i,j}\delta x_{j}
+$$
+By decomposing $u_{i,j}$ into its symmetric and antisymmetric parts, we get:
+$$
+u_{i,j} = \frac{1}{2} (u_{i,j} + u_{j,i}) + \frac{1}{2} (u_{i,j} - u_{j,i})
+$$
+This can be further expanded to 
+$$
+\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = 
+\left[\frac{1}{2} \left( u_{i,j} + u_{j,i} \right) + 
+\frac{1}{2} \left( u_{i,j} - u_{j,i} \right) \right] \delta x_{j}
+$$
+The first term on the right-hand side in the original equation is already in the desired form. 
+For the second term, we can replace the the antisymmetric part with the curl of the vector field $\overline{u}$,
+using the definition of the curl for rigid body rotation:
+
+$$
+\begin{aligned}
+u_{i,j} - u_{j,i} = \text{curl}\overline{u} \\
+\text{The second term becomes} \\
+\frac{1}{2} (\text{curl}\overline{u}) \delta x_{j}
+\end{aligned}
+$$
+
+---
+
+2. Using the Aki and Richards Eqn. 2.6 and assuming a tetrahedron volume, show that $T(n) = T(\hat{x}_{j})n_{j}$
+$$
+\frac {|\int\int T dS|}{\int\int dS} = O(\Delta V^{\frac{1}{3}}) \rightarrow 0 \ \text{as} \ \Delta V \rightarrow 0.
+$$
+If $\Delta V$ is a small tetrahedron with 3 of its faces in the coordinate planes, and the fourth having **n** 
+as its outward normal, 
+$$
+\frac {T(n)ABC + T(-\hat{x}_{1})OBC  + T(-\hat{x}_{2})OCA  + T(-\hat{x}_{3})OAB} 
+{\text{ABC} + \text{OBC} + \text{OCA} + \text{OAB}} \rightarrow 0
+$$
+as $\Delta V \rightarrow 0$. The symbols $ABC$ etc. denote areas of triangles, and one can show geometrically that 
+the components of n are given by $(n_1,n_2,n_3) = \frac {(OBC,OCA,OAB)}{ABC}$. We can combine this with the 
+traction equation $T(-n) = -T(n)$ to get
+$$
+T(n) = T(\hat{x}_{j})n_j
+$$
+
+---
+
+3. Using the energy arguments in Aki and Richards Section 2.2, show that $c_{ijpq} = c_{pqij}$.
+
+---
+
+4. Derive Betti's theorem.  
+
+Traction components formula $T_i = \tau_{ij}n_{j}$ and the equation of motion is 
+$\rho \ddot{u}_{i} = f_i + \tau_{ij,j}$
+The reciprocity relation
+$$
+\int_{V} (f - \rho \ddot{u}) . v dV + \int_{S} v . \tau . \hat{n} dS =
+\int_{V} (g - \rho \ddot{v}) . u dV + \int_{S} u . \sigma . \hat{n} dS
+$$
+may be written in the index form:
+
+---
+
+
+
+\newpage
+$$
+(\text{curl} \overline{u})_{i} = (\nabla \times u)_{i} = \epsilon_{ijk} \frac {\partial u_{k}}{\partial x_{j}}
+$$
+Therefore 
+$$
+\frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} - \frac{\partial u_{j}}{\partial x_{i}} \right) \delta x_{j} =
+\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m}
+$$
+Using the identity we proved earlier, we get:
+$$
+\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m} = 
+\frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m}
+$$
+Simplifying:
+$$
+\frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m} =
+\frac{1}{2} \left( \frac{\partial u_{m}}{\partial x_{m}} \delta x_{i} - \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l} \right)
+$$
+Since the divergence of a vector field is a scalar, the first term vanishes
+$$
+\frac{1}{2} \left( \frac{\partial u_{m}}{\partial x_{m}} \delta x_{i} - \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l} \right) =
+-\frac{1}{2} \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l}
+$$
+This can be rewritten as:
+$$
+\frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} - \frac{\partial u_{j}}{\partial x_{i}} \right) =
+\frac{1}{2} (\text{curl} \overline{u})_{i}
+$$
+Combining the two terms, we get:
+$\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} + \frac{\partial u_{j}}{\partial x_{i}} \right) \delta x_{j} + \frac{1}{2} (\text{curl} \overline{u})_{i}$
+
+<!-- Cmd + Shift + K - to render as pdf -->
+
+### References
+- Properties of the Kronecker Delta function - *https://resources.system-analysis.cadence.com/blog/msa2022-the-properties-of-the-kronecker-delta-function*
+- Intro Seismology teaching notes - *https://www.mit.edu/~nnakata/page/Teaching_files/GEOPHYS130/GEOPHYS130_notes_all.pdf* 

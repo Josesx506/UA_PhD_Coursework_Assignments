@@ -1,0 +1,1 @@
+Assignments and projects for advanced seismology. R markdown is used for Latex equations. Use `Cmd + Shift + K` to render the document as a pdf.
