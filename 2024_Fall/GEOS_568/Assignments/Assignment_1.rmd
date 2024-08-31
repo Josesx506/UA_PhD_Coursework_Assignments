@@ -132,20 +132,69 @@ $$
 
 4. Derive Betti's theorem.  
 
-Traction components formula $T_i = \tau_{ij}n_{j}$ and the equation of motion is 
-$\rho \ddot{u}_{i} = f_i + \tau_{ij,j}$
-The reciprocity relation
+The traction components formula is $T_i = \tau_{ij}n_{j}$ and the equation of motion is 
+$\rho \ddot{u}_{i} = f_i + \tau_{ij,j}$  
+
+The reciprocity relation between u and v is 
 $$
-\int_{V} (f - \rho \ddot{u}) . v dV + \int_{S} v . \tau . \hat{n} dS =
-\int_{V} (g - \rho \ddot{v}) . u dV + \int_{S} u . \sigma . \hat{n} dS
+\int_{V} (f - \rho \ddot{u}) \cdot v dV + \int_{S} v \cdot \tau \cdot \hat{n} dS =
+\int_{V} (g - \rho \ddot{v}) \cdot u dV + \int_{S} u \cdot \sigma \cdot \hat{n} dS
 $$
 may be written in the index form:
+$$
+\int_{V} (f_{i} - \rho \ddot{u}_{i})v_{i} dV + \int_{S} v_{i} \tau_{ij} \hat{n}_{j} dS =
+\int_{V} (g_{i} - \rho \ddot{v}_{i}) u_{i} dV + \int_{S} u_{i} \sigma_{ij} \hat{n}_{j} dS
+$$
+Using Divergence theorem
+$$
+\int_{S} v \cdot \tau \cdot \hat{n} dS = \int_{V} \nabla \cdot (v \cdot \tau) dV
+$$
+Betti's theorem takes the form:
+$$
+\int_{V} \left[ (f - \rho \ddot{u}) \cdot v + \nabla \cdot (v \cdot \tau) \right] dV =
+\int_{V} \left[ (g - \rho \ddot{v}) \cdot u + \nabla \cdot (u \cdot \sigma) \right] dV
+$$
+The equation of motion can be rewritten
+$$
+\rho \ddot{u} - f - \nabla \cdot \tau = 0
+$$
+we replace $f - \rho \ddot{u}$ with $-\nabla \cdot \tau$ in the left-hand side, and 
+likewise $g - \rho \ddot{v}$ with $-\nabla \cdot \sigma$ in the right-hand side, 
+leading to
+$$
+\int_{V} \left[ (\nabla \cdot \tau) \cdot v - \nabla \cdot (v \cdot \tau) \right] dV =
+\int_{V} \left[ (\nabla \cdot \sigma) \cdot u - \nabla \cdot (u \cdot \sigma) \right] dV
+$$
+In index form this becomes
+$$
+\int_{V} \left[ \frac{\partial \tau_{ij}}{\partial x_{i}} v_{j} - \frac{\partial}{\partial x_{j}} (v_{i} \tau_{ij}) \right] dV =
+\int_{V} \left[ \frac{\partial \sigma_{ij}}{\partial x_{i}} u_{j} - \frac{\partial}{\partial x_{j}} (u_{i} \sigma_{ij}) \right] dV
+$$
+The symmetric expression of the stress tensor
+$$
+\frac {\partial}{\partial x_{j}}(v_{i}\tau_{ij}) = 
+\frac {\partial v_{i}}{\partial x_{j}} \tau_{ij} + v_{i}\frac{\partial \tau_{ij}}{\partial x_{j}} = 
+\frac {\partial v_{i}}{\partial x_{j}} \tau_{ij} + v_{j}\frac{\partial \tau_{ij}}{\partial x_{i}}
+$$
+can be substituted into the index form of Betti's theorem to get
+$$
+\frac {\partial v_{i}}{\partial x_{j}} \tau_{ij} = \frac {\partial u_{i}}{\partial x_{j}} \sigma_{ij}
+$$
+Since $\boldsymbol{\tau_{ij} = c_{ijkl} \frac{\partial u_{l}}{\partial x_{k}}}$ and 
+$\boldsymbol{\sigma_{ij} = c_{ijkl} \frac{\partial v_{l}}{\partial x_{k}}}$, and considering that 
+the elastic moduli tensor is symmetric, Betti's theorem is proved.
 
 ---
 
 
 
 \newpage
+- ToDO
+- Matrix determinants
+- Read Box 2.3
+- What is vector rotation?
+- Difference between vector and tensor.
+- Divergence theorem
 $$
 (\text{curl} \overline{u})_{i} = (\nabla \times u)_{i} = \epsilon_{ijk} \frac {\partial u_{k}}{\partial x_{j}}
 $$
