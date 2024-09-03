@@ -1,10 +1,9 @@
 function [num_questions] = hw1(infile)
-% This function reads in an image, performs some preprocessing and outputs 
-% several images within the active directory. 
-% Additional text is also printed for some internal calculations that were 
-% required. 
-% Most of the syntax is focused on manipulating image arrays, but the final
-% two questions are related to PCA analysis.
+% This function reads in an image, preprocesses them as arrays, and outputs 
+% several images within the active directory. Additional text is printed 
+% for some internal calculations that were required. Most of the syntax is 
+% focused on manipulating image arrays, but the final two questions are 
+% related to PCA analysis.
 % Input arg is a string path to the tent figure, and the function returns
 % the total number of questions that were answered.
 
@@ -81,7 +80,7 @@ title('Blue');
 set(gca, 'LooseInset', get(gca, 'TightInset')); % Minimize whitespace
 exportgraphics(f2, 'output/tent_rgb_channels.png', 'Resolution', 200);
 
-flip_chans = zeros(size(tent));
+flip_chans = tent;
 
 flip_chans(:, :, 1) = tent(:,:,2);
 flip_chans(:, :, 2) = tent(:,:,3);
@@ -171,7 +170,17 @@ X2 = linsolve(A,B);
 % Display the solution
 fprintf("Question 13: Playing with linear algebra\n")
 fprintf("Inverse:  x = %.4f, y = %.4f, z = %.4f\n", X1(1), X1(2), X1(3));
-fprintf("Linsolve: x = %.4f, y = %.4f, z = %.4f\n\n\n", X2(1), X2(2), X2(3));
+fprintf("Linsolve: x = %.4f, y = %.4f, z = %.4f\n", X2(1), X2(2), X2(3));
+
+val1 = (2*X1(1)) - (1*X1(2)) + (2*X1(3));
+val2 = (2*X2(1)) - (1*X2(2)) + (2*X2(3));
+if val1 == 8
+    fprintf("Valid inversion.\n");
+end
+
+if (val1 - val2) == 0
+    fprintf("Equal results.\n\n\n");
+end
 
 num_questions = num_questions + 1;
 
@@ -262,9 +271,9 @@ doub_bw_tent(mask) = 0;
 
 f9 = figure;
 imshow(doub_bw_tent);
-title('Pixels_>0.5');
+title('Mask Pixels >0.5');
 set(gca, 'LooseInset', get(gca, 'TightInset'));
-exportgraphics(f8, 'output/tent_bw_0.5_mask.png', 'Resolution', 200);
+exportgraphics(f9, 'output/tent_bw_0.5_mask.png', 'Resolution', 200);
 
 num_questions = num_questions + 1;
 

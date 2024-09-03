@@ -2,13 +2,10 @@
 % Latex comments start with the percent symbol.
 %
 % This file should create a pdf on a mac or Linux command line by running:
-%     pdflatex hw00-example-writeup.pdf
+%     pdflatex hw1.tex
 % I usually add a few options
-%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw00-example-writeup.pdf
-%
-% I do not know much about Latex on Windows machines, but see:
-%       https://www.latex-project.org/get/
-%
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex
+% 
 % If you are new to Latex, you might not know that you may need to run the above
 % twice for the compiler to sort out its references. (There are ways to finesse
 % this). 
@@ -20,24 +17,18 @@
 % are some common ones, but not all are needed for this document. There is no
 % real harm loading your favorites out of habit. 
 
-\usepackage{fullpage}
-\usepackage{amsmath,amssymb,bm,upgreek,mathrsfs}
-\usepackage{algorithmic,algorithm}
-\usepackage{graphicx,subcaption}
-\usepackage{setspace}
-\usepackage{color}
-\usepackage{multirow}
-\usepackage{alltt}
-\usepackage{cancel}
-\usepackage{listings}
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+            cancel,color,fullpage,graphicx,listings,mathrsfs,
+            multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
 
 \doublespacing
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Your personal shortcuts. You do not need to use any. 
-%
-% argmax and argmin
+% Your personal shortcuts. You do not need to use any. argmax and argmin
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
@@ -51,6 +42,38 @@
 \newcommand{\Lap}{{\text Laplace}}
 \newcommand{\btheta}{\boldsymbol{\theta}}
 \newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,                        % Use MATLAB
+        % frame=single,                           % Single frame around code
+        basicstyle=\small\ttfamily,             % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple},         % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,                       % Nothing special about identifiers
+                                                % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},             % Strings are purple
+        showstringspaces=false,                 % Don't put marks in string spaces
+        tabsize=2,                              % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,                           % Line numbers on left
+        firstnumber=1,                          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},          % Line numbers are blue
+        stepnumber=5                            % Line numbers go in steps of 5
+}
 
 %% Probability
 \newcommand{\E}[1]{\mathbb{E}[#1]}
@@ -65,27 +88,275 @@
 
 \begin{document}
 
+
 \centerline{\it CS 577}
 \centerline{\it HW \#1 Submission}
 \centerline{\it Name: Joses Omojola}
 
+All questions are answered in the \emph{hw1.m} file. The file creates an \emph{output} folder to save images, so that 
+the root directory is not always cluttered. I answered all the questions for the homework. Programming was completed 
+with Matlab R2024a, and it took me roughly \textbf{30 hours} to complete the assignment (Coding + Exposition).
 
-% Q17 for origin rotated center matrix
-% - Describe the New Coordinate System and Expected Covariance Matrix
-% In the new coordinate system, you would expect the covariance matrix to be 
-% diagonal because the data is aligned with the principal components:
+Images were read into matlab using the \emph{imread()} function, preprocessing was implemented to address specific
+questions, and the results were exported using different matlab functions. Subplots were used where necessary to 
+minimize output files and titles where included to differentiate the purpose of each subplot. Question numbers are
+denoted with a "Q" prefix in the text below. Questions 1-6 are not addressed here because they don't require specific
+deliverables.
 
-% The first principal component (aligned with the largest variance) will show 
-% high variance, while the second component (which should capture noise) 
-% will show much smaller variance.
+\begin{enumerate}
 
+    \item[Q7-10.]
 
-% We expect the new X-axis to have high variance (dominant eigenvector)
-% and the new Y-axis to have low variance (remaining noise). 
-% Therefore, the off-diagonal elements of the covariance matrix should
-% be close to zero, indicating minimal correlation between the new axes.
-% the variance along the second principal component (much smaller, 
-% ideally near zero if the data is truly one-dimensional
+    The result of \emph{help hw1} documentation is shown below.
+    \begin{lstlisting}[language=Matlab]
+    >> help hw1
+    This function reads in an image, preprocesses them as arrays, 
+    and outputs several images within the active directory. 
+    Additional text is printed for some internal calculations 
+    that were required. 
+    Most of the syntax is focused on manipulating image arrays, 
+    but the final two questions are related to PCA analysis.
+    Input arg is a string path to the tent figure, and the 
+    function returns the total number of questions that were 
+    answered.
+    \end{lstlisting}
 
+    The output of \emph{whos()} is shown below 
+    \begin{lstlisting}[language=Matlab]
+    3x1 struct array with fields:
+    name
+    size
+    bytes
+    class
+    global
+    sparse
+    complex
+    nesting
+    persistent
+          name: 'tent'
+          size: [489 728 3]
+         bytes: 1067976
+         class: 'uint8'
+        global: 0
+        sparse: 0
+       complex: 0
+       nesting: [1x1 struct]
+    persistent: 0
+    \end{lstlisting}
+
+    The array dimensions for the image can be extracted with \emph{'[num\_rows, num\_cols, 
+    num\_channel] = size(tent);'}, where the \emph{tent} variable is the array of image channels.
+    
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ ||c c c|| } 
+        \hline
+        Channel & Min & Max \\ 
+        \hline \hline
+        Red & 0 & 251 \\ 
+        Green & 0 & 248 \\ 
+        Blue & 0 & 253 \\ 
+        Overall & 0 & 253 \\ 
+        \hline
+    \end{tabular}
+    \caption{Summary statistics of image color channels.}
+    \label{tab:Table1}
+    \end{center}
+    \end{table}
+
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.4]{output/bw_tent.jpg}
+        \centering
+        \caption{Grayscale image of tent.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \newpage
+    The min- and max ranges of each channel is displayed below in \autoref{tab:Table1}, and 
+    the grayscale image of the flattened channels is shown in \autoref{fig:Figure1}. Unlike RGB
+    images, grayscale images are flattened along the 3\textsuperscript{rd} axis. Bright colors
+    are lightened in grayscale mode, while darker colors maintain a deeper tone. 
+
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.65]{output/tent_rgb_channels.png}
+        \centering
+        \caption{Split grayscale images of each channel band.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    Individual channels can also be split to create multiple grayscale channel bands. An
+    example is shown in \autoref{fig:Figure2}. The yellow tent is bright on the red and 
+    green channels which can be combined to create a yellow mix. The tent is dark on the 
+    blue channel because the blue channel is not sensitive to signals within the bright 
+    yellow wavelength. When the channels are exchanged with each other, the colors of items
+    take on a different color e.g. the originally yellow tent becomes purple after the 
+    channels are swapped in \autoref{fig:Figure3}.
+
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.4]{output/tent_flip_ch.png}
+        \centering
+        \caption{Altered channels from original tent image.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    When displaying images, digital representations can apply scaling to generate false colors
+    across channels. e.g. Using the \emph{imagesc()} function to plot an image, scales the image 
+    color by the selected colormap min and max irrespective of the matrix values. The \emph{imshow()}
+    function on the other hand shows grayscaled images scaled using white and black to represent 
+    light and dark patches across an input array. An example is shown below in \autoref{fig:Figure4}.
+
+    \newpage
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.8]{output/tent_checker_bw_for_loop.png}
+        \centering
+        \caption{False color representation of black and white image for white squares.}
+        \label{fig:Figure4}
+    \end{figure}
+
+    \emph{imshow()} is better suited for representing black and white images because it doesn't render 
+    false colors of the assigned colormap like \emph{imagesc()} does. The matrix manipultation in \emph{Q10}
+    can be replicated using array masking. In the snippet below, we make 1/25\textsuperscript{th} of all
+    the cells in the image matrix black.
+
+    \begin{lstlisting}[language=Matlab]
+        doub_bw_tent = double(bw_tent) / 255;
+        [nRows, nCols] = size(doub_bw_tent);
+        doub_bw_tent(5:5:nRows, 5:5:nCols) = 0; % array mask
+    \end{lstlisting}
+
+    \item[Q16.]
+
+    The result of altering the arrays \autoref{fig:Figure5} highlight a similar false color issue of the 
+    \emph{imagesc()} function observed in \emph{Q10}. Masking makes it easier to target a specific range
+    of values in an array. This can be used to improve color correction during preprocessing of images.
+    Another example of masking arrays is shown in \autoref{fig:Figure6}. Extremely bright values in the 
+    grayscale image from the snow and tent pixels are easily manipulated to become dark. 
+
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.8]{output/tent_checker_bw_vectorized.png}
+        \centering
+        \caption{False color representation of black and white image for black squares.}
+        \label{fig:Figure5}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.4]{output/tent_bw_0.5_mask.png}
+        \centering
+        \caption{Masked bright colors in BW image.}
+        \label{fig:Figure6}
+    \end{figure}
+
+    \item[Q11.]
+
+    Historams are simplified method for showing the Linear sensor response of a camera. They can highlight 
+    peaks within which each channel is sensitive to, and provide a 1D prior for developing models of the 
+    world from digital images. Channel histograms are shown in \autoref{fig:Figure7}.
+    
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.65]{output/tent_rgb_hist.png}
+        \centering
+        \caption{Histogram response of rgb channels.}
+        \label{fig:Figure7}
+    \end{figure}
+
+    \newpage
+    \item[Q12.]
+
+    Plots in matlab can be easily made using the \emph{plot()} function \autoref{fig:Figure8}.
+    
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.5]{output/trig_waves.png}
+        \centering
+        \caption{Plot of sine and cosine wave.}
+        \label{fig:Figure8}
+    \end{figure}
+
+    \item[Q13-15.] Linear Algebra
+    \emph{inv()} inverts the values for x,y,z to be x = \textbf{1.9375}, y = \textbf{0.2500}, z = \textbf{2.1875}.
+    The same values are gotten with \emph{linsolve()}, and proof of correctness was determined by substituting
+    the outputs into one of the equations.  Subtraction of the results from both methods is zero, indicating that they
+    are mathematically equivalent for solving linear equations. From documentation, \emph{linsolve()} is better 
+    suited at solving larger linear equations effectively. Questions 14 - 15 were solved in the coded but not 
+    described because they have no deliverables.
+
+    \item[Q17-18.] PCA
+
+    The plot of the two variables in the \emph{pca.txt} fie are shown in \autoref{fig:Figure9}. 
+    
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.5]{output/pca_raw.png}
+        \centering
+        \caption{Cross-plot of PCA data scatter.}
+        \label{fig:Figure9}
+    \end{figure}
+
+    The covariance matrix of the data is 
+    $$
+    \begin{bmatrix}
+    0.0211 & 0.0356 \\
+    0.0356 & 0.0608
+    \end{bmatrix}
+    $$
+
+    \newpage
+    After rotating the data to the new coordinate system, the covariance matrix is expected to be 
+    diagonal because the data is aligned with the principal components. The first principal component 
+    (aligned with the largest variance) will show high variance, while the second component (which 
+    should capture noise) will show much smaller variance. Therefore, the off-diagonal elements of the 
+    covariance matrix should be close to zero, indicating minimal correlation between the new axes,if 
+    the data is truly one-dimensional.
+
+    After mean centering the data and transforming the data by the rotation matrix, we get,
+    $$
+    M = 
+    \begin{bmatrix}
+    -0.8624 &  0.5063 \\
+    0.5063  &  0.8624
+    \end{bmatrix}
+    $$
+    Proof of orthogonality can be determined by multiplying the matrix with its inverse $I = M' \times M$ to get an 
+    identity matrix
+    $$
+    I = 
+    \begin{bmatrix}
+    1.0000  &      0 \\
+    0       & 1.0000
+    \end{bmatrix}
+    $$
+    The transformed data is shown in \autoref{fig:Figure10}. 
+    
+    \begin{figure}[ht!]
+        \includegraphics[scale=0.5]{output/pca_mean_cent.png}
+        \centering
+        \caption{Transformed data into principal component dimentsions.}
+        \label{fig:Figure10}
+    \end{figure}
+
+    The covariance matrix for the transformed data is 
+    $$
+    \begin{bmatrix}
+    0.0001  &  0.0000 \\
+    0.0000  &  0.0818
+    \end{bmatrix}
+    $$
+    The sum of the variance values from before and after the transformation is the same as shown 
+    in \autoref{tab:Table2}. This is because the transformation is orthogonal, preserving the total 
+    variance of the data.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ c | c | c } 
+        \hline
+         & Before & After \\ 
+        \hline \hline
+        Variance Sums & 0.081909 & 0.081909 \\ 
+        \hline
+    \end{tabular}
+    \caption{Sum of variance values from cov. matrices.}
+    \label{tab:Table2}
+    \end{center}
+    \end{table}
+
+\end{enumerate}
 
 \end{document}
