@@ -79,13 +79,16 @@ $$
 
 **To prove the main equation:**  
 
-We can rewrite the left-hand side as 
+We can rewrite the left-hand side from AR eqn. 2.1 as 
 $$
-\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = u_{i,j}\delta x_{j}
+\delta u = 
+(\delta x \cdot \nabla)u \ \textbf{or} \  \delta u_{i} = 
+\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = 
+\delta u_{i,j}\delta x_{j}
 $$
-By decomposing $u_{i,j}$ into its symmetric and antisymmetric parts, we get:
+By decomposing $\delta u_{i,j}$ into its symmetric and antisymmetric parts, we get:
 $$
-u_{i,j} = \frac{1}{2} (u_{i,j} + u_{j,i}) + \frac{1}{2} (u_{i,j} - u_{j,i})
+\delta u_{i,j} = \frac{1}{2} (u_{i,j} + u_{j,i}) + \frac{1}{2} (u_{i,j} - u_{j,i})
 $$
 This can be further expanded to 
 $$
@@ -94,15 +97,52 @@ $$
 \frac{1}{2} \left( u_{i,j} - u_{j,i} \right) \right] \delta x_{j}
 $$
 The first term on the right-hand side in the original equation is already in the desired form. 
-For the second term, we can replace the the antisymmetric part with the curl of the vector field $\overline{u}$,
-using the definition of the curl for rigid body rotation:
+For the second term, we can replace the the antisymmetric part with the identity $(u_{i,j} - u_{j,i})\delta x_{j} = 
+\epsilon_{ijk} \epsilon_{jlm} u_{m,l} \delta x_{k}$ to get;
 
 $$
+\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = 
+\frac{1}{2} \left( u_{i,j} + u_{j,i} \right) \delta x_{j} + 
+\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} u_{m,l} \delta x_{k}
+$$
+
+We can further expand $\epsilon_{ijk} \epsilon_{jlm}$ with the identity derived at the end of the first half
+of this question with $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$
+$$
 \begin{aligned}
-u_{i,j} - u_{j,i} = \text{curl}\overline{u} \\
-\text{The second term becomes} \\
-\frac{1}{2} (\text{curl}\overline{u}) \delta x_{j}
+\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} u_{m,l} \delta x_{k} = 
+\frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) u_{m,l} \delta x_{k} \\
+= \frac{1}{2} (\delta_{im} \delta_{kl} u_{m,l} \delta x_{k} - \delta_{il} \delta_{km} u_{m,l} \delta x_{k})
 \end{aligned}
+$$
+Each term can be simplified by contracting the Kronecker deltas:
+$$
+\begin{aligned}
+\delta_{im} \delta_{kl} u_{m,l} \delta x_{k} = 
+(\delta_{im} u_{m,l}) \delta_{kl} \delta x_{k} = 
+(u_{i,l} \delta_{kl}) \delta x_{k} =
+u_{i,k} \delta x_{k} \\
+\delta_{il} \delta_{km} u_{m,l} \delta x_{k} = 
+(\delta_{km} u_{m,l}) \delta_{il} \delta x_{k} = 
+(u_{k,l} \delta_{il}) \delta x_{k} = 
+u_{k,i} \delta x_{k}
+\end{aligned}
+$$
+This is simplified to give the antisymmetric portion of $\delta u_{i,j}$:
+$$
+\frac {1}{2} (u_{i,k} \delta x_{k} - u_{k,i} \delta x_{k}) = 
+\frac {1}{2} \epsilon_{ijk} curl \overline{u}_j
+$$
+This corresponds to the $i$-th component of the cross product of the curl of $\overline{u}$ 
+with $\delta x$. Therefore, the final expression is:
+$$
+\frac {1}{2} (\text{curl} \overline{u} \times \delta \overline{x})_{i}
+$$
+This aligns with the final equation of:
+$$
+\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = 
+\frac{1}{2} \left(u_{i,j} + u_{j,i} \right)\delta x_{j} + 
+\frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}
 $$
 
 ---
@@ -195,6 +235,23 @@ the elastic moduli tensor is symmetric, Betti's theorem is proved.
 - What is vector rotation?
 - Difference between vector and tensor.
 - Divergence theorem
+
+$$
+\begin{aligned}
+u_{i,j} - u_{j,i} = \text{curl}\overline{u} \\
+\text{The second term becomes} \\
+\frac{1}{2} (\text{curl}\overline{u}) \delta x_{j}
+\end{aligned}
+$$
+
+$$
+\frac{\partial u_i}{\partial x_j} \delta x_j = 
+\frac{1}{2} \left( \frac{\partial u_i}{\partial x_j} + 
+\frac{\partial u_j}{\partial x_i} \right) \delta x_j + 
+\frac{1}{2} \left( \frac{\partial u_i}{\partial x_j} - 
+\frac{\partial u_j}{\partial x_i} \right) \delta x_j$$
+$$
+
 $$
 (\text{curl} \overline{u})_{i} = (\nabla \times u)_{i} = \epsilon_{ijk} \frac {\partial u_{k}}{\partial x_{j}}
 $$
@@ -231,3 +288,5 @@ $\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left( \frac{\
 ### References
 - Properties of the Kronecker Delta function - *https://resources.system-analysis.cadence.com/blog/msa2022-the-properties-of-the-kronecker-delta-function*
 - Intro Seismology teaching notes - *https://www.mit.edu/~nnakata/page/Teaching_files/GEOPHYS130/GEOPHYS130_notes_all.pdf* 
+- Advanced tensor notation - *https://www.continuummechanics.org/tensornotationadvanced.html*
+- Kronecker delta contraction - *https://youtu.be/nUxaL444Uv0*

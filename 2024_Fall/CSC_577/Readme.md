@@ -1,5 +1,5 @@
 ### Instructions
-1. Download and install Latex
+1. Download and install [Latex](https://www.tug.org/mactex/mactex-download.html). 
 2. Update the latex package manager *tlmgr*
     ```bash
     wget https://mirror.ctan.org/systems/texlive/tlnet/update-tlmgr-latest.sh

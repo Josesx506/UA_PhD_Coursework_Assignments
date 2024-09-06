@@ -99,9 +99,8 @@ with Matlab R2024a, and it took me roughly \textbf{30 hours} to complete the ass
 
 Images were read into matlab using the \emph{imread()} function, preprocessing was implemented to address specific
 questions, and the results were exported using different matlab functions. Subplots were used where necessary to 
-minimize output files and titles where included to differentiate the purpose of each subplot. Question numbers are
-denoted with a "Q" prefix in the text below. Questions 1-6 are not addressed here because they don't require specific
-deliverables.
+minimize output files and titles were included to differentiate the purpose of each subplot. Question numbers are
+denoted with a "Q" prefix in the text below. Questions without deliverables were done in matlab but not addressed here.
 
 \begin{enumerate}
 
@@ -186,11 +185,11 @@ deliverables.
 
     Individual channels can also be split to create multiple grayscale channel bands. An
     example is shown in \autoref{fig:Figure2}. The yellow tent is bright on the red and 
-    green channels which can be combined to create a yellow mix. The tent is dark on the 
-    blue channel because the blue channel is not sensitive to signals within the bright 
-    yellow wavelength. When the channels are exchanged with each other, the colors of items
-    take on a different color e.g. the originally yellow tent becomes purple after the 
-    channels are swapped in \autoref{fig:Figure3}.
+    green channels because both colors can be combined to create a yellow mix. The tent 
+    is dark on the blue channel because the blue channel is not sensitive to signals 
+    within the bright yellow wavelength. When the channels are exchanged with each other, 
+    the colors of items take on a different color e.g. the originally yellow tent becomes 
+    purple after the channels are swapped in \autoref{fig:Figure3}.
 
     \begin{figure}[ht!]
         \includegraphics[scale=0.4]{output/tent_flip_ch.png}
@@ -276,7 +275,7 @@ deliverables.
     The same values are gotten with \emph{linsolve()}, and proof of correctness was determined by substituting
     the outputs into one of the equations.  Subtraction of the results from both methods is zero, indicating that they
     are mathematically equivalent for solving linear equations. From documentation, \emph{linsolve()} is better 
-    suited at solving larger linear equations effectively. Questions 14 - 15 were solved in the coded but not 
+    suited at solving larger linear equations effectively. Questions 14 - 15 were solved in the code but not 
     described because they have no deliverables.
 
     \item[Q17-18.] PCA
@@ -340,8 +339,8 @@ deliverables.
     \end{bmatrix}
     $$
     The sum of the variance values from before and after the transformation is the same as shown 
-    in \autoref{tab:Table2}. This is because the transformation is orthogonal, preserving the total 
-    variance of the data.
+    in \autoref{tab:Table2}. Similar variance sums were obtained because the transformation is 
+    orthogonal, which preserves the total variance of the data.
 
     \begin{table}[h!]
     \begin{center}
