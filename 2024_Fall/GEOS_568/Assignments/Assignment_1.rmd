@@ -3,7 +3,10 @@ title: "GEOS 568: Advanced Seismology HW1. Due: 9/12/24"
 subtitle: "Name: Joses Omojola"
 output:
   pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
 ---
+
 
 1. Show that $\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left(u_{i,j} + u_{j,i} \right)\delta x_{j} + \frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}$. 
     Begin by showing that  
@@ -67,7 +70,7 @@ $$
 $$
 where we can factor out the common term $(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})$
 $$
-\Delta = (1-n+1)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) = (2-3)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})
+\Delta = (1-3+1)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl}) = (2-3)(\delta_{il}\delta_{km} - \delta_{im}\delta_{kl})
 $$
 to get 
 $$
@@ -110,9 +113,9 @@ We can further expand $\epsilon_{ijk} \epsilon_{jlm}$ with the identity derived 
 of this question with $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$
 $$
 \begin{aligned}
-\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} u_{m,l} \delta x_{k} = 
+\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} u_{m,l} \delta x_{k} &= 
 \frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) u_{m,l} \delta x_{k} \\
-= \frac{1}{2} (\delta_{im} \delta_{kl} u_{m,l} \delta x_{k} - \delta_{il} \delta_{km} u_{m,l} \delta x_{k})
+&= \frac{1}{2} (\delta_{im} \delta_{kl} u_{m,l} \delta x_{k} - \delta_{il} \delta_{km} u_{m,l} \delta x_{k})
 \end{aligned}
 $$
 Each term can be simplified by contracting the Kronecker deltas:
@@ -164,9 +167,88 @@ $$
 T(n) = T(\hat{x}_{j})n_j
 $$
 
+---  
+
 ---
 
-3. Using the energy arguments in Aki and Richards Section 2.2, show that $c_{ijpq} = c_{pqij}$.
+3. Using the energy arguments in Aki and Richards Section 2.2, show that $C_{ijpq} = C_{pqij}$.  
+
+
+The modern generalization of Hooke's law representing a relationship between stress and strain is:
+$$
+\tau_{ij} = C_{ijpq}e_{pq}
+$$
+where
+
+- $\tau_{ij}$ is the stress tensor,
+- $C$ is the stiffness tensor, which is a 4\textsuperscript{th} order tensor of elastic constants that describes the properties of the material, and
+- $e_{pq}$ is the strain tensor.
+
+
+The symmetry of the elastic modulus tensor can be derived from the second law of thermodynamics, specifically the requirement that the internal energy of a system must be a state function. This means that the change in internal energy must depend only on the initial and final states of the system, and not on the path taken between those states.  
+
+The change in internal energy $dU$ can be expressed as a function of the strain tensor components 
+$e_{ij}$ and the temperature $T$:
+$$
+dU = \left(\frac {\partial U}{\partial e_{ij}} \right)_{T} d e_{ij} + 
+\left(\frac {\partial U}{\partial T} \right)_{e_{ij}} dT
+$$
+where the first term represents the mechanical work done on the body, and the second term represents the 
+heat transfer.  
+
+The stress tensor $\tau_{ij}$ can be defined as the partial derivative of the internal energy with respect 
+to the strain tensor components:
+$$
+\tau_{ij} = \left(\frac {\partial U}{\partial e_{ij}} \right)_{T}
+$$
+
+The elastic modulus tensor $C_{ijpq}$ is defined as the second derivative of the internal energy with 
+respect to the strain tensor components:
+$$
+C_{ijpq} = \left(\frac {\partial^{2} U}{\partial e_{ij} \partial e_{pq}} \right)_{T}
+$$
+
+By applying the Schwarz theorem which states that the order of partial differentiation can be interchanged 
+for continuous functions, we obtain:
+$$
+\begin{aligned}
+\left(\frac {\partial^{2} U}{\partial e_{ij} \partial e_{pq}} \right)_{T} &= 
+\left(\frac {\partial^{2} U}{\partial e_{pq} \partial e_{ij}} \right)_{T} \\
+\\
+C_{ijpq} &= C_{pqij}
+\end{aligned}
+$$
+
+
+We start by computing 
+$$
+\frac {\partial e_{ij}}{\partial e_{pq}} = 
+\delta_{ip}\delta_{jq}
+$$
+This causes us to lose symmetry with respect to $ip$ and $jq$ on the rhs, but it can be regained with
+$$
+\frac {\partial e_{ij}}{\partial e_{pq}} = 
+\frac {1}{2} \left(\delta_{ip}\delta_{jq} + \delta_{iq}\delta_{jp} \right)
+$$
+We can use this to compute $\tau_{ij}$ as:
+
+$$
+\begin{aligned}
+\tau_{ij}(e) &= \frac {\partial W} {\partial e_{ij}} \\
+&= \frac {\partial}{\partial e_{ij}} \left(\frac {1}{2}C_{pqrs}e_{pq}e_{rs} \right) \\
+&= \frac {1}{2}C_{pqrs} \left(\frac {\partial e_{pq}}{\partial e_{ij}} e_{rs} + 
+e_{pq} \frac {\partial e_{rs}}{\partial e_{ij}} \right) \\
+&\text{using the first equation} \\
+&= \frac {1}{2} C_{pqrs} (\delta_{pi}\delta{qj} e_{pq} + e_{pq} \delta_{ri}\delta_{sj}) \\
+&= \frac {1}{2} (C_{ijrs} e_{rs} + C_{pqij} e_{pq})
+\end{aligned}
+$$
+
+if $C_{pqij} = C_{ijpq}$ we obtain:
+
+$$
+\tau_{ij} = C_{ijpq} e_{pq}
+$$
 
 ---
 
@@ -235,53 +317,6 @@ the elastic moduli tensor is symmetric, Betti's theorem is proved.
 - What is vector rotation?
 - Difference between vector and tensor.
 - Divergence theorem
-
-$$
-\begin{aligned}
-u_{i,j} - u_{j,i} = \text{curl}\overline{u} \\
-\text{The second term becomes} \\
-\frac{1}{2} (\text{curl}\overline{u}) \delta x_{j}
-\end{aligned}
-$$
-
-$$
-\frac{\partial u_i}{\partial x_j} \delta x_j = 
-\frac{1}{2} \left( \frac{\partial u_i}{\partial x_j} + 
-\frac{\partial u_j}{\partial x_i} \right) \delta x_j + 
-\frac{1}{2} \left( \frac{\partial u_i}{\partial x_j} - 
-\frac{\partial u_j}{\partial x_i} \right) \delta x_j$$
-$$
-
-$$
-(\text{curl} \overline{u})_{i} = (\nabla \times u)_{i} = \epsilon_{ijk} \frac {\partial u_{k}}{\partial x_{j}}
-$$
-Therefore 
-$$
-\frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} - \frac{\partial u_{j}}{\partial x_{i}} \right) \delta x_{j} =
-\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m}
-$$
-Using the identity we proved earlier, we get:
-$$
-\frac{1}{2} \epsilon_{ijk} \epsilon_{jlm} \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m} = 
-\frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m}
-$$
-Simplifying:
-$$
-\frac{1}{2} (\delta_{im} \delta_{kl} - \delta_{il} \delta_{km}) \frac {\partial u_{k}}{\partial x_{l}} \delta x_{m} =
-\frac{1}{2} \left( \frac{\partial u_{m}}{\partial x_{m}} \delta x_{i} - \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l} \right)
-$$
-Since the divergence of a vector field is a scalar, the first term vanishes
-$$
-\frac{1}{2} \left( \frac{\partial u_{m}}{\partial x_{m}} \delta x_{i} - \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l} \right) =
--\frac{1}{2} \frac{\partial u_{l}}{\partial x_{i}} \delta x_{l}
-$$
-This can be rewritten as:
-$$
-\frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} - \frac{\partial u_{j}}{\partial x_{i}} \right) =
-\frac{1}{2} (\text{curl} \overline{u})_{i}
-$$
-Combining the two terms, we get:
-$\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left( \frac{\partial u_{i}}{\partial x_{j}} + \frac{\partial u_{j}}{\partial x_{i}} \right) \delta x_{j} + \frac{1}{2} (\text{curl} \overline{u})_{i}$
 
 <!-- Cmd + Shift + K - to render as pdf -->
 
