@@ -8,10 +8,8 @@ header-includes:
 ---
 
 
-1. Show that $\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left(u_{i,j} + u_{j,i} \right)\delta x_{j} + \frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}$. 
-    Begin by showing that  
-    
-    $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$.  
+1. Show that $\frac{\partial u_{i}}{\partial x_{j}} \delta x_{j} = \frac{1}{2} \left(u_{i,j} + u_{j,i} \right)\delta x_{j} + \frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}$. Begin by showing that 
+$\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$.  
 
 __Proof__: $\epsilon_{ijk} \epsilon_{jlm} = \delta_{im} \delta_{kl} - \delta_{il} \delta_{km}$  
 
@@ -148,9 +146,12 @@ $$
 \frac{1}{2} \left(\text{curl}\overline{u}+\delta \overline{x} \right)_{i}
 $$
 
----
+&nbsp;  
+&nbsp;  
+&nbsp;  
 
-2. Using the Aki and Richards Eqn. 2.6 and assuming a tetrahedron volume, show that $T(n) = T(\hat{x}_{j})n_{j}$
+2. **Using the Aki and Richards Eqn. 2.6 and assuming a tetrahedron volume, show that** $T(n) = T(\hat{x}_{j})n_{j}$  
+
 $$
 \frac {|\int\int T dS|}{\int\int dS} = O(\Delta V^{\frac{1}{3}}) \rightarrow 0 \ \text{as} \ \Delta V \rightarrow 0.
 $$
@@ -167,12 +168,11 @@ $$
 T(n) = T(\hat{x}_{j})n_j
 $$
 
----  
+&nbsp;  
+&nbsp;  
+&nbsp;  
 
----
-
-3. Using the energy arguments in Aki and Richards Section 2.2, show that $C_{ijpq} = C_{pqij}$.  
-
+3. **Using the energy arguments in Aki and Richards Section 2.2, show that** $C_{ijpq} = C_{pqij}$.  
 
 The modern generalization of Hooke's law representing a relationship between stress and strain is:
 $$
@@ -219,40 +219,13 @@ C_{ijpq} &= C_{pqij}
 \end{aligned}
 $$
 
+&nbsp;  
+&nbsp;  
+&nbsp;  
 
-We start by computing 
-$$
-\frac {\partial e_{ij}}{\partial e_{pq}} = 
-\delta_{ip}\delta_{jq}
-$$
-This causes us to lose symmetry with respect to $ip$ and $jq$ on the rhs, but it can be regained with
-$$
-\frac {\partial e_{ij}}{\partial e_{pq}} = 
-\frac {1}{2} \left(\delta_{ip}\delta_{jq} + \delta_{iq}\delta_{jp} \right)
-$$
-We can use this to compute $\tau_{ij}$ as:
+\newpage
 
-$$
-\begin{aligned}
-\tau_{ij}(e) &= \frac {\partial W} {\partial e_{ij}} \\
-&= \frac {\partial}{\partial e_{ij}} \left(\frac {1}{2}C_{pqrs}e_{pq}e_{rs} \right) \\
-&= \frac {1}{2}C_{pqrs} \left(\frac {\partial e_{pq}}{\partial e_{ij}} e_{rs} + 
-e_{pq} \frac {\partial e_{rs}}{\partial e_{ij}} \right) \\
-&\text{using the first equation} \\
-&= \frac {1}{2} C_{pqrs} (\delta_{pi}\delta{qj} e_{pq} + e_{pq} \delta_{ri}\delta_{sj}) \\
-&= \frac {1}{2} (C_{ijrs} e_{rs} + C_{pqij} e_{pq})
-\end{aligned}
-$$
-
-if $C_{pqij} = C_{ijpq}$ we obtain:
-
-$$
-\tau_{ij} = C_{ijpq} e_{pq}
-$$
-
----
-
-4. Derive Betti's theorem.  
+4. **Derive Betti's theorem.**  
 
 The traction components formula is $T_i = \tau_{ij}n_{j}$ and the equation of motion is 
 $\rho \ddot{u}_{i} = f_i + \tau_{ij,j}$  
@@ -308,20 +281,3 @@ the elastic moduli tensor is symmetric, Betti's theorem is proved.
 
 ---
 
-
-
-\newpage
-- ToDO
-- Matrix determinants
-- Read Box 2.3
-- What is vector rotation?
-- Difference between vector and tensor.
-- Divergence theorem
-
-<!-- Cmd + Shift + K - to render as pdf -->
-
-### References
-- Properties of the Kronecker Delta function - *https://resources.system-analysis.cadence.com/blog/msa2022-the-properties-of-the-kronecker-delta-function*
-- Intro Seismology teaching notes - *https://www.mit.edu/~nnakata/page/Teaching_files/GEOPHYS130/GEOPHYS130_notes_all.pdf* 
-- Advanced tensor notation - *https://www.continuummechanics.org/tensornotationadvanced.html*
-- Kronecker delta contraction - *https://youtu.be/nUxaL444Uv0*
