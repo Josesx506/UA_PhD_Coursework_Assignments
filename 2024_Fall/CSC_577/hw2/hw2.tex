@@ -1,0 +1,303 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw1.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#2 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Eight out of 9 questions were answered in the \emph{hw2.m} file. The file creates an \emph{output} folder to save images, 
+so that the root directory is not always cluttered. Figures are saved and automatically closed when the script is run to
+minimize the number of open windows. The script can be run by specifying all the names of the 3 files as input arguments 
+to the function $ n\_qsts = hw2('rgb\_sensors.txt','light\_spectra.txt','responses.txt');$. Programming was completed with 
+Matlab R2024a, and it took me roughly 20 hours to complete the assignment (Coding + Exposition).
+
+Text files were read into matlab using the \emph{importdata()} function, nested functions were used to reduce repeated 
+code, and subplots were used where necessary to minimize output files. Titles were included to differentiate the purpose 
+of each subplot and question numbers are denoted with a "Q" prefix in the text below. The bonus question was omitted due 
+to time constraints.
+
+\begin{enumerate}
+
+    \item[Q1.]
+
+    The random seed was set to "477" for reproducibility and the input sensors are from the \emph{rgb\_sensors.txt} file is shown 
+    below in \autoref{fig:Figure1}. The blue channel is most sensitive at short wavelengths, while the red channel is 
+    sensitive at longer wavelengths.
+
+    The simulated light spectra was scaled by \textbf{9.4e-4} to adjust the input range between 0-255. The RGB response was obtained 
+    by multiplying the spectra with the sensor sensitivity. The array was reshaped to match the assignment instructions and the 
+    results are shown in \autoref{fig:Figure1}. The sensitivity spectrum is optimized to improve indoor lighting hence the bias 
+    towards blue.
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.5]{output/f1_rgb.png} \hfill
+        \includegraphics[scale=0.95]{output/f2_rgb400by400.png}
+        \caption{Q1 output images (a) Input sensor sensitivity spectra. 
+        (b) RGB image from simulated light spectra.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Q2.]
+
+    The least-squares method was used to invert for the sensor sensitivities with the \emph{linsolve()} function in matlab.
+    The inverted results are compared to the original sensitivities in \autoref{fig:Figure2}. A near perfect match was obtained 
+    and a direct overlay didn't show any differences, hence the split across the multiple subplots.
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f3_inverted_spectra.png}
+        \caption{Ground truth vs. inverted sensor sensitivities.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \FloatBarrier
+
+    The summary of the obtained errors are shown in \autoref{tab:Table1}. The blue channel spectrum has the highest error, while 
+    the errors are generally lower across other channels including the total rgb response error. From the minor errors encountered, 
+    the estimated sensors can precisely reconstruct the RGB.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ c | c | c | c | c} 
+        \hline
+        & Red & Green & Blue & RGB \\ 
+        \hline \hline
+        RMS Errors & 3.4954e-12 & 4.2429e-12 & 1.1388e-11 & 4.9092e-14 \\ 
+        \hline
+    \end{tabular}
+    \caption{RMS errors from inverted sensor spectra.}
+    \label{tab:Table1}
+    \end{center}
+    \end{table}
+
+    \item[Q3.]
+
+    Additional tests were run by adding random noise with a standard deviation of 10 to the estimated rgb response while inverting 
+    for the sensor sensitivity spectra. Comparison between unclipped and clipped rgb values before inverting for sensitivity is 
+    shown in \autoref{fig:Figure3}.
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f4_inverted_spectra_noise10.png}
+        \caption{Inverted sensor sensitivities after adding random noise.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    \FloatBarrier
+
+    The summary RMS errors are shown in \autoref{tab:Table2}. At low noise standard deviations, the influence of clipping is 
+    minimal on the sensors, however; the reconstructed RGB from the clipped input is more accurate.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ c | c | c | c | c | c} 
+        \hline
+        & Red & Green & Blue & Sensor & RGB \\ 
+        \hline \hline
+        Unclipped & 1041.8 & 999.77 & 877.13 & 975.4 & 9.6859 \\ 
+        Clipped & 1041.8 & 999.77 & 882.61 & 977.05 & 9.6777  \\
+        \hline
+    \end{tabular}
+    \caption{RMS errors from inverted sensor spectra after adding random noise.}
+    \label{tab:Table2}
+    \end{center}
+    \end{table}
+
+    \item[Q4.]
+
+    The noise levels were consistently increased to identify thresholds at which the rgb cannot be accurately recovered and 
+    extend the tests about clipped vs. unclipped RGB levels. Values of the noise std. were increased according to the intervals 
+    specified in \autoref{tab:Table3}.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{| c | c | c | c | c |} 
+        \hline
+        Noise Std & Unclip. RGB RMS & Clip RGB RMS & Unclip. Sensor RMS & Clip Sensor RMS\\ 
+        \hline \hline
+        0  &  4.9e-14 & 4.9e-14 & 7.3e-12 & 7.3e-12  \\ 
+        10 &  9.6859 &   9.6777 &  975.4 &  977.05  \\ 
+        20 &  19.372 &   19.252 & 1950.8 & 1944  \\ 
+        30 &  29.058 &   28.131 & 2926.2 & 2836.7  \\ 
+        40 &  38.744 &    36.07 & 3901.6 & 3623.3  \\ 
+        50 &   48.43 &   43.273 &   4877 & 4338.7  \\ 
+        60 &  58.116 &   49.932 & 5852.4 & 5020.7  \\ 
+        70 &  67.802 &    56.21 & 6827.8 & 5653.8  \\ 
+        80 &  77.487 &    61.94 & 7803.2 & 6229.1  \\ 
+        90 &  87.173 &   67.223 & 8778.6 & 6767.8  \\ 
+        100 & 96.859 &   71.913 &   9754 & 7265.8  \\ 
+        120 & 116.23 &   79.811 &  11705 & 8092.3  \\ 
+        140 &  135.6 &   85.853 &  13656 & 8773.4  \\ 
+        160 & 154.97 &   90.611 &  15606 & 9347.4  \\ 
+        180 & 174.35 &    94.45 &  17557 & 9828.4  \\ 
+        200 & 193.72 &   97.586 &  19508 & 10232  \\ 
+        250 & 242.15 &   103.12 &  24385 & 10963  \\ 
+        300 & 290.58 &   106.73 &  29262 & 11398  \\ 
+        350 & 339.01 &   109.41 &  34139 & 11697  \\ 
+        400 & 387.44 &   111.37 &  39016 & 11918  \\ 
+        \hline
+    \end{tabular}
+    \caption{RMS errors increasing noise levels.}
+    \label{tab:Table3}
+    \end{center}
+    \end{table}
+
+    At high noise levels, like standard deviations of 50 and 100, the recovered sensor sensitivity is very noisy and hardly 
+    accurate \autoref{fig:Figure4}. Below a noise std. of 30, the clipped and unclipped rms errors are comparable, 
+    however the clipped RGB level errors begin to plateau as the noise std. approaches 200, while the unclipped results 
+    continue to linearly increase \autoref{fig:Figure5}. 
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f5_inverted_spectra_noise50.png} \vfill \null 
+        \includegraphics[scale=0.6]{output/f6_inverted_spectra_noise100.png}
+        \caption{Recovered sensor sensitivities at varying noise levels.}
+        \label{fig:Figure4}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f7_rms_err_vs_noise.png}
+        \caption{Comparison of clipped and unclipped RMS errors from inverted sensitivity variation with simulated noise.}
+        \label{fig:Figure5}
+    \end{figure}
+
+    \FloatBarrier
+
+    \item[Q5.] 
+
+    Gamma correction depends on the relationship $I_{perceived} = I_{raw}^{\gamma}$ between the input signal and the 
+    displayed intensity. 
+
+    \begin{itemize}
+        \item[-] $I_{perceived}$ is the perceived intensity (normalized between 0 and 1).
+        \item[-] $I_{raw}$ is the actual raw intensity value (also normalized between 0 and 1).
+        \item[-] $\gamma$ is the gamma value.
+    \end{itemize}
+
+    The perceived intensity of 80 is normalized by 255 to get $I_{perceived} = 0.3137$. The gamma value can be derived 
+    by taking the log of both sides 
+    $$
+    \gamma = \frac {log(I_{perceived})} {{log(I_{raw})}} = \frac {log(0.3137)} {{log(0.5)}} = 1.67
+    $$
+    The gamma value of 1.67 indicates that the perceived intensity is disproportionately lower than the raw intensity.
+    By applying a  correction with this value, the display's response can be adjusted to make the perceived intensity 
+    more linear with the raw intensity.
+
+    \item[Q6.] 
+
+    The camera sensitivity in Q6 was inverted using the files provided for HW2. The recovered sensitivity is noisy and 
+    notably different from the original sensitivities \autoref{fig:Figure6}. The overall sensor RMS error obtained was 
+    \emph{1013791.700635} while a high RGB RMS value of \emph{11.979092} was obtained.
+
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f8_inverted_light_spectra.png}
+        \caption{Inverted sensor sensitivity from light sensor dataset.}
+        \label{fig:Figure6}
+    \end{figure}
+
+    
+
+
+
+
+
+
+
+\end{enumerate}
+
+\end{document}

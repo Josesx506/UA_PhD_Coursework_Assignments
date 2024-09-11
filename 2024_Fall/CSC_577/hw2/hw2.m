@@ -161,37 +161,50 @@ fprintf('\n\nQuestion 3:\n');
     end
 
 % Invert for the camera sensitivities and estimate the rms errors
-[spec_noise10,srms10,rrms10] = simulate_sensitivity(rgb_snsr,10,false);
-[rms_red, rms_grn, rms_blu] = channel_sensitivity_rms_error(rgb_snsr,spec_noise10);
+[uncl_noise10,usrms10,urrms10] = simulate_sensitivity(rgb_snsr,10,false);
+[urms_red, urms_grn, urms_blu] = channel_sensitivity_rms_error(rgb_snsr,uncl_noise10);
 
-f4 = figure('Position', [1, 1, 820, 400], 'visible','off');
-tiledlayout(1,2,'TileSpacing','Compact','Padding','Compact');
+[cl_noise10,csrms10,crrms10] = simulate_sensitivity(rgb_snsr,10,true);
+[crms_red, crms_grn, crms_blu] = channel_sensitivity_rms_error(rgb_snsr,cl_noise10);
+
+figure('Position', [1, 1, 820, 400], 'visible','off');
+f4 = tiledlayout(1,2,'TileSpacing','Compact','Padding','Compact');
+
+nexttile; hold on; % Clipped Overlay
+plot(x, rgb_snsr(:,1), 'r', 'LineWidth', 2);
+plot(x, rgb_snsr(:,2), 'g', 'LineWidth', 2);
+plot(x, rgb_snsr(:,3), 'b', 'LineWidth', 2);
+plot(x, uncl_noise10(:,1), 'r--', 'LineWidth', 2);
+plot(x, uncl_noise10(:,2), 'g--', 'LineWidth', 2);
+plot(x, uncl_noise10(:,3), 'b--', 'LineWidth', 2);
+hold off; 
+legend("r","g","b","est. r","est. g","est. b");
+xlabel('Wavelengths'); ylabel('Sensor Sensitivity');
+title('Unclipped inverted spectrum');
+
 nexttile; hold on; % True Spectra
 plot(x, rgb_snsr(:,1), 'r', 'LineWidth', 2);
 plot(x, rgb_snsr(:,2), 'g', 'LineWidth', 2);
 plot(x, rgb_snsr(:,3), 'b', 'LineWidth', 2);
-plot(x, spec_noise10(:,1), 'r--', 'LineWidth', 2);
-plot(x, spec_noise10(:,2), 'g--', 'LineWidth', 2);
-plot(x, spec_noise10(:,3), 'b--', 'LineWidth', 2);
+plot(x, cl_noise10(:,1), 'r--', 'LineWidth', 2);
+plot(x, cl_noise10(:,2), 'g--', 'LineWidth', 2);
+plot(x, cl_noise10(:,3), 'b--', 'LineWidth', 2);
 hold off; 
 legend("r","g","b","est. r","est. g","est. b");
 xlabel('Wavelengths'); ylabel('Sensor Sensitivity');
-title('Inverted sensitivity for 10 noise');
+title('Clipped inverted spectrum');
+
+title(f4, 'Inverted sensitivity for 10 noise');
 
 exportgraphics(f4, 'output/f4_inverted_spectra_noise10.png', 'Resolution', 200);
 
-T = table(rms_red, rms_grn, rms_blu, srms10, rrms10, ...
-    RowNames={'RMS Errors'}, VariableNames={'Red','Green','Blue','Sensor','RGB'});
-fprintf('Unclipped RMS Error between true and estimated spectra\n');
+T = table([urms_red;crms_red], [urms_grn;crms_grn], [urms_blu;crms_blu], ...
+          [usrms10;csrms10], [urrms10;crrms10], ...
+          RowNames={'Unclipped','Clipped'}, ...
+          VariableNames={'Red','Green','Blue','Sensor','RGB'});
+fprintf('RMS Error between true and estimated spectra\n');
 disp(T);
 
-[spec_noise10,srms10,rrms10] = simulate_sensitivity(rgb_snsr,10,true);
-[rms_red, rms_grn, rms_blu] = channel_sensitivity_rms_error(rgb_snsr,spec_noise10);
-
-T = table(rms_red, rms_grn, rms_blu, srms10, rrms10, ...
-    RowNames={'RMS Errors'}, VariableNames={'Red','Green','Blue','Sensor','RGB'});
-fprintf('Clipped RMS Error between true and estimated spectra\n');
-disp(T);
 
 num_questions = num_questions + 1;
 
@@ -220,7 +233,7 @@ for i = 1:length(noise_stds)
         plot(x, clp_est_snst(:, 1), 'r--', 'DisplayName', 'Est. Red');
         plot(x, clp_est_snst(:, 2), 'g--', 'DisplayName', 'Est. Green');
         plot(x, clp_est_snst(:, 3), 'b--', 'DisplayName', 'Est. Blue');
-        hold off; title('Clipped Sensitivity Spectra'); 
+        hold off; title('Clipped Sensitivity Spectra'); legend;
         xlabel('Wavelengths'); ylabel('Sensor Sensitivity');
         
         nexttile; hold on; % Estimated Spectra
@@ -230,7 +243,7 @@ for i = 1:length(noise_stds)
         plot(x, uclp_est_snst(:, 1), 'r--', 'DisplayName', 'Est. Red');
         plot(x, uclp_est_snst(:, 2), 'g--', 'DisplayName', 'Est. Green');
         plot(x, uclp_est_snst(:, 3), 'b--', 'DisplayName', 'Est. Blue');
-        hold off; xlabel('Wavelengths'); 
+        hold off; xlabel('Wavelengths'); legend;
         title('Unclipped Sensitivity Spectra');
         
         title(f56, sprintf('Inverted sensitivity for Noise Std. %d',n_std));
@@ -278,14 +291,14 @@ num_questions = num_questions + 1;
 
 fprintf('\n\nQuestion 5:\n');
 % Known values
-raw_intensity = 80;
-perceived_intensity = 0.5;
+raw_intensity = 0.5;
+perceived_intensity = 80;
 
 % Normalize the raw intensity
-I_raw = raw_intensity / 255;
+I_percieved = perceived_intensity / 255;
 
 % Compute the gamma value
-gamma_value = log(perceived_intensity) / log(I_raw);
+gamma_value = log(I_percieved) / log(raw_intensity);
 
 % Display the computed gamma value
 fprintf('The computed gamma value is: %.2f\n', gamma_value);
@@ -383,6 +396,8 @@ exportgraphics(f9, 'output/f9_constrained_lst_sqr.png', 'Resolution', 200);
 fprintf('RMS error between real and estimated sensors (Constrained): %.4f\n', light_snsr_rms_quadprog);
 fprintf('RMS error between real and estimated RGB responses (Constrained): %.4f\n', light_rgb_rms_quadprog);
 
+num_questions = num_questions + 1;
+
 %% Q8
 fprintf('\n\nQuestion 8:\n');
 
@@ -459,6 +474,6 @@ exportgraphics(f10, 'output/f10_lambda_smooth_constr_lst_sqr.png', 'Resolution',
 
 disp(results);
 
-% close all;
+num_questions = num_questions + 1;
 
 end
