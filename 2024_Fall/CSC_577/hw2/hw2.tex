@@ -197,7 +197,7 @@ to time constraints.
 
     \item[Q4.]
 
-    The noise levels were consistently increased to identify thresholds at which the rgb cannot be accurately recovered and 
+    The noise levels were consistently increased to identify thresholds at which the rgb cannot be accurately recovered, and 
     extend the tests about clipped vs. unclipped RGB levels. Values of the noise std. were increased according to the intervals 
     specified in \autoref{tab:Table3}.
 
@@ -282,7 +282,6 @@ to time constraints.
     notably different from the original sensitivities \autoref{fig:Figure6}. The overall sensor RMS error obtained was 
     \emph{1013791.700635} while a high RGB RMS value of \emph{11.979092} was obtained.
 
-
     \begin{figure}[ht!]
         \centering
         \includegraphics[scale=0.6]{output/f8_inverted_light_spectra.png}
@@ -290,13 +289,88 @@ to time constraints.
         \label{fig:Figure6}
     \end{figure}
 
+    \FloatBarrier
+
+    Potential causes of the large errors include the non-negative camera sensitivities in \autoref{fig:Figure6}.
+    Because the linear inversion is unconstrained during optimization, negative values are derived, and the result 
+    does not resemble the true camera sensitivities. Additional issues could be related with using an incorrect 
+    sensor data when estimating the RGB response, leading to compounding errors.
+
+    \item[Q7.] 
+
+    Constrained least-squares inversion was performed using the \emph{quadprog()} function in matlab. The lower 
+    bound of the optimization was set to zero, ensuring that non-negative sensitivities were adjusted during the 
+    inversion. The results are shown in \autoref{fig:Figure7}. The overall sensor RMS error reduced (5x) to 
+    \emph{17253.1992} while a lower RGB RMS value of \emph{9.9574} was obtained. The resulting solution is not 
+    smooth, and has multiple spikes which can be smoothed out during the inversion step.
+
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.5]{output/f9_constrained_lst_sqr.png}
+        \caption{Inverted sensor sensitivity with non-negative constraints.}
+        \label{fig:Figure7}
+    \end{figure}
+
+    % \FloatBarrier
+
+    \item[Q8.] 
+
+    To smooth the inversion, a matrix $m_{i}^{T}$ was used. If $i = 0$, the difference matrix M becomes
+    $$
+    \begin{aligned}
+    M = 
+    \begin{bmatrix}
+    1 & ... & 0 \\
+    0 & ... & 0 \\
+    0 & ... & 1 \\
+    \end{bmatrix}
+    -
+    \begin{bmatrix}
+    ... & 1 & 0 \\
+    ... & 0 & 1 \\
+    ... & 0 & 0 \\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    1 & -1 & 0 & 0 & ... & 0 \\
+    0 & 1 & -1 & 0 & ... & 0 \\
+    0 & 0 & 1 & -1 & ... & 0 \\
+    0 & 0 & ... & 0 & 1 & -1 \\
+    \end{bmatrix}
+    \end{aligned}
+    $$
+    where the $1$ and $-1$ are in positions $i$ and $i+1$, respectively. The real light energy spectra $A$ can 
+    be augmented with $A_{aug} = [A; \lambda * M]$. By adjusting the $\lambda$ values, we can smoothen our constrained lsqr inversion 
+    to improve the estimated sensor curves across the 3 channels.  
     
+    Tests were performed with 5 lambda values $\lambda = [0, 0.01, 0.0225, 0.1, 1];$ and plots of the resulting sensor sensitivities 
+    are shown in \autoref{fig:Figure8}. The rms errors are documented in \autoref{tab:Table4}. The lowest errors were gotten with a 
+    lambda value of \textbf{0.0225}, and $\lambda$ values above 0.1 were generally too smooth.
 
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{| c | c | c |} 
+        \hline
+        Lambda & RGB RMS & Sensor RMS \\ 
+        \hline \hline
+        0       &  9.9574 &  17253 \\
+        0.01    &  10.597 &  2565.4 \\
+        0.0225  &  10.806 &  2391.3 \\
+        0.1     &  12.284 &  2402.9 \\
+        1       &  29.952 &  3800.4 \\
+        \hline
+    \end{tabular}
+    \caption{RMS errors for smooth lambda values.}
+    \label{tab:Table4}
+    \end{center}
+    \end{table}
 
-
-
-
-
+    \begin{figure}[ht!]
+        \centering
+        \includegraphics[scale=0.6]{output/f10_lambda_smooth_constr_lst_sqr.png}
+        \caption{Smoothed constrained lsqr sensor sensitivity results.}
+        \label{fig:Figure8}
+    \end{figure}
 
 \end{enumerate}
 

@@ -404,7 +404,7 @@ fprintf('\n\nQuestion 8:\n');
 % Create the differencing matrix M (size 100x101)
 M = diag(ones(n_wvln, 1), 0) - diag(ones(n_wvln-1, 1), 1);
 M = M(1:end-1, :);  % 100x101 matrix
-disp(size(M));
+% disp(M);
 
 % Lambda values to test
 lambdas = [0, 0.01, 0.0225, 0.1, 1];
@@ -415,8 +415,8 @@ results = table('Size', [length(lambdas) 3], ...
                 'VariableNames', {'Lambda', 'RGB RMS', 'Sensor RMS'});
 
 % Initialize the figure for plotting
-figure('Position', [100, 300, 620, 900],'visible','off');
-f10 = tiledlayout(3, 2,'TileSpacing','Compact','Padding','Compact');
+figure('Position', [100, 300, 920, 600],'visible','off');
+f10 = tiledlayout(2, 3,'TileSpacing','Compact','Padding','Compact');
 
 % Loop over lambda values and perform constrained least squares with smoothness
 for idx = 1:length(lambdas)
