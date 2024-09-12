@@ -22,7 +22,8 @@
 
 static double sqrarg;
 #define SIG(a) ((a>0)-(a<0))
-#define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
+// #define SQR(a) ((sqrarg=(a)) == 0.0 ? 0.0 : sqrarg*sqrarg)
+#define SQR(a) ((a) == 0.0 ? 0.0 : (a) * (a))
 #define MAX(i, j) (((i) > (j)) ? (i) : (j))
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
 

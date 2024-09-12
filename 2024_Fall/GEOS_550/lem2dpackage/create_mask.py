@@ -6,7 +6,7 @@ import numpy as np
 from scipy.ndimage import rotate
 
 
-def create_fault_mask(nrows,ncols,amp=5,vert_offset=0.45,angle=20,plot=False,outpath="faultmask.txt"):
+def create_fault_mask(nrows,ncols,amp=3,vert_offset=0.60,angle=-20,plot=True,outpath="faultmask.txt"):
     """
     Create a fault mask for lem2D simulations that has a sine wave boundary
 
@@ -21,6 +21,9 @@ def create_fault_mask(nrows,ncols,amp=5,vert_offset=0.45,angle=20,plot=False,out
     
     Returns:
         None: Saves the file to the specified path
+
+    Example:
+        python create_mask.py 101 101
     """
     # Define the size of the 2D array
     nrows, ncols = 101, 101
