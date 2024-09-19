@@ -1,0 +1,299 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw1.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#3 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Part A questions were answered in \emph{hw3.py} file. The file creates an \emph{output} folder to save images, 
+so that the root directory is not always cluttered. Figures are saved and automatically closed when the script is run to
+minimize the number of open windows. The script assumes that the text files and images are in the same folder. Filepaths 
+are hardcoded and running the script in the wrong folder will return errors. Programming was completed with 
+Python and Adobe Illustrator was used for Part B. Part of the Bonus section C question was answered. Unlike previous assignments, 
+the \emph{hw3.py} program only prints the number of completed questions that had coding solutions, and it doesn't return any values. 
+It took me roughly 8 hours to complete the assignment (Coding + Exposition). 
+
+Text files were read into python using the \emph{pandas()} package, nested functions were used to reduce repeated 
+code, and images were rescaled to fit the page size. Titles were included to differentiate the purpose of each figure and 
+question numbers are denoted with a "Q" prefix in the text below. 
+
+\begin{enumerate}
+
+    \item[Q-A1.]
+
+    I read the text files into python using the \emph{pd.read\_csv()} function, and named the variables "line1" and "line2". Nested 
+    functions were used to calculate the line fits for both files and the program hw1.py provides the following output.
+
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ c | c | c } 
+        \hline
+        Output & Homogenous & Non-Homogenous \\ 
+        \hline \hline
+        Slope & -0.4886 & -0.4772 \\ 
+        Intercept & 1.9995 & 1.9769 \\ 
+        RMS Vertical Deviations & 0.1256 & 0.1250 \\ 
+        RMS Perpendicular Deviations & 0.1129 & 0.2903  \\ 
+        \hline
+    \end{tabular}
+    \caption{Summary results for Line 1 dataset.}
+    \label{tab:Table1}
+    \end{center}
+    \end{table}
+    
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ c | c | c } 
+        \hline
+        Output & Homogenous & Non-Homogenous \\ 
+        \hline \hline
+        Slope & -0.7977 & -0.0575 \\ 
+        Intercept & 3.0278 & 1.4665 \\ 
+        RMS Vertical Deviations & 1.3321 & 0.9492 \\ 
+        RMS Perpendicular Deviations & 1.0413 & 16.5392  \\ 
+        \hline
+    \end{tabular}
+    \caption{Summary results for "Line 2" dataset.}
+    \label{tab:Table2}
+    \end{center}
+    \end{table}
+
+    \FloatBarrier 
+
+    \autoref{tab:Table1} is for the "Line 1" data, and \autoref{tab:Table2} is for the "Line 2" data. The program outputs the plot 
+    of the data fit to the Line 1 dataset. Because the question is specific about reporting on the noisier "Line 2" data the results 
+    for "Line 2" fit is shown in \autoref{fig:Figure1}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.6]{output/f2_line2.png}
+        \caption{Plot of both line fits for "Line 2" data.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    Non-Homogeneous LSQR (Vertical Deviation Minimization) minimizes the vertical distances between the data points and the line. Hence, 
+    we expect the RMS of the vertical deviations to be lower (0.9492) in \autoref{tab:Table2}. It doesn't take into account errors in the 
+    x-direction, which can result in higher RMS perpendicular deviations (16.5392).
+
+    Homogeneous LSQR (Perpendicular Deviation Minimization) minimizes the perpendicular distances between the data points and the line, 
+    resulting in higher RMS for the vertical deviations (1.3321), and lower RMS for the perpendicular deviations (1.0413)  
+    (\autoref{tab:Table2}).
+
+    \item[Q-A2.]
+
+    Homogeneous Least Squares (HLSQR) minimizes perpendicular deviations. It finds the line in the form  $Ax+By+C=0$ that minimizes 
+    the sum of squared perpendicular distances between the points and the line. The RMS of perpendicular deviations provides a better 
+    estimate of the overall errors. When the data follows a linear trend like in Line 1, it provides a good fit for the data. However,
+    when the data distribution is almost random like "Line 2", minimizing the perpendicular deviations doesn't necessarily improve the data
+    fit.
+
+    Non-Homogeneous Least Squares (NHLSQR) minimizes vertical deviations. It finds the line $y=mx+c$ that minimizes the sum of squared differences 
+    between the observed $y$-values and the predicted $y$-values based on the line fit. Again, the data distribution affects the resulting fit.
+    Randomly distributed datasets like "Line 2" have relatively lower RMS vertical deviations even though the homogenous method gives an overall 
+    better fit.
+
+    The local minimum depends on the data distribution, HLSQR will return a global minimum error for the fit on Line 1 data and a local minimum on Line 2 
+    data. NHLSQR reverses the scenario. The resulting error depends on what direction the global or local error is for a specific data distribution.
+    If the homogeneous least squares method finds a local minimum for perpendicular deviations, it will still likely produce a lower perpendicular 
+    error than the non-homogeneous fit. But again, the perpendicular error might not be as low as in the global minimum case. Similarly, if the non-homogeneous 
+    least squares method finds a local minimum for vertical deviations, it will still likely produce a lower vertical error than the homogeneous fit because 
+    the method is inherently biased toward minimizing vertical errors. However, the vertical error may not be as low as it would be if we had found the 
+    global minimum.
+
+    Even if we only achieve local minima for each respective method, the argument still holds in most cases. Each method is structured to minimize its specific 
+    error model, so even local minima will tend to give lower errors for the respective error models compared to the alternative method. However, the errors 
+    may not be minimized to the same extent as in the global minimum case.
+
+    \item[Q-B1.]
+
+    I used the Illustrator program to draw lines over the building image. Sets of parallel lines were given unique colors, and each set meets at a different 
+    point (\autoref{fig:Figure2}). Sets of parallel lines on the same plane also lead to collinear vanishing points shown with the black line in 
+    \autoref{fig:Figure2}. The green parallel lines were drawn by comparing points on opposite sides of the main building across 6 floors. The black line is a 
+    potential horizon for the plane.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.4]{output/building_perspective.png}
+        \caption{Building image with projected lines to identify horizon.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \FloatBarrier 
+
+    It is assumed that the width of the remains constant with increasing height, and that the smaller perspective at the top is because large objects become 
+    smaller with increasing distance. Based on the convergence and collinearity of parallel lines along the same plane, this image is in perspective. 
+
+    \item[Q-B2.]
+
+    Assuming the chandelier is perfectly symmetric, the zoomed in view doesn't make it easy to identify converging vertical lines. Almost all objects have a 
+    similar scale, and distant objects don't appear smaller. I could only resolve 2 sets of vanishing points, blue and green lines in \autoref{fig:Figure3}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.25]{output/chandelier.png}
+        \caption{Symmetric chandelier image with projected lines to identify vanishing points.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    At the provided scale, the white vertical lines appear to run vertically without convergence. Since two vanishing points are not sufficient to establish 
+    convergence, it's hard to justify that the image is in perspective. If the distance to the image is increased, the white vertical lines might converge,
+    creating a $3^{rd}$ set of vanishing points at the top like the train tracks example in class.
+
+    \item[Part C]
+
+    Perspective projection models how a 3D world is projected onto a 2D image plane (such as a camera sensor). It captures the fact that objects appear 
+    smaller as they move farther away from the observer (camera). The relationship between 3D world coordinates and 2D image coordinates is governed by a 
+    pinhole camera model, which is a common abstraction in computer vision.
+
+    \begin{enumerate}
+        \item[1] 
+        
+        \textbf{3D Representation of a Line} \\
+        Consider two parallel lines in 3D space with direction vectors. Without loss of generality, let the two lines be defined by points \(\mathbf{P_1}(X_1, Y_1, Z_1)\) 
+        and \(\mathbf{P_2}(X_2, Y_2, Z_2)\) in 3D. They both have the same direction vector \(\mathbf{d} = (a, b, c)\), representing their parallel nature.
+        The parametric form of these lines is:
+        \[
+        \mathbf{L_1}(t) = \mathbf{P_1} + t \mathbf{d} = (X_1 + at, Y_1 + bt, Z_1 + ct)
+        \]
+        \[
+        \mathbf{L_2}(t) = \mathbf{P_2} + t \mathbf{d} = (X_2 + at, Y_2 + bt, Z_2 + ct)
+        \]
+        where \(t\) is a parameter.
+
+        \item[2] 
+        
+        \textbf{Perspective Projection} \\
+        In perspective projection, we project 3D points onto a 2D image plane  by dividing them by their $Z$ component. The projection follows the rule:
+        \[
+        x = \frac{X}{Z}, \quad y = \frac{Y}{Z}
+        \]
+        where \((X, Y, Z)\) is the 3D point in space, and \((x, y)\) is the corresponding point on the 2D image plane. By applying this projection to points 
+        on the lines, we get the following for the first line:
+        \[
+        x_1(t) = \frac{X_1 + at}{Z_1 + ct}, \quad y_1(t) = \frac{Y_1 + bt}{Z_1 + ct}
+        \]
+        and
+        \[
+        x_2(t) = \frac{X_2 + at}{Z_2 + ct}, \quad y_2(t) = \frac{Y_2 + bt}{Z_2 + ct}
+        \]
+        for the second line.
+
+        \item[3] 
+        
+        \textbf{Behavior as \( t \to \infty \)} \\
+        As the parameter \( t \) tends to infinity (i.e., as we move far away along the parallel lines), the terms involving \( at \), \( bt \), and \( ct \) 
+        dominate the numerators and denominators in the projection equations. For both lines, the projected coordinates approach:
+        \[
+        x(t) \approx \frac{a}{c}, \quad y(t) \approx \frac{b}{c}
+        \]
+        This shows that both parallel lines, as they extend infinitely in 3D, converge to the same point \(\left(\frac{a}{c}, \frac{b}{c}\right)\) in the 2D 
+        image plane.
+
+        \item[4] 
+        
+        \textbf{Vanishing Points} \\
+        The point \(\left(\frac{a}{c}, \frac{b}{c}\right)\) is the \textbf{vanishing point} where the projections of the parallel lines converge. This is a 
+        general property of perspective projection (i.e. all parallel lines with the same direction vector in 3D converge to a single point on the image plane). 
+        The only case where parallel lines do not converge to a point is when the lines are parallel to the image plane itself. In this case, the lines 
+        remain parallel even in the 2D projection.
+
+    \end{enumerate}
+
+    \textbf{Source}: \textit{Computer Vision: Algorithms and Applications, 2nd Edition by Richard Szeliski}
+
+
+\end{enumerate}
+
+\end{document}

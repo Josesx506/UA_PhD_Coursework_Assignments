@@ -27,3 +27,4 @@
 e.g.`\usepackage{algorithms,amsmath}`. One or more packages can be imported simultaneously.
 5. Convert the file to pdf using `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex`.
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw2.tex`
+    - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw3.tex`
