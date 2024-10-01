@@ -1,0 +1,607 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw1.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#5 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A-D were completed in matlab and saved in the \emph{hw5.m} program. The program creates an \emph{output} folder to save images, 
+so that the root directory is not always cluttered. The program can be run using \textit{hw5()}, and the results to coding questions are printed in 
+terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with "IMG\_0861.jpeg" on Line 70 of \emph{hw5.m} if you get errors.
+
+\begin{enumerate}
+
+    \item[Part-A.]
+    \ \\
+    The world and image coordinates from \emph{hw4} were read into matlab and inverted using the homogenous least squares method to get the camera 
+    matrix \textbf{M}. The inverted camera matrix 
+    \[
+    M = 
+    \begin{bmatrix}
+    0.0313 & 0.0532 & -0.1365 & 0.4854 \\
+    -0.1393 & 0.0490 & -0.0236 & 0.8483 \\
+    -0.0000 & -0.0000 & -0.0000 & 0.0009
+    \end{bmatrix}
+    \]
+
+    The vizualization comparing the projected and original image coordinates is shown in \autoref{fig:Figure1}.\\
+    The resulting \textbf{RMS error} between the projected points from "M" versus the original image coordinates was \textbf{9.5768}. This is lower than 
+    the 17.01 and 41.28 RMS values that were obtained with camera matrix 1 and 2 in \emph{hw4}.  
+    
+    The calibration process does \textbf{not} minimize the sum of the squared errors(i.e., the sum of squared differences between observed and projected 
+    points in the image plane). Homogeneous least squares minimizes an \textbf{algebraic error} in a linear system, not the reprojection error in image pixels. 
+    $$P \cdot m = 0$$
+    where $m$ represents the flattened camera matrix $P$. The solution to this minimizes the error in a linear sense (in terms of matrix $P$), which 
+    corresponds to the smallest singular value of the matrix in the SVD decomposition. The projection from 3D to 2D is nonlinear, and the algebraic error 
+    doesn't account for this transformation. While homogeneous least squares is computationally efficient and useful for getting an initial estimate of 
+    the camera matrix, it is less than ideal for achieving accurate 2D projections. An ideal approach refines the initial matrix by minimizing reprojection 
+    error through nonlinear optimization.
+
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.25]{output/f1_predicted_points_HLSQR.png}
+        \caption{Visualization of projected points from "M" matrix.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Part-B.]
+    \ \\
+    % I read the tent figure from hw1 into matlab using the \emph{imread()} function, and used the \emph{imshow()} funtion to plot it with annotated 
+    % labels. The annotations show increasing indices along both directions (\autoref{fig:Figure1}). The \emph{hw4.m} program prints out the figure 
+    % dimensions (489,728,3) which indicates that the image matrix has 489 rows, 728 columns, and 3 channels.
+
+
+    % The first index in the figure matrix corresponds to the y-axis in the figure, while the second index corresponds to the x-axis 
+    % (\autoref{fig:Figure2}). The matrix index convention in the previous sentence is specific to matlab, and the number of rows of 
+    % an image matrix are usually plotted on the y-axis of plots. The origin of the plot is in the top left corner, and the index 
+    % for each axis increases from the plot origin. 
+
+    % \begin{figure}[!ht]\centering
+    %     \hspace*{-1.2in}
+    %     \begin{subfigure}{0.40\textwidth}
+    %         \includegraphics[scale=0.2]{output/tent_fig_x100_y300.png}
+    %         \caption{Index location (x=100,y=300)}
+    %         \label{fig:Figure2a}
+    %     \end{subfigure}
+    % \hfil
+    %     \begin{subfigure}{0.40\textwidth}
+    %     \includegraphics[scale=0.2]{output/tent_fig_bot_left.png}
+    %     \caption{Bottom left index location}
+    %     \label{fig:Figure2b}
+    %     \end{subfigure}
+    %     \caption{Index locations along tent figure}
+    %     \label{fig:Figure2}
+    % \end{figure}
+
+    % \FloatBarrier 
+
+    % The figure matrix coordinates are \textbf{not equivalent} to the plot coordinates. For a matrix A of size m x n, element 
+    % $A(i, j)$ corresponds to row i and column j. The point at matrix location $A(i, j)$ gets plotted at the coordinate $(j, i)$ in 
+    % the matlab figure, where: $j$ is the x-coordinate and $i$ is the y-coordinate. To convert figure indices to click indices,
+    % ensure the figure rows are on the y-axis, and figure columns are on the x-axis. 
+
+    % Pixel colors can be changed in matlab using the colon notation. E.g to change the pixel colors at location (100,200) to red,
+    % \begin{lstlisting}[language=Matlab]
+    % img(100, 200, :) = [255 0 0];
+    % \end{lstlisting}
+    % The resulting pixel change is shown in \autoref{fig:Figure3a}, and the zoomed bounding box around the altered pixel is shown 
+    % in \autoref{fig:Figure3b}.
+
+
+    % \begin{figure}[!ht]\centering
+    %     \hspace*{-1.2in}
+    %     \begin{subfigure}{0.40\textwidth}
+    %         \includegraphics[scale=0.3]{output/f2_tent_red_pixed_100_200.png}
+    %         \caption{Plot of red pixel in tent figure}
+    %         \label{fig:Figure3a}
+    %     \end{subfigure}
+    % \hfil
+    %     \begin{subfigure}{0.40\textwidth}
+    %     \includegraphics[scale=0.25]{output/f2_zoomed.png}
+    %     \caption{Zoomed pixel with boundary box}
+    %     \label{fig:Figure3b}
+    %     \end{subfigure}
+    %     \caption{Effect of altering pixel data}
+    %     \label{fig:Figure3}
+    % \end{figure}
+
+    % \FloatBarrier 
+
+    % \item[Part-B.]
+    % \ \\
+    % Annotations were drawn on the provided figure to indicate the axis along the x,y, and z directions (\autoref{fig:Figure4}). Fifteen 
+    % different points (\textit{5 along each axis}) were selected and used to create the \emph{world\_coords.txt} and \emph{image\_coords.txt} 
+    % files.
+
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[scale=0.25]{output/f3_selected_points.png}
+    %     \caption{Calibration figure with labeled axis and selected calibration points (white dots).}
+    %     \label{fig:Figure4}
+    % \end{figure}
+
+    % \FloatBarrier 
+
+    % The text files for the image and world coordinates are in the submission packet.
+
+    % \item[Part-C.]
+    % \ \\
+    % The camera matrices in the hw4 instructions were used to project the world coordinates from \textbf{Part B} to the image coordinates. The basic 
+    % camera model relates 3D world coordinates \((X, Y, Z)\) to 2D image coordinates \((u, v)\) using the \textit{camera matrix} \(P\). The camera projection 
+    % equation is:
+    % \[
+    % \begin{bmatrix}
+    %     u \\
+    %     v \\
+    %     1
+    % \end{bmatrix}
+    % =
+    % P \cdot
+    % \begin{bmatrix}
+    %     X \\
+    %     Y \\
+    %     Z \\
+    %     1
+    % \end{bmatrix}
+    % \]
+
+    % Where:  \\
+    % - \(P\) is the 3x4 \textit{camera matrix}.\\
+    % - \((X, Y, Z)\) are the \textit{real-world coordinates}.\\
+    % - \((u, v)\) are the \textit{image coordinates} in pixels.\\
+    
+    % The click coordinates were swapped to orient them with the indexing coordinate system prior to estimation of RMS errors. The reprojected points from 
+    % both matrices is shown in \autoref{fig:Figure5} below.
+
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[scale=0.25]{output/f4_reprojected_points.png}
+    %     \caption{Calibration figure with overlain calibration and reprojected points.}
+    %     \label{fig:Figure5}
+    % \end{figure}
+
+    % \FloatBarrier 
+
+    % Overall, the points from the first matrix are closer to the ground truth calibration points than the second matrix. Camera matrix 1 has a RMS error of \textbf{17.01}, 
+    % while camera matrix 2 has a RMS error of \textbf{41.28}. This indicates that the first matrix is more accurate. 
+
+
+    % \item[Part-D1.]
+    % \ \\
+    % The inverse operation of a 3D translation in the direction (tx, ty, tz) is a translation in the opposite direction, (-tx, -ty, -tz).\\
+    % \textbf{Proof}:\\
+    % Consider a point P with coordinates (x, y, z). \\
+    % After applying the translation (tx, ty, tz), the new coordinates of P are (x + tx, y + ty, z + tz). \\
+    % Now, if we apply the translation (-tx, -ty, -tz) to the new coordinates, we get:
+    % $$
+    % (x + tx - tx, y + ty - ty, z + tz - tz) = (x, y, z)
+    % $$
+    % Thus, the second translation undoes the first, and we have indeed found the inverse operation.
+
+    % \item[Part-D2.]
+    % \ \\
+    % To prove that $T_1 T_2 = T_2 T_1$, we consider a translation matrix in 3D which has the following form:
+
+    % \[
+    % T(t_x, t_y, t_z) = 
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_x \\
+    % 0 & 1 & 0 & t_y \\
+    % 0 & 0 & 1 & t_z \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % \]
+
+    % Where \(t_x\), \(t_y\), and \(t_z\) are the translation components along the \(x\)-, \(y\)-, and \(z\)-axes, respectively. \\
+    % We can define two translation matrices, \(T_1\) and \(T_2\), corresponding to translations by \((t_{x1}, t_{y1}, t_{z1})\) and 
+    % \((t_{x2}, t_{y2}, t_{z2})\), respectively.
+
+    % $$
+    % T_1 =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x1} \\
+    % 0 & 1 & 0 & t_{y1} \\
+    % 0 & 0 & 1 & t_{z1} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix},
+    % T_2 =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x2} \\
+    % 0 & 1 & 0 & t_{y2} \\
+    % 0 & 0 & 1 & t_{z2} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+
+    % The product \(T_1 T_2\) is:
+    % $$
+    % T_1 T_2 =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x1} \\
+    % 0 & 1 & 0 & t_{y1} \\
+    % 0 & 0 & 1 & t_{z1} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x2} \\
+    % 0 & 1 & 0 & t_{y2} \\
+    % 0 & 0 & 1 & t_{z2} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & (t_{x1} + t_{x2}) \\
+    % 0 & 1 & 0 & (t_{y1} + t_{y2}) \\
+    % 0 & 0 & 1 & (t_{z1} + t_{z2}) \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+
+    % The product \(T_2 T_1\) is:
+
+    % $$
+    % T_2 T_1 =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x2} \\
+    % 0 & 1 & 0 & t_{y2} \\
+    % 0 & 0 & 1 & t_{z2} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_{x1} \\
+    % 0 & 1 & 0 & t_{y1} \\
+    % 0 & 0 & 1 & t_{z1} \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & (t_{x2} + t_{x1}) \\
+    % 0 & 1 & 0 & (t_{y2} + t_{y1}) \\
+    % 0 & 0 & 1 & (t_{z2} + t_{z1}) \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+
+    % which yields the same result, implying that \textbf{translation matrices are commutative}.
+
+    % \item[Part-D3.]
+    % \ \\
+    % For points represented in homogeneous coordinates where the homogeneous component \(w\) is not necessarily 1, we consider a general case where the homogeneous 
+    % coordinate \(w\) can take any non-zero value.
+
+    % A point in 3D space \((x, y, z)\) is typically represented in homogeneous coordinates as \((x, y, z, w)\), where \(w \neq 0\). In homogeneous coordinates:
+    % \[
+    % \begin{bmatrix}
+    % x' \\
+    % y' \\
+    % z' \\
+    % w'
+    % \end{bmatrix}
+    % =
+    % \lambda
+    % \begin{bmatrix}
+    % x \\
+    % y \\
+    % z \\
+    % 1
+    % \end{bmatrix}
+    % \]
+    % where \(\lambda = \frac{1}{w}\).\\
+    % When \(w = 1\), the point is in Cartesian coordinates. When \(w \neq 1\), the point in Cartesian coordinates is recovered as:
+
+    % \[
+    % \left( \frac{x}{w}, \frac{y}{w}, \frac{z}{w} \right)
+    % \]
+
+    % The translation matrix is the same as \(T_1\) above. We can apply the translation matrix \(T(t_x, t_y, t_z)\) to a point represented by homogeneous coordinates
+    %  \((x, y, z, w)\), where \(w \neq 1\) as:
+
+    % \[
+    % \begin{bmatrix}
+    % x \\
+    % y \\
+    % z \\
+    % w
+    % \end{bmatrix}
+    % \]
+
+    % Multiplying this point by the translation matrix:
+
+    % \[
+    % T(t_x, t_y, t_z) 
+    % \begin{bmatrix}
+    % x \\
+    % y \\
+    % z \\
+    % w
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 & t_x \\
+    % 0 & 1 & 0 & t_y \\
+    % 0 & 0 & 1 & t_z \\
+    % 0 & 0 & 0 & 1
+    % \end{bmatrix}
+    % \begin{bmatrix}
+    % x \\
+    % y \\
+    % z \\
+    % w
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % x + w t_x \\
+    % y + w t_y \\
+    % z + w t_z \\
+    % w
+    % \end{bmatrix}
+    % \]
+    
+    % The result of applying the translation matrix to the homogeneous coordinate point \((x, y, z, w)\) is:
+
+    % \[
+    % \begin{bmatrix}
+    % x' \\
+    % y' \\
+    % z' \\
+    % w'
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % x + w t_x \\
+    % y + w t_y \\
+    % z + w t_z \\
+    % w
+    % \end{bmatrix}
+    % \]
+
+    % Where: \\
+    % - \(x' = x + w t_x\) \\
+    % - \(y' = y + w t_y\) \\
+    % - \(z' = z + w t_z\) \\
+    % - \(w' = w\) (unchanged) \\
+    % To convert this result back to Cartesian coordinates, we divide the first three coordinates by \(w\):
+
+    % \[
+    % \left( \frac{x'}{w}, \frac{y'}{w}, \frac{z'}{w} \right) =
+    % \left( \frac{x + w t_x}{w}, \frac{y + w t_y}{w}, \frac{z + w t_z}{w} \right) =
+    % \left( \frac{x}{w} + t_x, \frac{y}{w} + t_y, \frac{z}{w} + t_z \right)
+    % \]
+
+    % This is what we expect from a translation in Cartesian coordinates, where the point \(\left( \frac{x}{w}, \frac{y}{w}, \frac{z}{w} \right)\) 
+    % (the original point in Cartesian coordinates) has been translated by \((t_x, t_y, t_z)\) even when \(w \neq 1\).
+
+    % \item[Part-E.]  
+    % \ \\
+    % 1. \textbf{Scale}: The interval $[0,0] \to [1,0]$ and $[0,0] \to [0,1]$ both map to 400 pixels in the image. This indicates a uniform scale of 400 pixels per unit 
+    % in both the x- and y-directions.\\
+    % 2. \textbf{Translation}: The origin $(0,0)$ in the XY coordinate system maps to the pixel coordinate $(400, 600)$ in the image coordinate system.\\
+    % 3. \textbf{Rotation/Flip}: There may be some rotation or flip involved to align the XY coordinate system with the image coordinate system. We'll assume that flipping 
+    % along the y-axis is needed because image coordinates usually increase downwards, while typical XY coordinates increase upwards.
+
+    % The translation matrix \(T\) is given by:
+    % $$
+    % T =
+    % \begin{bmatrix}
+    % 1 & 0 & 400 \\
+    % 0 & 1 & 600 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+    
+    % The scaling matrix \(S\) is:
+
+    % $$
+    % S =
+    % \begin{bmatrix}
+    % 400 & 0 & 0 \\
+    % 0 & 400 & 0 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+
+    % To account for the typical flip in image coordinates (where the y-axis increases downwards), we need a flip along the y-axis. The flipping matrix \(F\) is:
+    % $$
+    % F =
+    % \begin{bmatrix}
+    % 1 & 0 & 0 \\
+    % 0 & -1 & 0 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+    % This matrix flips the y-values, reversing the direction of the y-axis.  
+
+    % The final transformation matrix \(M\) that maps from the XY coordinate system to the image coordinate system is the product of 
+    % the three matrices: \textit{scaling,flipping, and translation}:
+
+    % $$
+    % M = T \cdot F \cdot S = 
+    % \begin{bmatrix}
+    % 1 & 0 & 400 \\
+    % 0 & 1 & 600 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % \begin{bmatrix}
+    % 400 & 0 & 0 \\
+    % 0 & -400 & 0 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % 400 & 0 & 400 \\
+    % 0 & -400 & 600 \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % $$ \\
+
+    
+    % We can apply the transformation matrix \(M\) to the given points \((-0.5, -0.5)\), \((-0.5, 0.5)\), and \((0,1)\). Each point \((x, y)\) 
+    % in the XY coordinate system is represented in homogeneous coordinates as \([x, y, 1]^T\).
+
+    % \begin{enumerate}
+    % \item[1.] Point \((-0.5, -0.5)\): \\
+    % $$
+    % M 
+    % \begin{bmatrix}
+    % -0.5 \\
+    % -0.5 \\
+    % 1
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % 200 \\
+    % 800 \\
+    % 1
+    % \end{bmatrix}
+    % = (200, 800)
+    % $$
+
+    % \item[2.] Point \((-0.5, 0.5) = (200, 400)\)
+
+    % \item[3.] Point \((0, 1) = (400, 200)\)
+
+    % \item[4.] Additional Point 1: \((1, 0) = (800, 600)\)
+
+    % \item[5.] Additional Point 2: \((0, -1) = (400, 1000)\)
+
+    % \end{enumerate}
+
+    % For the inverse mapping of \((1,1)\), we need to invert the transformation matrix \(M\). The inverse of \(M\) is:
+
+    % $$
+    % M^{-1} =
+    % \begin{bmatrix}
+    % \frac{1}{400} & 0 & -1 \\
+    % 0 & \frac{-1}{400} & \frac{3}{2} \\
+    % 0 & 0 & 1
+    % \end{bmatrix}
+    % $$
+    
+    % We can now apply this inverse to pixel \((1,1)\):
+
+    % $$
+    % M^{-1}
+    % \begin{bmatrix}
+    % 1 \\
+    % 1 \\
+    % 1
+    % \end{bmatrix}
+    % =
+    % \begin{bmatrix}
+    % -0.9975 \\
+    % 1.4975 \\
+    % 1
+    % \end{bmatrix}
+    % = (-0.9975, 1.4975)
+    % $$
+
+    % The mappings of the transformed points can be visualized in \autoref{fig:Figure6}. \textbf{Note} how the y-axis coordinates are 
+    % reversed because of the flipping transformation.
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[scale=0.6]{output/f5_transformed_points.png}
+    %     \caption{Illustration of transformed points.}
+    %     \label{fig:Figure6}
+    % \end{figure}
+
+    % \FloatBarrier 
+
+\end{enumerate}
+
+\end{document}

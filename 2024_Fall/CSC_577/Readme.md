@@ -29,3 +29,4 @@ e.g.`\usepackage{algorithms,amsmath}`. One or more packages can be imported simu
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw2.tex`
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw3.tex`
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw4.tex`
+    - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw5.tex`
