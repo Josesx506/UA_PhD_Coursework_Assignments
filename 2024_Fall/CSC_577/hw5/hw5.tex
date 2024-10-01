@@ -130,7 +130,6 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     the camera matrix, it is less than ideal for achieving accurate 2D projections. An ideal approach refines the initial matrix by minimizing reprojection 
     error through nonlinear optimization.
 
-
     \begin{figure}[H]
         \centering
         \includegraphics[scale=0.25]{output/f1_predicted_points_HLSQR.png}
@@ -142,6 +141,58 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
 
     \item[Part-B.]
     \ \\
+    \begin{enumerate}
+        \item[1.] Parametric equations for a sphere were used to generate 3D points at (x,y,z). The number of points were manually modified from 10 to 
+        100, till there were no holes on the sphere.
+        \item[2.] The camera position was assumed to be $[9, 14, 11]$.
+        \item[3.] The dot products between the camera position and the outward normal vector of each point on the sphere was used to create a visibility 
+        mask. Points less than zero are not visible, and were masked out.
+        \item[4.] The Lambertian reflectance was calculated from the dot product between the sphere's surface normal and the normalized light direction. 
+        Negative values were set to zero (self-shadow).
+        \item[5.] The visible points were projected onto the 2D calibration image, using the camera matrix from \emph{Part A}. The points are shaded by 
+        the lambertian reflectance values.
+    \end{enumerate}
+    The resulting plot of the projected sphere shaded by lambertian reflectance is shown in \autoref{fig:Figure2}. When the light source is in front of 
+    the sphere, the reflectance is brightest in the increasing x-direction \autoref{fig:Figure2a}. However, when the light source is rotated behind the 
+    sphere $[-30, 0, 0]$, the reflectance is highest in the decreasing x-direction facing the source \autoref{fig:Figure2b}. Considering that the reflectance 
+    tracks with the light source, the resulting image makes sense.
+
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[scale=0.25]{output/f2_projected_sphere_with_visible_points.png}
+    %     \caption{.}
+    %     \label{fig:Figure2}
+    % \end{figure}
+
+    % \begin{figure}[H]
+    %     \centering
+    %     \includegraphics[scale=0.25]{output/f3_projected_sphere_with_rotated_light.png}
+    %     \caption{Projected sphere like figure 2 with rotated light source.}
+    %     \label{fig:Figure3}
+    % \end{figure}
+
+    \begin{figure}[!ht]\centering
+        \hspace*{-1.2in}
+        \begin{subfigure}{0.6\textwidth}
+            \includegraphics[scale=0.23]{output/f2_projected_sphere_with_visible_points.png}
+            \caption{Projected sphere with original light source at $[33, 29, 44]$.}
+            \label{fig:Figure2a}
+        \end{subfigure}
+    \vfil
+        \hspace*{-1.2in}
+        \begin{subfigure}{0.6\textwidth}
+        \includegraphics[scale=0.23]{output/f3_projected_sphere_with_rotated_light.png}
+        \caption{Projected sphere with rotated light source at $[-30, 0, 0]$}
+        \label{fig:Figure2b}
+        \end{subfigure}
+        \caption{Projected sphere at world coordinates $[3,2,3]$ using camera matrix from \emph{Part A}, 
+        showing the effect of varying light sources. World coordinates are in inches.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \FloatBarrier 
+
+
     % I read the tent figure from hw1 into matlab using the \emph{imread()} function, and used the \emph{imshow()} funtion to plot it with annotated 
     % labels. The annotations show increasing indices along both directions (\autoref{fig:Figure1}). The \emph{hw4.m} program prints out the figure 
     % dimensions (489,728,3) which indicates that the image matrix has 489 rows, 728 columns, and 3 channels.

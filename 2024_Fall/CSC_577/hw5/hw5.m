@@ -81,5 +81,94 @@ num_questions = num_questions + 1;
 %% Part B
 fprintf("\nPart B\n")
 
+npnts = 100; % number of points
+R=0.5;       % sphere radius 1/2 inch
+plt_cent = [3,2,3];         % projected sphere centroid coords
+cam_crds = [9, 14, 11];     % estimate camera  coords
+vis_light = [33, 29, 44];   % Visible light position (considered at infinity)
+obs_light = [-30, 0, 0];    % Obscured light position behind sphere
+
+function [sphere_matrix] = create_sphere(R,x0,y0,z0,npnts)
+    phi = linspace(-pi/2,pi/2,npnts); % phi values
+    theta = linspace(0,2*pi,npnts);   % theta values
+    
+    % estimate all points across phi and theta using vectorized operations
+    % instead of nested for loops
+    [phi,theta] = meshgrid(phi,theta);
+    sx = x0 + cos(phi) .* cos(theta) * R; 
+    sy = y0 + cos(phi) .* sin(theta) * R;
+    sz = z0 + sin(phi) * R;
+
+    sphere_matrix = [sx(:), sy(:), sz(:)];
+end
+
+% Surface matrix for sphere
+sph = create_sphere(R,plt_cent(1),plt_cent(2),plt_cent(3),npnts);
+
+% Outward normal direction N(X) for each point on the sphere N(X) = X - center
+nx = sph - plt_cent;
+
+% Calculate vector from each sphere point to camera P - X
+cam_vec = cam_crds - sph;
+
+% Check for visible points: P - X dot N(X) > 0
+dot_prod_cam = sum(cam_vec .* nx, 2);
+vis_mask = dot_prod_cam > 0;
+
+% Apply visibility mask to sphere points and normal
+sph_vis = sph(vis_mask, :);
+sph_vis_norm = nx(vis_mask, :);
+
+% Light direction (assume light at infinity)
+light_dir = vis_light - plt_cent;
+light_dir = light_dir / norm(light_dir); % normalize the vector
+
+% Lambertian reflectance model: N(X) dot L (only for visible points)
+lambertian = max(0, sum(sph_vis_norm .* light_dir, 2)); % Set negative values to 0
+
+% Project visible points to the image plane using camera matrix (M) from Part A
+hom_sph_vis = [sph_vis, ones(size(sph_vis, 1), 1)]'; % Convert the world coordinates to homogeneous form (add a column of ones)
+prj_pnts_hom = M * hom_sph_vis;
+proj_sph_pnts = prj_pnts_hom(1:2, :) ./ prj_pnts_hom(3, :);
+proj_sph_pnts = proj_sph_pnts([2,1],:); % Swap index to convert from clicking to indexing coordinates
+
+fprintf("The projected sphere has %d visible points out of %d total points.\n", size(proj_sph_pnts, 2), size(sph, 1));
+
+% Plotting the sphere on the image
+f2 = figure('visible','off');
+imshow('IMG_0861.jpeg'); 
+hold on;
+scatter(proj_sph_pnts(1, :), proj_sph_pnts(2, :), 20, lambertian, 'filled'); % Shade by Lambertian reflectance
+colorbar;
+% title('Projected Sphere with original light source','FontSize',28);
+hold off;
+exportgraphics(f2, 'output/f2_projected_sphere_with_visible_points.png', 'Resolution', 200);
+
+
+% Light direction (assume light at infinity)
+light_dir = obs_light - plt_cent;
+light_dir = light_dir / norm(light_dir); % normalize the vector
+
+% Lambertian reflectance model: N(X) dot L (only for visible points)
+lambertian = max(0, sum(sph_vis_norm .* light_dir, 2)); % Set negative values to 0
+
+% Project visible points to the image plane using camera matrix (M) from Part A
+hom_sph_vis = [sph_vis, ones(size(sph_vis, 1), 1)]'; % Convert the world coordinates to homogeneous form (add a column of ones)
+prj_pnts_hom = M * hom_sph_vis;
+proj_sph_pnts = prj_pnts_hom(1:2, :) ./ prj_pnts_hom(3, :);
+proj_sph_pnts = proj_sph_pnts([2,1],:); % Swap index to convert from clicking to indexing coordinates
+
+% Plotting the sphere on the image
+f3 = figure('visible','off');
+imshow('IMG_0861.jpeg'); 
+hold on;
+scatter(proj_sph_pnts(1, :), proj_sph_pnts(2, :), 20, lambertian, 'filled'); % Shade by Lambertian reflectance
+colorbar;
+% title('Projected sphere for rotated light source','FontSize',28);
+hold off;
+exportgraphics(f3, 'output/f3_projected_sphere_with_rotated_light.png', 'Resolution', 200);
+
+num_questions = num_questions + 1;
+
 
 end
