@@ -170,5 +170,121 @@ exportgraphics(f3, 'output/f3_projected_sphere_with_rotated_light.png', 'Resolut
 
 num_questions = num_questions + 1;
 
+%% Part C
+fprintf("\nPart C\n")
+
+I = imread('IMG_0862.png');
+imageSize = [size(I,1) size(I,2)];
+params = estimateCameraParameters(imCrds,wdCrds, "ImageSize",imageSize);
+disp(params);
+
+% Create a random M matrix
+
+rho = M(3,4); 
+M_obs_norm = M / rho;
+
+% Intrisic matrix using camera matrix from Part A
+% Extract the upper 3x3 matrix A from M
+A = M(:, 1:3);
+
+% C = -A \ M(:, 4);
+C = -inv(A) * M(:, 4);
+disp(C);
+
+function [R, Q] = rq(A)
+    % Flip the matrix and perform QR decomposition on the transpose
+    [Q, R] = qr(flipud(A)');
+    
+    % Flip the result back
+    % R = flipud(R');
+    % R = fliplr(R);
+
+    R = rot90(R',2);
+
+    Q = flipud(Q');
+end
+
+% Perform RQ decomposition to get K and R
+[R, K] = rq(A);
+
+
+% Ensure K has positive diagonal elements
+T = diag(sign(diag(K)));
+K = K * T;
+R = T * R;
+
+t = -R * C;
+disp(t);
+
+% Step 3: Extract translation vector t
+t = K \ M(:, 4);
+
+% Display the results
+disp('Intrinsic matrix K:');
+disp(K);
+disp('Rotation matrix R:');
+disp(R);
+disp('Translation vector t:');
+disp(t);
+
+alpha = K(1,1); % Focal length in the x-direction (in pixels) 
+beta = K(2,2); % Focal length in the y-direction (in pixels) 
+u_0 = K(1,3); % Principal point in the x-direction 
+v_0 = K(2,3); % Principal point in the y-direction
+
+% t = inv(K) * M_obs_norm(:, 4);
+
+function K = extract_intrinsic_matrix(M)
+    rhoz = M(3,4); 
+    M = M / rhoz;
+    % Decompose M using SVD
+    [U, ~, V] = svd(M);
+
+    % Extract the 3x3 submatrix
+    K = U(:, 1:3);
+
+    % Perform QR decomposition
+    [Q, R] = qr(K);
+
+    % Extract intrinsic parameters
+    ax = R(1,1);
+    ay = R(2,2);
+    u0 = R(1,3);
+    v0 = R(2,3);
+
+    % Construct the intrinsic matrix
+    K = [
+        ax    0    u0
+         0    ay   v0
+         0     0     1
+    ];
+end
+
+K = extract_intrinsic_matrix(M);
+
+function [R, T, C] = decompose_camera_matrix(M, K)
+    rhoz = M(3,4); 
+    M = M / rhoz;
+
+    % Invert the intrinsic matrix
+    K_inv = inv(K);
+
+    % Calculate the extrinsic matrix
+    [R_raw, T_raw] = qr(K_inv * M);
+
+    % Correct the rotation matrix
+    R = R_raw * diag([1, 1, det(R_raw)]);
+
+    % Calculate the camera position
+    C = -R' * T_raw;
+end
+
+R, T, C = decompose_camera_matrix(M, K);
+
+disp(C);
+
+
+num_questions = num_questions + 1;
+
 
 end
