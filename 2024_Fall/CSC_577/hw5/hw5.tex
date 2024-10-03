@@ -18,9 +18,10 @@
 % real harm loading your favorites out of habit. 
 
 
-\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+\usepackage[fleqn]{amsmath}%amsmath,
+\usepackage{algorithm,algorithmic,alltt,amssymb,bm,
     cancel,color,fullpage,graphicx,listings,mathrsfs,
-    multirow,setspace,subcaption,upgreek,xcolor}
+    multirow,subcaption,upgreek,xcolor}
 \usepackage[numbered,framed]{matlab-prettifier}
 \usepackage[colorlinks]{hyperref}
 \usepackage[nameinlink,noabbrev]{cleveref}
@@ -29,6 +30,9 @@
 \usepackage[skip=0.1ex, belowskip=1ex,
             labelformat=brace,
             singlelinecheck=off]{subcaption}
+\usepackage[nodisplayskipstretch]{setspace}
+% \setstretch{1.5}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \doublespacing
 
@@ -47,7 +51,6 @@
 \newcommand{\Lap}{{\text Laplace}}
 \newcommand{\btheta}{\boldsymbol{\theta}}
 \newcommand{\bSigma}{\boldsymbol{\Sigma}}
-% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
 % Code blocks formatting
 
 \definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
@@ -98,7 +101,7 @@
 \centerline{\it HW \#5 Submission}
 \centerline{\it Name: Joses Omojola}
 
-Questions from Part A-D were completed in matlab and saved in the \emph{hw5.m} program. The program creates an \emph{output} folder to save images, 
+Questions from Part A-C were completed in matlab and saved in the \emph{hw5.m} program. The program creates an \emph{output} folder to save images, 
 so that the root directory is not always cluttered. The program can be run using \textit{hw5()}, and the results to coding questions are printed in 
 terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with "IMG\_0861.jpeg" on Line 70 of \emph{hw5.m} if you get errors.
 
@@ -158,14 +161,14 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     tracks with the light source, the resulting image makes sense.
 
     \begin{figure}[!ht]\centering
-        \hspace*{-1.2in}
+        % \hspace*{-1.2in}
         \begin{subfigure}{0.6\textwidth}
             \includegraphics[scale=0.23]{output/f2_projected_sphere_with_visible_points.png}
             \caption{Projected sphere with original light source at $[33, 29, 44]$.}
             \label{fig:Figure2a}
         \end{subfigure}
     \vfil
-        \hspace*{-1.2in}
+        % \hspace*{-1.2in}
         \begin{subfigure}{0.6\textwidth}
         \includegraphics[scale=0.23]{output/f3_projected_sphere_with_rotated_light.png}
         \caption{Projected sphere with rotated light source at $[-30, 0, 0]$}
@@ -191,11 +194,36 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     - \( K \) is the \textbf{intrinsic parameter matrix}.\\
     - \( R \) is the \textbf{rotation matrix} that describes the orientation of the camera.\\
     - \( t \) is the \textbf{translation vector} that describes the position of the camera.
+    
+    The intrisic parameter matrix \( K \) is dependent on \textit{Translation}, \textit{Scaling}, and \textit{Shear} matrices.
+    $$
+    K = 
+    \underbrace{\begin{bmatrix}
+    1 & 0 & u_0 \\
+    0 & 1 & v_0 \\
+    0 & 0 & 1
+    \end{bmatrix}}_{\text{2D Translation}} \times 
+    \underbrace{\begin{bmatrix}
+    \alpha & 0 & 0 \\
+    0 & \beta & 0 \\
+    0 & 0 & 1
+    \end{bmatrix}}_{\text{2D Scaling}} \times 
+    \underbrace{\begin{bmatrix}
+    1 & \gamma & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1
+    \end{bmatrix}}_{\text{2D Shear}}
+    $$
+    where:\\
+    - \( \alpha \): The \textbf{horizontal scaling factor} (focal length (pixels) along the x-axis).\\
+    - \( \beta \): The \textbf{vertical scaling factor} (focal length (pixels) along the y-axis).\\
+    - \( \gamma \): The \textbf{skew} between the x and y axes.\\
+    - \( u_0, v_0 \): The coordinates of the \textbf{principal point} which is the intersection of the camera's optical axis with the image plane. These values correspond 
+    to the pixel coordinates where the optical center of the camera is located.\\
 
     We assume that the camera axes are perpendicular (skew angle = 90 degrees), so we can ignore skew, reducing the number of unknowns from 11 to 10. The matrix 
     \( K \) is a \( 3 \times 3 \) upper triangular matrix that describes how the camera's internal parameters map 3D points into 2D image coordinates. \( K \) can 
     be written as
-
     $$
     K = \begin{bmatrix}
     \alpha & \gamma & u_0 \\
@@ -209,17 +237,11 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     \end{bmatrix}
     $$
 
-    where:\\
-    - \( \alpha \): The \textbf{horizontal scaling factor} (focal length in terms of pixels along the x-axis).\\
-    - \( \beta \): The \textbf{vertical scaling factor} (focal length in terms of pixels along the y-axis).\\
-    - \( \gamma \): The \textbf{skew} between the x and y axes. Since we assume that the axes are perpendicular, we set \( \gamma = 0 \).\\
-    - \( u_0, v_0 \): The coordinates of the \textbf{principal point} which is the intersection of the camera's optical axis with the image plane. These values correspond 
-    to the pixel coordinates where the optical center of the camera is located.
 
     
     \item[2.]
     \ \\
-    From the general camera matrix expression the extrinsic matrix $X$ can be written as $X = [R \ \ \  t]$ \\
+    From the general camera matrix expression the extrinsic matrix $X$ can be written as $X = [R | t]$ \\
     Where:\\
     - \( R \) is the  3 x 3 \textbf{rotation matrix} (orientation of the camera in 3D space).\\
     - \( t \) is the  3 x 1 \textbf{translation vector} (camera's position in the world coordinate system).\\
@@ -251,24 +273,22 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     \end{bmatrix}
     $$
 
-    We can combine the rotation matrix \( R \) and translation vector \( t \) to form the extrinsic matrix \( X \) that is defined by three orthonormal rotation vectors and a 
-    translation vector as:
+    We can combine the rotation matrix \( R \) and translation vector \( t \) to form a rigid matrix \( X \) that is defined by three orthonormal rotation vectors and a 
+    translation vector:
 
     $$
-    X = \begin{bmatrix}
-    R & t
-    \end{bmatrix}
+    X = [R | t]
     =
-    \begin{bmatrix}
+    \left[\begin{array}{ccc|c}
     r_{11} & r_{12} & r_{13} & t_x \\
     r_{21} & r_{22} & r_{23} & t_y \\
     r_{31} & r_{32} & r_{33} & t_z
-    \end{bmatrix}
+    \end{array} \right]
     $$
     
     \item[3.]
     \ \\
-    We can multiply $K$ and $X$ from Part C1 and C2 to get 
+    The multiplication of $K$ and $X$ from Part C1 and C2 gives
     $$
     M = \begin{bmatrix}
     \alpha & 0 & u_0 \\
@@ -283,7 +303,7 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     \end{bmatrix}
     $$
 
-    The multiplication of $K$ rows with $X$ columns gives 
+    The multiplication of $K$ rows with $X$ columns can be written as 
     $$
     M_1 = 
     \begin{bmatrix}
@@ -340,154 +360,276 @@ terminal. File paths to input images are hardcoded, replace "IMG\_0862.png" with
     r_{31} & r_{32} & r_{33} & t_z
     \end{bmatrix}
     $$
-
-
-    % ### Camera Matrix \( M \) from \( K \) and \( X \)
-
-    % To find the **camera matrix** \( M \), we need to multiply the **intrinsic matrix** \( K \) with the **extrinsic matrix** \( X = [R|t] \). The resulting matrix \( M \) will transform 3D world coordinates into 2D image coordinates. Let's go step-by-step.
-
-    % #### Step 1: Review of the Intrinsic Matrix \( K \)
-
-    % From earlier, the intrinsic matrix \( K \) is:
-
-    % \[
-    % K = \begin{bmatrix}
-    % \alpha & 0 & u_0 \\
-    % 0 & \beta & v_0 \\
-    % 0 & 0 & 1
-    % \end{bmatrix}
-    % \]
-
-    % Where:
-    % - \( \alpha \) is the horizontal focal length scaled in pixels.
-    % - \( \beta \) is the vertical focal length scaled in pixels.
-    % - \( (u_0, v_0) \) are the coordinates of the principal point.
-
-    % #### Step 2: Review of the Extrinsic Matrix \( X = [R|t] \)
-
-    % The extrinsic matrix \( X \) is the product of the rotation matrix \( R \) and the translation vector \( t \), giving:
-
-    % \[
-    % X = \begin{bmatrix}
-    % r_{11} & r_{12} & r_{13} & t_x \\
-    % r_{21} & r_{22} & r_{23} & t_y \\
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % \]
-
-    % Where:
-    % - \( R = \begin{bmatrix} r_{11} & r_{12} & r_{13} \\ r_{21} & r_{22} & r_{23} \\ r_{31} & r_{32} & r_{33} \end{bmatrix} \) is the rotation matrix.
-    % - \( t = \begin{bmatrix} t_x \\ t_y \\ t_z \end{bmatrix} \) is the translation vector.
-
-    % #### Step 3: Multiplication of \( K \) and \( X \)
-
-    % The camera matrix \( M \) is the product of \( K \) and \( X \):
-
-    % \[
-    % M = K \cdot [R|t]
-    % \]
-
-    % This is a \( 3 \times 3 \) matrix \( K \) multiplying a \( 3 \times 4 \) matrix \( [R|t] \), resulting in a \( 3 \times 4 \) matrix. Let's perform the matrix multiplication step by step.
-
-
-    % ### Step 4: Perform the Multiplication
-
-    % We perform the multiplication row by row for \( K \) and column by column for \( [R|t] \).
-
-    % #### First row of \( M \):
-    % \[
-    % \begin{bmatrix}
-    % \alpha & 0 & u_0
-    % \end{bmatrix}
-    % \cdot
-    % \begin{bmatrix}
-    % r_{11} & r_{12} & r_{13} & t_x \\
-    % r_{21} & r_{22} & r_{23} & t_y \\
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % =
-    % \begin{bmatrix}
-    % \alpha r_{11} + u_0 r_{31} & \alpha r_{12} + u_0 r_{32} & \alpha r_{13} + u_0 r_{33} & \alpha t_x + u_0 t_z
-    % \end{bmatrix}
-    % \]
-
-    % #### Second row of \( M \):
-    % \[
-    % \begin{bmatrix}
-    % 0 & \beta & v_0
-    % \end{bmatrix}
-    % \cdot
-    % \begin{bmatrix}
-    % r_{11} & r_{12} & r_{13} & t_x \\
-    % r_{21} & r_{22} & r_{23} & t_y \\
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % =
-    % \begin{bmatrix}
-    % \beta r_{21} + v_0 r_{31} & \beta r_{22} + v_0 r_{32} & \beta r_{23} + v_0 r_{33} & \beta t_y + v_0 t_z
-    % \end{bmatrix}
-    % \]
-
-    % #### Third row of \( M \):
-    % \[
-    % \begin{bmatrix}
-    % 0 & 0 & 1
-    % \end{bmatrix}
-    % \cdot
-    % \begin{bmatrix}
-    % r_{11} & r_{12} & r_{13} & t_x \\
-    % r_{21} & r_{22} & r_{23} & t_y \\
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % =
-    % \begin{bmatrix}
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % \]
-
-    % ### Step 5: Putting it All Together
-
-    % Now, combining the results of all rows, we obtain the full camera matrix \( M \):
-
-    % \[
-    % M = \begin{bmatrix}
-    % \alpha r_{11} + u_0 r_{31} & \alpha r_{12} + u_0 r_{32} & \alpha r_{13} + u_0 r_{33} & \alpha t_x + u_0 t_z \\
-    % \beta r_{21} + v_0 r_{31} & \beta r_{22} + v_0 r_{32} & \beta r_{23} + v_0 r_{33} & \beta t_y + v_0 t_z \\
-    % r_{31} & r_{32} & r_{33} & t_z
-    % \end{bmatrix}
-    % \]
-
-    % ### Step 6: Interpretation of \( M \)
-
-    % This matrix \( M \) is the full **camera projection matrix**. It incorporates both the **intrinsic parameters** \( K \) and the **extrinsic parameters** \( [R|t] \). This matrix transforms 3D world coordinates \( (X_w, Y_w, Z_w) \) into 2D image coordinates \( (x, y) \) through the relationship:
-
-    % \[
-    % \begin{bmatrix}
-    % x \\
-    % y \\
-    % w
-    % \end{bmatrix}
-    % =
-    % M \cdot
-    % \begin{bmatrix}
-    % X_w \\
-    % Y_w \\
-    % Z_w \\
-    % 1
-    % \end{bmatrix}
-    % \]
-    % Where:
-    % - \( x = X / w \)
-    % - \( y = Y / w \)
-    % - \( w \) is the homogeneous coordinate.
-
-    % ### Conclusion
-
-    % In summary, we derived the camera projection matrix \( M \) by multiplying the intrinsic matrix \( K \) with the extrinsic matrix \( X \). The final matrix \( M \) projects 3D world points into 2D image coordinates, combining both the camera's internal parameters (focal length, principal point) and external parameters (rotation, translation).
+    
     \item[4.]
     \ \\
+    Considering the $M$ value that was obtained by optimization in Part A,
+    $$
+    M = 
+    \begin{bmatrix}
+    \alpha r_{11} + u_0 r_{31} & \alpha r_{12} + u_0 r_{32} & \alpha r_{13} + u_0 r_{33} & \alpha t_x + u_0 t_z \\
+    \beta r_{21} + v_0 r_{31} & \beta r_{22} + v_0 r_{32} & \beta r_{23} + v_0 r_{33} & \beta t_y + v_0 t_z \\
+    r_{31} & r_{32} & r_{33} & t_z
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    m_{11} & m_{12} & m_{13} & m_{14} \\
+    m_{21} & m_{22} & m_{23} & m_{24} \\
+    m_{31} & m_{32} & m_{33} & m_{34}
+    \end{bmatrix}
+    $$
+
+    If we set the problem up as camera matrix  \( \mathbf{M} = \rho M_{obs} = \rho (A \  b) \), \\
+    where: \\
+    - $\rho$ is the arbitrary scale factor \\
+    - $A$ is a 3 x 3 matrix \\
+    - $b$ is a 3 x 1 matrix \\
+    $$
+    M = \rho
+    \begin{bmatrix}
+    m_{11} & m_{12} & m_{13} & m_{14} \\
+    m_{21} & m_{22} & m_{23} & m_{24} \\
+    m_{31} & m_{32} & m_{33} & m_{34}
+    \end{bmatrix}
+    $$
+    Using the \textbf{M} obtained in Part A,
+    $$
+    M = \begin{bmatrix}
+    0.0313 & 0.0532 & -0.1365 & 0.4854 \\
+    -0.1393 & 0.0490 & -0.0236 & 0.8483 \\
+    -0.0000 & -0.0000 & -0.0000 & 0.0009
+    \end{bmatrix}
+    $$
+    $\rho$ can be derived using $\rho = \sqrt(m_{31}^2 + m_{32}^2 + m_{33}^2)$. The resulting value can be used to normalize \textbf{M} where $M = \frac{\mathbf{M}}{\rho}$. \\
+    Next we consider the coefficient of $t_z = m_{34} = 0.009$. Since $t_z > 0$, we can determine that the origin of the world reference is in front. \\
+    Our rotational vectors $\mathbf{r_{3i}}$ can be resolved from the M matrix directly using 
+    $$r_{3i} = \rho m_{3i}, \text{where } i=1,2,3$$
+    If we let our \textbf{A} matrix be represented as a series of row vectors
+    \begin{equation}
+    \begin{split}
+    q_1 = \begin{bmatrix}m_{11} & m_{12} & m_{13}\end{bmatrix} \\
+    q_2 = \begin{bmatrix}m_{21} & m_{22} & m_{23}\end{bmatrix} \\
+    q_3 = \begin{bmatrix}m_{31} & m_{32} & m_{33}\end{bmatrix}
+    \end{split}
+    \end{equation}
+    We can rewrite our unknowns in terms of the row vectors to derive the image origin coordinates 
+    \setlength{\mathindent}{0pt}
+    \begin{align*}
+    q_1^T q_3 & = m_{11}m_{31} + m_{12}m_{32} + m_{13}m_{33} & \\
+    & = m_{11}m_{31} + m_{12}m_{32} + m_{13}m_{33} &= (\alpha r_{11} + u_0 r_{31} \  \alpha r_{12} + u_0 r_{32} \  \alpha r_{13} + u_0 r_{33}) \\
+    && = (\alpha r_{11} \ \alpha r_{12} \ \alpha r_{13})\cdot(r_{31}  \ r_{32}  \ r_{33}) +  \\ 
+    && (u_0 r_{31}  \ u_0 r_{32} \ u_0 r_{33})\cdot(r_{31}  \ r_{32}  \ r_{33}) \\
+    && = (u_0 r_{31}  \ u_0 r_{32} \ u_0 r_{33})\cdot(r_{31}  \ r_{32}  \ r_{33}) \\
+    && = (u_0 r_{31}^2  \ u_0 r_{32}^2 \ u_0 r_{33}^2) \\
+    && = u_0 (r_{31}^2  \ r_{32}^2 \ r_{33}^2) \\
+    q_1^T q_3 & = \mathbf{u_0} \\
+    u_0 & = q_1^T q_3 \\
+    \therefore v_0 & = q_2^T q_3
+    \end{align*}
+    The horizontal and vertical focal lengths can also be derived from 
+    \begin{align*}
+    q_1^T q_1 & = m_{11}m_{11} + m_{12}m_{12} + m_{13}m_{13} & {}  \\
+    & = m_{11}m_{11} + m_{12}m_{12} + m_{13}m_{13} &= (\alpha r_{11} + u_0 r_{31} \  \alpha r_{12} + u_0 r_{32} \  \alpha r_{13} + u_0 r_{33}) & {} \\
+    & {} & \cdot  (\alpha r_{11} + u_0 r_{31} \  \alpha r_{12} + u_0 r_{32} \  \alpha r_{13} + u_0 r_{33})  & {}  \\
+    & {} & = (\alpha r_{11} + u_0 r_{31})^2 + (\alpha r_{12} + u_0 r_{32})^2 + (\alpha r_{13} + u_0 r_{32})^2  & {}  \\
+    & {} & = (\alpha^2 r_{11}^2 + u_0^2 r_{31}^2) + (\alpha^2 r_{12}^2 + u_0^2 r_{32}^2) + (\alpha^2 r_{13}^2 + u_0^2 r_{32}^2) & {} \\
+    q_1^T q_1 & = \mathbf{\alpha^2 + u_0^2} \\
+    \alpha & = \sqrt{q_1^T q_1 - u_0^2} \\
+    \therefore \beta & = \sqrt{q_2^T q_2 - v_0^2} 
+    \end{align*}
+
+    The parameters for the \textbf{extrinsic matrix} can also be derived
+    \begin{align*}
+    u_0 r_{31} + \alpha r_{11} - r_{31} u_0 & = \rho (u_0 m_{31} - m_{11}), \\
+    r_{11} & = \frac {\rho (u_0 m_{31} - m_{11})}{\alpha}, & {}\\
+    r_{1i} & = \frac {\rho (u_0 m_{3i} - m_{1i})}{\alpha}, & \text{i = 1,2,3}\\
+    r_{2i} & = \frac {\rho (v_0 m_{3i} - m_{2i})}{\beta}, & \text{i = 1,2,3}\\
+    t_{x} & = \frac {\rho (u_0 m_{34} - m_{14})}{\alpha}, & {}\\
+    t_{y} & = \frac {\rho (v_0 m_{34} - m_{24})}{\beta}, & {}\\
+    \end{align*}
+
+    The resulting values from the calculations are documented in \autoref{tab:Table1}.
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ ||c | c|| } 
+        \hline
+        Parameter & Result \\ 
+        \hline \hline
+        $\alpha$ & 3159.5545 \\ 
+        $\beta$  & 3030.9735 \\ 
+        $(u_0,v_0)$ & (537.3735,1023.5747) \\ 
+        Camera location & [9.0264, 13.7469, 10.9595] \\ 
+        Camera orientation & [0.4856, 0.6730, 0.5580] \\
+        \hline
+    \end{tabular}
+    \caption{Estimates of unknown values derived from the algebraic solution to the camera matrix.}
+    \label{tab:Table1}
+    \end{center}
+    \end{table}
+    The resulting intrinsic matrix $\mathbf{K}$ was 
+    $$
+    K = \begin{bmatrix}
+    3159.6 & 0 & 537.4 \\
+        0 & 3.0310 & 1023.6 \\
+        0 & 0 & 1.0
+    \end{bmatrix}
+    $$
+    and the extrinsic matrix $\mathbf{X}$ was
+    $$
+    X = \begin{bmatrix}
+    0.2944 & 0.4751 & -0.8292 & 0.0911 \\
+    -0.8971 & 0.4652 & -0.0679 & 0.7201 \\
+    0.4856 & 0.6730 & 0.5580 & 19.8648
+    \end{bmatrix}
+    $$
+
+    The values of $\alpha$ and $\beta$ were also estimated directly from "IMG\_0859" using the transformations
+    \begin{align*}
+    & \alpha = \frac{D \times p_h}{d_h}  &  \beta = \frac{D \times p_v}{d_v}
+    \end{align*}
+    where \\
+    - \textbf{D} is the distance to measured surface (11.5 inches). \\ 
+    - $d_v$ is the vertical distance of imaged point (4 inches). \\ 
+    - $p_v$ is the vertical distance from the center of the camera in pixels (1200 pixels). \\
+    - $d_h$ is the horizontal distance of imaged point (6 inches) \\ 
+    - $p_h$ is the horizontal distance from the center of the camera in pixels (1600 pixels). \\
+
+    The resulting values of $\alpha$ and $\beta$ were \emph{3067} and \emph{3450} respectively. The values are similar to those obtained with the intrinsic matrix 
+    with the exception that there appears to be a coordinate switch which I couldn't resolve with the hints or videos.
 
     \end{enumerate}
+    
+
+
+
+
+
+    % if we set the problem up as camera matrix  \( \mathbf{M} = \rho M_{obs} = \rho (A \  b) \), \\
+    % where: \\
+    % - $\rho$ is the arbitrary scale factor \\
+    % - $A$ is a 3 x 3 matrix \\
+    % - $b$ is a 3 x 1 matrix \\
+
+    % \begin{equation}
+    % \tag{C.4.1}
+    % B = \rho A
+    % \end{equation}
+    % \begin{equation}
+    % \tag{C.4.2}
+    % c = \rho b
+    % \end{equation}
+
+    % From (C.4.1), we can estimate intrinsic matrix \textbf{K}
+    % \[
+    % \centering
+    % K\equiv BB^{T}=\rho\rho^{T}=
+    % \begin{bmatrix}
+    % \underbrace{\alpha^{2}+\gamma^{2}+u_{0}^{2}}_{k_u} & \underbrace{u_{0}v_{0}+c \beta}_{k_c} & u_{0} \\ 
+    % \underbrace{u_{0}v_{0}+c \alpha}_{k_c} & \underbrace{\alpha^{2}+v_{0}^{2}}_{k_v} & v_{0} \\ 
+    % u_{0} & v_{0} & 1
+    % \end{bmatrix}
+    % \]
+
+    % Because \textbf{M} is defined up to a scale factor, the last element of \(K=BB^{T}\) is usually not equal to 1, so we have to normalize it such that \(K_{33}\) (the last 
+    % element) = 1. After that, we can solve for the unknown intrinsic matrix parameters (gamma is ignored)
+    % \begin{equation}
+    % \tag{C.4.3}
+    % u_{0}=K_{13}
+    % \end{equation}  
+    % \begin{equation}
+    % \tag{C.4.4}
+    % v_{0}=K_{23}
+    % \end{equation}        
+    % \begin{equation}
+    % \tag{C.4.5}
+    % \alpha=\sqrt{k_{u}-u_{0}^{2}-\gamma^{2}}
+    % \end{equation}
+    % \begin{equation}
+    % \tag{C.4.6}
+    % \beta=\sqrt{k_{v}-v_{0}^{2}}
+    % \end{equation}
+
+    % Recovering the camera center, \emph{C}, is straightforward. Note that the last column of \textbf{M} is \(-\rho b \), the camera position can be derived by 
+    % left-multiplying \(-B^{-1} \times b \)
+
+    % In matlab, this gives 
+    % \begin{lstlisting}[language=Matlab]
+    % B = M(:, 1:3);
+    % c = M(:, 4);
+    % % Compute and Normalize K
+    % K = B * B';  
+    % K = K / K(3, 3);
+
+    % % Extract elements from K
+    % k_u = K(1, 1);
+    % k_c = K(1, 2);
+    % k_v = K(2, 2);
+
+    % % Compute intrinsic parameters
+    % u0 = K(1, 3);
+    % v0 = K(2, 3);
+    % alpha = sqrt(k_u - u0^2);
+    % beta = sqrt(k_v - v0^2); % gamma is zero
+
+    % % Estimate the camera location
+    % C = -inv(B) * b; %
+    % \end{lstlisting}
+
+    % Once the camera projection matrix P is known, we can uniquely recover the intrinsic and extrinsic parameters of the camera. Let us denote the first \(3\times3\) 
+    % submatrix of P by B and the last column of P by b, i.e., \(P\equiv[\begin{matrix}B&b\end{matrix}]\) Since \(P=A[\begin{matrix}R&t\end{matrix}],\) we have
+
+    % \begin{equation}
+    % \tag{2.5}
+    % B=AR
+    % \end{equation}
+    % \begin{equation}
+    % \tag{2.6}
+    % b=At
+    % \end{equation}
+
+    % From (2.5), we have
+    % \[
+    % K\equiv BB^{T}=AA^{T}=
+    % \begin{bmatrix}
+    % \underbrace{\alpha^{2}+\gamma^{2}+u_{0}^{2}}_{k_u} & \underbrace{u_{0}v_{0}+c \beta}_{k_c} & u_{0} \\ 
+    % \underbrace{u_{0}v_{0}+c \alpha}_{k_c} & \underbrace{\alpha^{2}+v_{0}^{2}}_{k_v} & v_{0} \\ 
+    % u_{0} & v_{0} & 1
+    % \end{bmatrix}
+    % \]
+
+    % Because P is defined up to a scale factor, the last element of \(K=BB^{T}\) is usually not equal to 1, so we have to normalize it such that \(K_{33}(\) the last element) = 1. 
+    % After that, we immediately obtain
+
+    % \begin{equation}
+    % \tag{2.7}
+    % u_{0}=K_{13}
+    % \end{equation}  
+    % \begin{equation}
+    % \tag{2.8}
+    % v_{0}=K_{23}
+    % \end{equation}      
+    % \begin{equation}
+    % \tag{2.9}
+    % \beta=\sqrt{k_{v}-v_{0}^{2}}
+    % \end{equation}        
+    % \begin{equation}
+    % \tag{2.10}
+    % \gamma=\frac{k_{c}-u_{0}v_{0}}{\beta}
+    % \end{equation}     
+    % \begin{equation}
+    % \tag{2.11}
+    % \alpha=\sqrt{k_{u}-u_{0}^{2}-\gamma^{2}}
+    % \end{equation}
+
+    % The solution is unambiguous because: \(\alpha>0\) and \(\beta>0.\)
+    % Once the intrinsic parameters, or equivalently matrix A, are known, the extrinsic parameters can be determined from (2.5) and (2.6) as:
+    % \begin{equation}
+    % \tag{2.12}
+    % R=A^{-1}B
+    % \end{equation}
+    % \begin{equation}
+    % \tag{2.13}
+    % t=A^{-1}b
+    % \end{equation}
 
 \end{enumerate}
 

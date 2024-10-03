@@ -22,7 +22,7 @@ imCrds = readmatrix('image_coords.txt');
 n = size(wdCrds, 1);
 
 % Create the A matrix for homogeneous least squares
-A = zeros(2*n, 12);
+K = zeros(2*n, 12);
 for i = 1:n
     X = wdCrds(i, 1);
     Y = wdCrds(i, 2);
@@ -30,12 +30,17 @@ for i = 1:n
     x = imCrds(i, 2); % Convert from click to index coordinates
     y = imCrds(i, 1); % Convert from click to index coordinates
     
-    A(2*i-1, :) = [X, Y, Z, 1, 0, 0, 0, 0, -x*X, -x*Y, -x*Z, -x];
-    A(2*i, :)   = [0, 0, 0, 0, X, Y, Z, 1, -y*X, -y*Y, -y*Z, -y];
+    K(2*i-1, :) = [X, Y, Z, 1, 0, 0, 0, 0, -x*X, -x*Y, -x*Z, -x];
+    K(2*i, :)   = [0, 0, 0, 0, X, Y, Z, 1, -y*X, -y*Y, -y*Z, -y];
 end
 
-% Solve the system using SVD
-[~, ~, V] = svd(A);
+% Find the eigenvector associated with the smallest eigenvalue or
+% [V, D] = eig(A' * A);
+% [~, idx] = min(diag(D));
+% M = reshape(V(:, idx), 4, 3)';
+
+% Solve the system using SVD (more concise)
+[~, ~, V] = svd(K);
 M = reshape(V(:, end), 4, 3)'; % Reshape last column of V to 3x4 matrix
 
 % Display the camera matrix
@@ -173,118 +178,172 @@ num_questions = num_questions + 1;
 %% Part C
 fprintf("\nPart C\n")
 
-I = imread('IMG_0862.png');
-imageSize = [size(I,1) size(I,2)];
-params = estimateCameraParameters(imCrds,wdCrds, "ImageSize",imageSize);
-disp(params);
+rho = sqrt(M(3,1)^2 + M(3,2)^2+ M(3,3)^2);
+disp(['Constant rho', rho]);
+M = M/rho;
 
-% Create a random M matrix
+q1 = M(1, (1:3));
+q2 = M(2, (1:3));
+q3 = M(3, (1:3));
 
-rho = M(3,4); 
-M_obs_norm = M / rho;
+u0 = dot(q1',q3);
+v0 = dot(q2',q3);
+disp('center coords');
+disp([u0,v0]);
+alpha = sqrt(dot(q1',q1) - u0^2);
+beta = sqrt(dot(q2',q2) - v0^2);
 
-% Intrisic matrix using camera matrix from Part A
-% Extract the upper 3x3 matrix A from M
-A = M(:, 1:3);
-
-% C = -A \ M(:, 4);
-C = -inv(A) * M(:, 4);
-disp(C);
-
-function [R, Q] = rq(A)
-    % Flip the matrix and perform QR decomposition on the transpose
-    [Q, R] = qr(flipud(A)');
-    
-    % Flip the result back
-    % R = flipud(R');
-    % R = fliplr(R);
-
-    R = rot90(R',2);
-
-    Q = flipud(Q');
-end
-
-% Perform RQ decomposition to get K and R
-[R, K] = rq(A);
+r11 = ((u0*q3(1)) - (q1(1))) / alpha;
+r12 = ((u0*q3(2)) - (q1(2))) / alpha;
+r13 = ((u0*q3(3)) - (q1(3))) / alpha;
+r21 = ((u0*q3(1)) - (q2(1))) / beta;
+r22 = ((u0*q3(2)) - (q2(2))) / beta;
+r23 = ((u0*q3(3)) - (q2(3))) / beta;
+r31 = q3(1);
+r32 = q3(2);
+r33 = q3(3);
+tx = ((u0*M(3,4)) - M(1,4)) / alpha;
+ty = ((v0*M(3,4)) - M(2,4)) / beta;
+tz = M(3,4);
 
 
-% Ensure K has positive diagonal elements
-T = diag(sign(diag(K)));
-K = K * T;
-R = T * R;
+disp(['alpha = ', num2str(alpha)]);
+disp(['beta = ', num2str(beta)]);
+disp(['u0 = ', num2str(u0)]);
+disp(['v0 = ', num2str(v0)]);
 
-t = -R * C;
-disp(t);
-
-% Step 3: Extract translation vector t
-t = K \ M(:, 4);
-
-% Display the results
-disp('Intrinsic matrix K:');
+% Construct K from the intrinsic parameters
+K = [alpha, 0, u0;
+     0,     beta,  v0;
+     0,     0,     1];
+disp('Intrinsic K');
 disp(K);
-disp('Rotation matrix R:');
-disp(R);
-disp('Translation vector t:');
-disp(t);
 
-alpha = K(1,1); % Focal length in the x-direction (in pixels) 
-beta = K(2,2); % Focal length in the y-direction (in pixels) 
-u_0 = K(1,3); % Principal point in the x-direction 
-v_0 = K(2,3); % Principal point in the y-direction
+% Construct X from the rotation and translation matrices
+R = [r11, r12, r13;
+     r21, r22, r23;
+     r31, r32, r33];
 
-% t = inv(K) * M_obs_norm(:, 4);
-
-function K = extract_intrinsic_matrix(M)
-    rhoz = M(3,4); 
-    M = M / rhoz;
-    % Decompose M using SVD
-    [U, ~, V] = svd(M);
-
-    % Extract the 3x3 submatrix
-    K = U(:, 1:3);
-
-    % Perform QR decomposition
-    [Q, R] = qr(K);
-
-    % Extract intrinsic parameters
-    ax = R(1,1);
-    ay = R(2,2);
-    u0 = R(1,3);
-    v0 = R(2,3);
-
-    % Construct the intrinsic matrix
-    K = [
-        ax    0    u0
-         0    ay   v0
-         0     0     1
-    ];
+if det(R) < 0
+    R = -R;
 end
 
-K = extract_intrinsic_matrix(M);
+T = [tx;ty;tz];
 
-function [R, T, C] = decompose_camera_matrix(M, K)
-    rhoz = M(3,4); 
-    M = M / rhoz;
+X = [R,T];
 
-    % Invert the intrinsic matrix
-    K_inv = inv(K);
+disp('Extrinsic X');
+disp(X);
 
-    % Calculate the extrinsic matrix
-    [R_raw, T_raw] = qr(K_inv * M);
+% Camera location
+% C = inv(R) * T;
+C = R' * T;
 
-    % Correct the rotation matrix
-    R = R_raw * diag([1, 1, det(R_raw)]);
+% Camera orientation
+O = R' * [0;0;1];
 
-    % Calculate the camera position
-    C = -R' * T_raw;
-end
-
-R, T, C = decompose_camera_matrix(M, K);
-
+disp('Camera location');
 disp(C);
+disp('Camera orientation');
+disp(O);
+
+
+% Estimate alpha and beta directly
+I = imread('IMG_0859.jpeg');
+ph = size(I,2); % horizontal pixel dimensions
+pv = size(I,1); % vertical pixel dimensions
+dh = 6;         % horizontal world dimensions - 6 inches
+dv = 4;         % vertical world dimensions - 4 inches
+D = 11.5;       % 11.5 inches - distance of camera from object
+nalpha = D * ph / dh;
+nbeta = D * pv / dv;
+
+fprintf('Direct alpha estimate %.0f \n',nalpha);
+fprintf('Direct beta estimate %d \n',nbeta);
 
 
 num_questions = num_questions + 1;
 
 
 end
+
+
+% Unused code
+% % Intrinsic matrix estimate
+% B = M(:, 1:3);
+% b = M(:, 4);
+% 
+% K = B * B';  % Compute K
+% % Normalize K
+% K = K / K(3, 3);
+% 
+% % Extract elements from K. k_c is unused because gamma is set to zero
+% k_u = K(1, 1);
+% k_c = K(1, 2);
+% k_v = K(2, 2);
+% 
+% % Compute intrinsic parameters
+% u0 = K(1, 3);
+% v0 = K(2, 3);
+% beta = sqrt(k_v - v0^2);
+% gamma = (k_c - u0 * v0) / beta;
+% alpha = sqrt(k_u - u0^2); % - gamma^2
+% 
+% disp(['alpha = ', num2str(alpha)]);
+% disp(['beta = ', num2str(beta)]);
+% disp(['u0 = ', num2str(u0)]);
+% disp(['v0 = ', num2str(v0)]);
+% 
+% % Estimate the camera coordinates
+% C = -inv(B) * b; % or -B \ b;
+% disp("Camera origin");
+% disp(C);
+% 
+% % Construct A from the intrinsic parameters
+% K = [alpha, 0, u0;
+%      0,     beta,  v0;
+%      0,     0,     1];
+% 
+% % Compute extrinsic parameters
+% R = K \ B; %inv(A) * B;
+% t = K \ b; %inv(A) * b;
+% 
+% if det(R) < 0
+%     R = -R;
+% end
+% 
+% X = [R, t];
+% X(4, :) = [0,0,0,1];
+% 
+% % Check if M can be recovered using the estimated values as a qc step
+% I = [1,0,0,0;
+%      0,1,0,0;
+%      0,0,1,0];
+% M_est = K * I * X;
+% disp("Estimated camera matrix");
+% disp(M_est);
+% 
+% C = -R' * t;
+% display(C);
+% 
+% 
+% disp('Rotation matrix R:');
+% disp(R);
+% disp('Translation vector t:');
+% disp(t);
+% function [R, Q] = rq(M)
+%     [Q,R] = qr(flipud(M)');
+%     R = flipud(R');
+%     R = fliplr(R);
+% 
+%     Q = Q';   
+%     Q = flipud(Q);
+% end
+% 
+% [R,K] = rq(B);
+% disp(R);
+% 
+% T = diag(sign(diag(K)));
+% 
+% K = K * T;
+% R = T * R;
