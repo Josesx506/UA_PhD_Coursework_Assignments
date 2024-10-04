@@ -22,7 +22,7 @@ imCrds = readmatrix('image_coords.txt');
 n = size(wdCrds, 1);
 
 % Create the A matrix for homogeneous least squares
-K = zeros(2*n, 12);
+A = zeros(2*n, 12);
 for i = 1:n
     X = wdCrds(i, 1);
     Y = wdCrds(i, 2);
@@ -30,18 +30,18 @@ for i = 1:n
     x = imCrds(i, 2); % Convert from click to index coordinates
     y = imCrds(i, 1); % Convert from click to index coordinates
     
-    K(2*i-1, :) = [X, Y, Z, 1, 0, 0, 0, 0, -x*X, -x*Y, -x*Z, -x];
-    K(2*i, :)   = [0, 0, 0, 0, X, Y, Z, 1, -y*X, -y*Y, -y*Z, -y];
+    A(2*i-1, :) = [X, Y, Z, 1, 0, 0, 0, 0, -x*X, -x*Y, -x*Z, -x];
+    A(2*i, :)   = [0, 0, 0, 0, X, Y, Z, 1, -y*X, -y*Y, -y*Z, -y];
 end
 
 % Find the eigenvector associated with the smallest eigenvalue or
-% [V, D] = eig(A' * A);
-% [~, idx] = min(diag(D));
-% M = reshape(V(:, idx), 4, 3)';
+[V, D] = eig(A' * A);
+[~, idx] = min(diag(D));
+M = reshape(V(:, idx), 4, 3)';
 
 % Solve the system using SVD (more concise)
-[~, ~, V] = svd(K);
-M = reshape(V(:, end), 4, 3)'; % Reshape last column of V to 3x4 matrix
+% [~, ~, V] = svd(A);
+% M = reshape(V(:, end), 4, 3)'; % Reshape last column of V to 3x4 matrix
 
 % Display the camera matrix
 disp('Camera Matrix:');
