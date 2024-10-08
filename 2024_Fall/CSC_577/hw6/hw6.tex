@@ -1,0 +1,197 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw1.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw1.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#6 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A-B were completed in matlab and saved in the \emph{hw6.m} program. The program creates an \emph{output} folder to save images, 
+so that the root directory is not always cluttered. The program can be run using \textit{hw6()}, and the results to coding 
+questions are printed in terminal.
+
+\begin{enumerate}
+
+    \item[Part-A1.]
+    \ \\
+    The light direction matrix was read into matlab using the \emph{readmatrix()} function. Seven photometric images were imported and flattened across 
+    RGB channels to create a matrix (400,400,7). Two nested loops were used to iterate over each pixel in the image and the intensity across the 7 images 
+    was saved in a $I$ matrix with dimensions (7,1). The normal matrix $N$ was derived from \autoref{eqn:Equation1}, where $N=\rho \times \hat{n}$.
+    \begin{equation}
+    \tag{1}
+    I = \rho \times \hat{n} \cdot s
+    \label{eqn:Equation1}
+    \end{equation}
+    Because more than 3 images were provided $s$ is not a square matrix, and the normal matrix $N$ had to calculated using the least squares estimation method 
+    $N = (s^T s)^{-1} s^T I$. The resulting normal vector was converted into a unit vector $\mathbf{\hat{n}}$ by dividing the normal vector by the albedo 
+    $\hat{n} = \frac{N}{\rho} = \frac{N}{\lVert N \rVert}$, providing solutions for both the \emph{image normals} and \emph{albedo}. The canonical image was 
+    generated by assuming the light direction was fixed at $(0,0,1)$ and iterating over two nested loops to calculate the intensity at each pixel with 
+    \autoref{eqn:Equation1}. The resulting image is documented in \autoref{fig:Figure1}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f1_canonical_view_of_images.png}
+        \caption{Recovered canonical image of photometric stereos assuming that the surface is perpendicular to the camera direction (0,0,1).}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Part-A2.]
+    \ \\
+    The depth map of the surface was generated by integrating the partial derivatives of the normal matrix along all rows and columns. The origin was defined 
+    at the top-left of the image and the resulting surface is shown in \autoref{fig:Figure2}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f2_surface_depth_map.png}
+        \caption{3D depth map of image surface derived from integration of estimated normals view from (incl=107, azi=64).}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    The surface map can be estimated using 2 nested for loop to define its path but I used \emph{cumsum()} and \emph{repmat()} because they were faster and the 
+    resulting output was similar.
+
+    \item[Part-A3.]
+    \ \\
+    From the 3D surface, the white quadrants of the image have higher pixel values ~250, while darker quadrants in the top right and bottom left have lower pixel 
+    values. When compared to the 3D surface, bright pixel quadrants have a maxima ~50 while dark quadrants have a minima of ~-50. This suggests that peaks are 
+    associated with bright pixels and valleys are associated with dim pixels.
+
+    \item[Part-A4.]
+    \ \\
+    The normal of the 3D surface was estimated using \emph{surfnorm()}, and the resulting normal matrix was used to recompute the canonical image with 
+    \autoref{eqn:Equation1}, assuming the camera position was still fixed at (0,0,1). The resulting surface normals had to be rotated to aligned it with the orientation 
+    of the image. The main result is shown in \autoref{fig:Figure3}, and different light directions were tested to replicate the patterns observed in the input 7 images.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f3_reconstructed_image_from_surface_normals.png}
+        \caption{Recovered canonical image of photometric stereos using normals from 3D surface, and assuming that the camera direction is fixed at (0,0,1).}
+        \label{fig:Figure3}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Part-B1.]
+    \ \\
+    The depth map of the color photometric surfaces were recovered using the light direction and color intensity files across 2 nested loops to invert for the 
+    image normals across each channel. The three normal vectors were averaged across each channel for the normal matrix. Because the albedo is expected to be 1 
+    (pure white), the normal vector was not converted to a unit vector. The resulting matrix was integrated to obtain the depth maps, which are shown in 
+    \autoref{fig:Figure4}.
+
+    \begin{figure}[H]\centering
+        \hspace*{-1.2in}
+        \begin{subfigure}{0.40\textwidth}
+            \includegraphics[scale=0.50]{output/f4_cps1_depth_map.png}
+            \caption{Depth map for Photometric stereo 1}
+            \label{fig:Figure4a}
+        \end{subfigure}
+    \hfil
+        \begin{subfigure}{0.40\textwidth}
+        \includegraphics[scale=0.50]{output/f5_cps2_depth_map.png}
+        \caption{Depth map for Photometric stereo 2}
+        \label{fig:Figure4b}
+        \end{subfigure}
+        \caption{Depth maps using recovered from surface normals}
+        \label{fig:Figure4}
+    \end{figure}
+
+
+\end{enumerate}
+
+\end{document}
