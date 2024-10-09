@@ -86,6 +86,28 @@ imshow(can_img);
 title('Canonical View (Reconstructed Normals)','FontSize',16);
 exportgraphics(f3, 'output/f3_reconstructed_image_from_surface_normals.png', 'Resolution', 200);
 
+inpIdx = 2;
+
+reconstructed_img = zeros(h,w);
+for i = 1:h
+    for j = 1:w
+        nx = normals(i,j,:);
+        al = albedoImg(i,j);
+        reconstructed_img(i,j) = dot(squeeze(nx),L(inpIdx, :))*al;
+    end
+end
+
+f6 = figure('visible','off');
+subplot(1,2,1);
+imshow(images{inpIdx});
+title('Input Image');
+subplot(1,2,2);
+imshow(reconstructed_img);
+title('Reconstructed Image');
+set(gca, 'LooseInset', get(gca, 'TightInset'));
+exportgraphics(f6, 'output/f6_validation_check.png', 'Resolution', 200);
+
+
 
 num_questions = num_questions + 4;
 
@@ -95,16 +117,30 @@ fprintf("\nPart B\n")
 cps1_img = imread('color_photometric_stereo_1.tiff');
 cps1_col = readmatrix('color_light_colors_1.txt');
 cps1_ld = readmatrix('color_light_directions_1.txt');
-% cps1_illum = cps1_col .* cps1_ld;
+cps1_rl = cps1_col(:, 1)' * cps1_ld;    % combined red
+cps1_gl = cps1_col(:, 2)' * cps1_ld;    % combined green
+cps1_bl = cps1_col(:, 3)' * cps1_ld;    % combined blue
+cps1_illum = [cps1_rl;cps1_gl;cps1_bl]; % Imaginary light source
 
+cps1_normals = calculate_img_channel_normals(cps1_illum,cps1_img);
+r = get_surface_map(cps1_normals);
+% r = get_depth_map(h,w,cps1_normals);
 
-cps1R = calculate_img_channel_normals(cps1_ld,cps1_col,cps1_img,1);
-cps1G = calculate_img_channel_normals(cps1_ld,cps1_col,cps1_img,2);
-cps1B = calculate_img_channel_normals(cps1_ld,cps1_col,cps1_img,3);
-% cps1_normals = cat(3, cps1R, cps1G, cps1B);
-
-% cps1_normals = cps1_normals / norm(cps1_normals);
-r = get_surface_map(cps1R);
+% % Compute surface normals from the depth map
+% [nx, ny, nz] = surfnorm(X, Y, r);
+% snormals = cat(3, nx, ny, nz);
+% snormals = rot90(snormals,2);
+% % Recreate the image as bw
+% can_img = zeros(h,w);
+% for i = 1:h
+%     for j = 1:w
+%         nx = snormals(i,j,:);
+%         can_img(i,j) = dot(squeeze(nx),[0,0,1]);
+%     end
+% end
+% figure;%('visible','off');
+% imagesc(can_img);
+% datacursormode on;
 
 f4 = figure('visible','off');
 surf(x,y,r,'EdgeColor', 'none'); colormap('parula');
@@ -116,16 +152,14 @@ exportgraphics(f4, 'output/f4_cps1_depth_map.png', 'Resolution', 200);
 cps2_img = imread('color_photometric_stereo_2.tiff');
 cps2_col = readmatrix('color_light_colors_2.txt');
 cps2_ld = readmatrix('color_light_directions_2.txt');
-% cps2_illum = cps2_col .* cps2_ld;
+cps2_rl = cps2_col(:, 1)' * cps2_ld;
+cps2_gl = cps2_col(:, 2)' * cps2_ld;
+cps2_bl = cps2_col(:, 3)' * cps2_ld;
+cps2_illum = [cps2_rl;cps2_gl;cps2_bl]; % Imaginary light source
 
-cps2R = calculate_img_channel_normals(cps2_ld,cps2_col,cps2_img,1);
-cps2G = calculate_img_channel_normals(cps2_ld,cps2_col,cps2_img,2);
-cps2B = calculate_img_channel_normals(cps2_ld,cps2_col,cps2_img,3);
-% cps2_normals = cat(3, cps2R, cps2G, cps2B);
-cps2_normals = (cps2R .* cps2G .* cps2B);
-cps2_normals = cps2_normals / PAGENORM(cps2_normals);
-
+cps2_normals = calculate_img_channel_normals(cps2_illum,cps2_img);
 r = get_surface_map(cps2_normals);
+% r = get_depth_map(h,w,cps2_normals);
 
 f5 = figure('visible','off');
 surf(x,y,r,'EdgeColor', 'none'); colormap('parula');
@@ -133,39 +167,7 @@ view(107, 64); % change the view direction
 title('Photometric Stereo 2 depth map','FontSize',16);
 exportgraphics(f5, 'output/f5_cps2_depth_map.png', 'Resolution', 200);
 
-
-
-% Compute surface normals from the depth map
-[nx, ny, nz] = surfnorm(X, Y, r);
-snormals = cat(3, nx, ny, nz);
-snormals = rot90(snormals,2);
-
-figure;
-quiver3(X, Y, r, nx, ny, nz);  % Plot the normals
-
-can_img = zeros(h,w,3);
-for c = 1:3
-    for i = 1:h
-        for j = 1:w
-            if c == 1
-                nx = cps2R(i,j,:);
-                can_img(i,j,c) = dot(squeeze(nx),cps2_ld(1,:));
-            elseif c == 2
-                nx = cps2G(i,j,:);
-                can_img(i,j,c) = dot(squeeze(nx),cps2_ld(1,:));
-            else
-                nx = cps2B(i,j,:);
-                can_img(i,j,c) = dot(squeeze(nx),cps2_ld(1,:));
-            end
-        end
-    end
-end
-
-figure;%('visible','off');
-imagesc(snormals);
-datacursormode on;
-
-num_questions = num_questions + 2;
+num_questions = num_questions + 1;
 
 
 end
@@ -219,51 +221,21 @@ function [normals, albedo] = calculate_img_normals(h,w,LD,IMGG)
     albedo = albedo / max(albedo(:));
 end
 
-function [normals] = calculate_img_channel_normals(LD,LC,COL_IMG,CHN)
+function [normals] = calculate_img_channel_normals(LD,COL_IMG)
     % Initialize matrices for normals
     [h,w,~] = size(COL_IMG);
     normals = zeros(h, w, 3);  % to store normals
-    LD = LD .* LC(:,CHN);   % create a light for a single channel
-    nl = size(LD,1);
+    % LD = LC(:,CHN)' * LD;      % LC,,CHNcreate a light for a single channel
     
     % Solve for normals at each pixel
     for i = 1:h
         for j = 1:w
             % Extract intensity vector at pixel (i,j) across all images
-            I_vec = squeeze(double(COL_IMG(i,j,CHN)));  % 5x3 vector
-            % N_R = (LD' * LD) \ (LD' * I_vec(:, 1));
-            % N_G = (LD' * LD) \ (LD' * I_vec(:, 2));
-            % N_B = (LD' * LD) \ (LD' * I_vec(:, 3));
-            % G_ij = (N_R + N_G + N_B) / 3;
-            % G_ij = [N_R(1), N_G(2), N_B(3)];
-            % 
-            % N_R = I_vec(:, 1) ./ LD(:, 1);
-            % N_G = I_vec(:, 2) ./ LD(:, 2);
-            % N_B = I_vec(:, 3) ./ LD(:, 3);
-            % G_ij = [N_R, N_G, N_B];
-
-            % Since albedo is one, this step can be skipped
-            % G_ij = G_ij / norm(G_ij);
-               
-            % disp(size(size(LD)));
-            G_ij = zeros(nl,3);
-            for l = 1:nl
-                G_ij(l,:) = I_vec / LD(l, :)';
-            end
-            % G_ij = G_ij(G_ij~=0);
-            % G_ij = G_ij(:, CHN);
-            % disp(G_ij)
-            % G_ij = (LD' * LD) \ (LD' * I_vec);
-            % disp(G_ij);
-
-            G_ij = sum(G_ij, 1) / nl;
-            % G_ij = G_ij(1, :);
-            if norm(G_ij) ~= 0
-                G_ij = G_ij / norm(G_ij);
-            else
-                G_ij = [0;0;0]; % avoid zero division
-            end
-            normals(i,j,:) = G_ij;
+            % I_vec = squeeze(double(COL_IMG(i,j,:)));  % 1x1 vector
+            % G_ij = LD' \ I_vec;
+            I_vec = squeeze(double(COL_IMG(i,j,:)));  % 3x1 vector
+            G_ij = LD \ I_vec;
+            normals(i,j, :) = G_ij;
         end
     end
 end
@@ -322,26 +294,26 @@ function [albedoImg] = calculate_albedo(h,w,imgNorm,LD,imgs)
     albedoImg = albedoImg / max(albedoImg(:));
 end
 
-% function [r] = get_depth_map(h,w,normals)
-%     Fx = size(h,w);
-%     Fy = size(h,w);
-%     for i=1:h
-%         for j=1:w
-%             normal = reshape(normals(i,j,:),1,3);
-%             deriv = normal/normal(3);
-%             Fx(i,j) = deriv(1);
-%             Fy(i,j) = deriv(2);
-%         end
-%     end
-% 
-%     r=zeros(h,w);
-%     for i=2:h
-%         r(i,1)=r(i-1,1)+Fy(i,1);
-%     end
-% 
-%     for i=2:h
-%         for j=2:w
-%             r(i,j)=r(i,j-1)+Fx(i,j);
-%         end
-%     end
-% end
+function [r] = get_depth_map(h,w,normals)
+    Fx = size(h,w);
+    Fy = size(h,w);
+    for i=1:h
+        for j=1:w
+            normal = reshape(normals(i,j,:),1,3);
+            deriv = normal/normal(3);
+            Fx(i,j) = deriv(1);
+            Fy(i,j) = deriv(2);
+        end
+    end
+
+    r=zeros(h,w);
+    for i=2:h
+        r(i,1)=r(i-1,1)+Fy(i,1);
+    end
+
+    for i=2:h
+        for j=2:w
+            r(i,j)=r(i,j-1)+Fx(i,j);
+        end
+    end
+end

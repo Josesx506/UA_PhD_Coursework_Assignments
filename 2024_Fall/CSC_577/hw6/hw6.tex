@@ -98,9 +98,9 @@
 \centerline{\it HW \#6 Submission}
 \centerline{\it Name: Joses Omojola}
 
-Questions from Part A-B were completed in matlab and saved in the \emph{hw6.m} program. The program creates an \emph{output} folder to save images, 
-so that the root directory is not always cluttered. The program can be run using \textit{hw6()}, and the results to coding 
-questions are printed in terminal.
+Questions from Part A-B were completed in matlab and saved in the \emph{hw6.m} program, while the optional \emph{part C} was derived within the report. The 
+program creates an \emph{output} folder to save images, so that the root directory is not always cluttered, and it can be run using the \textit{hw6()} command.
+This prints the results to coding questions within terminal.
 
 \begin{enumerate}
 
@@ -138,7 +138,7 @@ questions are printed in terminal.
         \centering
         \includegraphics[scale=0.5]{output/f2_surface_depth_map.png}
         \caption{3D depth map of image surface derived from integration of estimated normals view from (incl=107, azi=64).}
-        \label{fig:Figure1}
+        \label{fig:Figure2}
     \end{figure}
 
     \FloatBarrier 
@@ -155,7 +155,7 @@ questions are printed in terminal.
     \item[Part-A4.]
     \ \\
     The normal of the 3D surface was estimated using \emph{surfnorm()}, and the resulting normal matrix was used to recompute the canonical image with 
-    \autoref{eqn:Equation1}, assuming the camera position was still fixed at (0,0,1). The resulting surface normals had to be rotated to aligned it with the orientation 
+    \autoref{eqn:Equation1}, assuming the camera position was still fixed at (0,0,1). The resulting surface normals had to be rotated to align it with the orientation 
     of the image. The main result is shown in \autoref{fig:Figure3}, and different light directions were tested to replicate the patterns observed in the input 7 images.
 
     \begin{figure}[H]
@@ -166,31 +166,97 @@ questions are printed in terminal.
     \end{figure}
 
     \FloatBarrier 
+    
+    Validation tests were done to generate the shading for each of the seven input images using the light directions combined with the inverted normal matrix for 
+    each pixel. Inverted images showed similar patterns with the input images with the overlying checkerboard patterns. An example plot is shown in \autoref{fig:Figure4} 
+    implying that the overprinted patterns are not artifacts. In the image, the original \textbf{input 2} image is shown on the left, while the reconstructed image 
+    using the light 2 direction $[0.27872325,0.34950790,0.89451528]$ (exceeds the required significant figures to maintain consistency) and inverted normal matrix is 
+    shown on the right.
 
-    \item[Part-B1.]
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.8]{output/f6_validation_check.png}
+        \caption{Validation test for input image 2.}
+        \label{fig:Figure4}
+    \end{figure}
+
+    \FloatBarrier
+
+    \item[Part-B.]
     \ \\
-    The depth map of the color photometric surfaces were recovered using the light direction and color intensity files across 2 nested loops to invert for the 
-    image normals across each channel. The three normal vectors were averaged across each channel for the normal matrix. Because the albedo is expected to be 1 
-    (pure white), the normal vector was not converted to a unit vector. The resulting matrix was integrated to obtain the depth maps, which are shown in 
-    \autoref{fig:Figure4}.
+    The light color and light direction matrices were combined along each channel algebraically, to create 3 imagined light matrices. The imagined light matrix 
+    is a weighted combination of the 5 original lights 
+    \begin{align*}
+    L_R = \sum_{i=1}^5 R_i \cdot L_i \\
+    L_G = \sum_{i=1}^5 G_i \cdot L_i \\
+    L_B = \sum_{i=1}^5 B_i \cdot L_i
+    \end{align*}
+    where \( (R_i,G_i,B_i) \) are the red, green, and blue components of the \(i^{-th}\) light and \( L_i \) is the light direction. Using the imagined source, 
+    the normal directions of the weighted light sources were obtained. Because the albedo is expected to be 1 (pure white), the normal vector was not converted to 
+    a unit vector. The final normal vector was integrated along rows and columns to generate depth maps for the photometric surfaces, which are shown in 
+    \autoref{fig:Figure5}.
 
     \begin{figure}[H]\centering
-        \hspace*{-1.2in}
+        \hspace*{-0.4in}
         \begin{subfigure}{0.40\textwidth}
             \includegraphics[scale=0.50]{output/f4_cps1_depth_map.png}
             \caption{Depth map for Photometric stereo 1}
-            \label{fig:Figure4a}
+            \label{fig:Figure5a}
         \end{subfigure}
     \hfil
         \begin{subfigure}{0.40\textwidth}
         \includegraphics[scale=0.50]{output/f5_cps2_depth_map.png}
         \caption{Depth map for Photometric stereo 2}
-        \label{fig:Figure4b}
+        \label{fig:Figure5b}
         \end{subfigure}
-        \caption{Depth maps using recovered from surface normals}
-        \label{fig:Figure4}
+        \caption{Depth maps using recovered from surface normals (incl=107, azi=64).}
+        \label{fig:Figure5}
     \end{figure}
 
+    Validation tests were done similar to Part A, however, only the brightness could be obtained and the original RGB could not be reconstructed.
+
+    \item[Part-C.]
+    \ \\
+    The BRDF's (Bidirectional Reflectance Distribution Function) \( \mathbf{g} \) can be simplified as the dot product between the incident light ray vector \(i\), 
+    and the reflected light ray vector \(r\).
+    $$\mathbf{g} = i \cdot r$$
+    The light ray vectors can be expressed as angles, relating them to the zenith angle \( \theta_0 \) and azimuth angle \( \phi_0 \). Assuming that \( \phi_0 = 0 \),
+    \begin{flalign*}
+    &\mathbf{i} = \left( \sin\theta_0, 0, \cos\theta_0 \right) \\
+    &\mathbf{o} = \left( \sin\theta \cos\phi, \sin\theta \sin\phi, \cos\theta \right)
+    \end{flalign*}
+    The dot product of the \(i\) and \(r\) vectors gives
+    \begin{flalign*}
+    \mathbf{i} \cdot \mathbf{r} &= (\sin\theta_0, 0, \cos\theta_0) \cdot (\sin\theta \cos\phi, \sin\theta \sin\phi, \cos\theta) \\
+    &= \sin\theta_0 \sin\theta \cos\phi + \cos\theta_0 \cos\theta
+    \end{flalign*}
+    Assuming that the BRDF function \( \mathbf{g} \) depends solely on the cosine of the angle between the incident and reflected vectors, it can be expressed as 
+    $$\mathbf{g}(\phi, \phi_0, \theta, \theta_0) = f(\mathbf{i} \cdot \mathbf{r}) = f\left( \sin\theta_0 \sin\theta \cos\phi + \cos\theta_0 \cos\theta \right)$$
+    Here, \( f \) is a function that represents the specific reflectance model (such as Lambertian reflection, Cook-Torrance, etc.). This general form can be further 
+    simplified by considering the difference between the zenith angles as \( \Delta = \theta_i - \theta_0 \).  
+
+    To substitute \( \Delta = \theta_i - \theta_0 \) into the general form of \( \mathbf{g} \), we can rewrite \( \theta_i \) as \( \theta_i = \theta_0 + \Delta \), 
+    $$g(\phi_i, \phi_0, \Delta) = f\left( \sin\theta_0 \sin(\theta_0 + \Delta) \cos(\phi_i - \phi_0) + \cos\theta_0 \cos(\theta_0 + \Delta) \right)$$
+    Using the trigonometric identities for sums of sines and cosines \\
+    1. \( \sin(\theta_0 + \Delta) = \sin\theta_0 \cos\Delta + \cos\theta_0 \sin\Delta \) \\
+    2. \( \cos(\theta_0 + \Delta) = \cos\theta_0 \cos\Delta - \sin\theta_0 \sin\Delta \) \\
+    We can simplify the substitution into $g$ further as 
+    \begin{flalign*}
+    g(\phi_i, \phi_0, \Delta) = &f (\sin\theta_0 \left( \sin\theta_0 \cos\Delta + \cos\theta_0 \sin\Delta \right) \cos(\phi_i - \phi_0) + \\
+    &\cos\theta_0 \left( \cos\theta_0 \cos\Delta - \sin\theta_0 \sin\Delta \right))
+    \end{flalign*}
+    The resulting terms are grouped and expanded to become
+    \begin{flalign*}
+    g(\phi_i, \phi_0, \Delta) = &f( \sin^2\theta_0 \cos\Delta \cos(\phi_i - \phi_0) + \sin\theta_0 \cos\theta_0 \sin\Delta \cos(\phi_i - \phi_0) + \\
+    & \cos^2\theta_0 \cos\Delta - \cos\theta_0 \sin\theta_0 \sin\Delta )
+    \end{flalign*}
+    Terms involving \( \cos\Delta \) and \( \sin\Delta \) can be grouped to obtain 
+    \begin{flalign*}
+    g(\phi_i, \phi_0, \Delta) = &f( \left( \sin^2\theta_0 \cos(\phi_i - \phi_0) + \cos^2\theta_0 \right) \cos\Delta + \\
+    & \left( \sin\theta_0 \cos\theta_0 \cos(\phi_i - \phi_0) - \cos\theta_0 \sin\theta_0 \right) \sin\Delta )
+    \end{flalign*}
+    This indicates that $g$ is generally equivalent to $g(\phi_i, \phi_0, \Delta)$, and this updated expression, can be inverted to become  
+    $\Delta = \Delta(\phi_i, \phi_0, g)$.
 
 \end{enumerate}
 
