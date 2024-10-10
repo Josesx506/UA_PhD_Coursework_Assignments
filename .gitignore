@@ -30,5 +30,6 @@ __pycache__
 2024_Fall/CSC_577/*/soln/*.txt
 2024_Fall/GEOS_550/*/movie
 2024_Fall/GEOS_550/*/*.avi
-2024_Fall/GEOS_550/lem2dpackage1.zip
+2024_Fall/GEOS_550/*/*/*.avi
+2024_Fall/GEOS_550/*.zip
 uaenv
