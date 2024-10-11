@@ -5,13 +5,13 @@ from scipy.ndimage import rotate
 
 gx,gy = 101,101
 bc = np.loadtxt("../BCmask.txt")
-bc = rotate(bc.reshape(gx,gy),180)
+bc = rotate(bc.reshape(gx,gy),0)
 
 fm = np.loadtxt("../faultmask.txt")
-fm = rotate(fm.reshape(gx,gy), 180)
+fm = rotate(fm.reshape(gx,gy), 0)
 
 topo = np.loadtxt("../inputtopo.txt")
-topo = rotate(topo.reshape(gx,gy),180)
+topo = rotate(topo.reshape(gx,gy),0)
 
 fig, ax = plt.subplots(2,2, figsize=(10,9), gridspec_kw={"wspace":0.3},sharex=True,sharey=True)
 ax = ax.flatten()
