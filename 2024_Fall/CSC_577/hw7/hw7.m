@@ -20,10 +20,10 @@ fprintf("Part A\n")
 mcbth = prerocess_image(strcat(imgdir,'macbeth_syl-50MR16Q.tif'), 'uint8');
 mcbth_solux = prerocess_image(strcat(imgdir,'macbeth_solux-4100.tif'), 'uint8');
 
-% Plot to get white pixel bounds
-figure;
-imshow(mcbth);
-datacursormode on;
+% Plot to interactively get white pixel bounds
+% figure;
+% imshow(mcbth);
+% datacursormode on;
 
 % Problem 1
 mcbth_illm_col = get_canonical_light_estimate(mcbth,320,386,88,156,max_scale);
@@ -41,6 +41,7 @@ fprintf('3). The angular error between both images is %.2f˚.\n\n', mcbth_ae);
 
 % Problem 4
 diag_mcbth = create_diagonal_matrix(mcbth_illm_col,mcbth_slx_illm_col);
+% diag_mcbth = estimate_illuminant_mapping(mcbth_illm_col,mcbth_slx_illm_col,true);
 fprintf('4). The diagonal matrix is \n');
 disp(diag_mcbth);
 
@@ -75,11 +76,22 @@ fprintf('5). The RG RMS error between the original and canonical image is %.2f.\
 fprintf('    The RG RMS error between the corrected and canonical image is %.2f.\n\n', mcbth_corr_rms);
 
 % Problem 6
-appl_org = prerocess_image(strcat(imgdir,'apples2_syl-50MR16Q.tif'), 'uint8');
+% Load the canonical images
+appl_can = prerocess_image(strcat(imgdir,'apples2_syl-50MR16Q.tif'), 'uint8');
+ball_can = prerocess_image(strcat(imgdir,'ball_syl-50MR16Q.tif'), 'uint8');
+blck_can = prerocess_image(strcat(imgdir,'blocks1_syl-50MR16Q.tif'), 'uint8');
+
+% Load the solux-4100 images
 appl_slx = prerocess_image(strcat(imgdir,'apples2_solux-4100.tif'), 'uint8');
 ball_slx = prerocess_image(strcat(imgdir,'ball_solux-4100.tif'), 'uint8');
 blck_slx = prerocess_image(strcat(imgdir,'blocks1_solux-4100.tif'), 'uint8');
 
+% Get the max-rgb white light equivalents of the standard/canonical images
+appl_cn_illm = estimate_rgb_illum(appl_can,'max');
+ball_cn_illm = estimate_rgb_illum(ball_can,'max');
+blck_cn_illm = estimate_rgb_illum(blck_can,'max');
+
+% Get the max-rgb white light equivalents of the unknown/solux images
 appl_mx_illm = estimate_rgb_illum(appl_slx,'max');
 ball_mx_illm = estimate_rgb_illum(ball_slx,'max');
 blck_mx_illm = estimate_rgb_illum(blck_slx,'max');
@@ -93,9 +105,9 @@ fprintf('    The angular error for the block image is %.2f˚.\n\n', blck_ae);
 
 % Problem 7
 % Get the multiplier factor
-appl_scl = mcbth_illm_col ./ appl_mx_illm;
-ball_scl = mcbth_illm_col ./ ball_mx_illm;
-blck_scl = mcbth_illm_col ./ blck_mx_illm;
+appl_scl = appl_cn_illm ./ appl_mx_illm;
+ball_scl = ball_cn_illm ./ ball_mx_illm;
+blck_scl = blck_cn_illm ./ blck_mx_illm;
 
 % Preallocate for the corrected arrays
 corr_appl = zeros(size(appl_slx));
@@ -111,17 +123,139 @@ for i = 1:3
     corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
 end
 
-appl_scl_fct = double(max_scale / max([max(appl_slx(:)),max(corr_appl(:)),max(appl_org(:))]));
-disp(appl_scl_fct);
+appl_scl_fct = double(max_scale / max([max(appl_slx(:)),max(corr_appl(:)),max(appl_can(:))]));
+ball_scl_fct = double(max_scale / max([max(ball_slx(:)),max(corr_ball(:)),max(ball_can(:))]));
+blck_scl_fct = double(max_scale / max([max(blck_slx(:)),max(corr_blck(:)),max(blck_can(:))]));
 
-figure;
-subplot(1,3,1);
-imshow(uint8(appl_slx));
-subplot(1,3,2);
-imshow(uint8(corr_appl));
-subplot(1,3,3);
-imshow(uint8(appl_org));
+figure('Position',[1, 1, 920, 670],'visible','off');
+f2 = tiledlayout(3,3,'TileSpacing','Compact','Padding','Compact');
+nexttile;
+imshow(uint8(double(appl_slx)*appl_scl_fct));
+title('Original Image (bluish)','FontSize',16);
+nexttile;
+imshow(uint8(corr_appl*appl_scl_fct));
+title('Corrected Image','FontSize',16);
+nexttile;
+imshow(uint8(double(appl_can)*appl_scl_fct));
+title('Canonical Image','FontSize',16);
 
+nexttile;
+imshow(uint8(double(ball_slx)*ball_scl_fct));
+nexttile;
+imshow(uint8(corr_ball*ball_scl_fct));
+nexttile;
+imshow(uint8(double(ball_can)*ball_scl_fct));
+
+nexttile;
+imshow(uint8(double(blck_slx)*blck_scl_fct));
+nexttile;
+imshow(uint8(corr_blck*blck_scl_fct));
+nexttile;
+imshow(uint8(double(blck_can)*blck_scl_fct));
+exportgraphics(f2, 'output/f2_maxRGB_img_results.png', 'Resolution', 200);
+
+% Calculate the RMS between the canonical and solux images
+appl_orig_rms = rg_rms_error(appl_slx,appl_can);
+ball_orig_rms = rg_rms_error(ball_slx,ball_can);
+blck_orig_rms = rg_rms_error(blck_slx,blck_can);
+
+% Calculate the RMS between the canonical and corrected images
+appl_corr_rms = rg_rms_error(corr_appl,appl_can);
+ball_corr_rms = rg_rms_error(corr_ball,ball_can);
+blck_corr_rms = rg_rms_error(corr_blck,blck_can);
+
+fprintf('7). The RG RMS error between the original and canonical apples image is %.2f.\n', appl_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical apples image is %.2f.\n\n', appl_corr_rms);
+fprintf('    The RG RMS error between the original and canonical balls image is %.2f.\n', ball_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical balls image is %.2f.\n\n', ball_corr_rms);
+fprintf('    The RG RMS error between the original and canonical blocks image is %.2f.\n', blck_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical blocks image is %.2f.\n\n', blck_corr_rms);
+
+
+% Problem 8 (angular error and RMS error using gray-world algorithm)
+% Get the max-rgb white light equivalents of the standard/canonical images
+appl_cn_illm = estimate_rgb_illum(appl_can,'avg');
+ball_cn_illm = estimate_rgb_illum(ball_can,'avg');
+blck_cn_illm = estimate_rgb_illum(blck_can,'avg');
+
+% Get the max-rgb white light equivalents of the unknown/solux images
+appl_av_illm = estimate_rgb_illum(appl_slx,'avg');
+ball_av_illm = estimate_rgb_illum(ball_slx,'avg');
+blck_av_illm = estimate_rgb_illum(blck_slx,'avg');
+
+appl_ae = angular_error(mcbth_illm_col,appl_av_illm);
+ball_ae = angular_error(mcbth_illm_col,ball_av_illm);
+blck_ae = angular_error(mcbth_illm_col,blck_av_illm);
+fprintf('8). The angular error for the apple image is %.2f˚.\n', appl_ae);
+fprintf('    The angular error for the ball image is %.2f˚.\n', ball_ae);
+fprintf('    The angular error for the block image is %.2f˚.\n\n', blck_ae);
+
+% Get the multiplier factor
+appl_scl = appl_cn_illm ./ appl_av_illm;
+ball_scl = ball_cn_illm ./ ball_av_illm;
+blck_scl = blck_cn_illm ./ blck_av_illm;
+
+% Preallocate for the corrected arrays
+corr_appl = zeros(size(appl_slx));
+corr_ball = zeros(size(ball_slx));
+corr_blck = zeros(size(blck_slx));
+% Scale the RGB array
+for i = 1:3
+    appl_double = double(appl_slx);
+    ball_double = double(ball_slx);
+    blck_double = double(blck_slx);
+    corr_appl(:, :, i) = appl_double(:, :, i) * appl_scl(i);
+    corr_ball(:, :, i) = ball_double(:, :, i) * ball_scl(i);
+    corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
+end
+
+appl_scl_fct = double(max_scale / max([max(appl_slx(:)),max(corr_appl(:)),max(appl_can(:))]));
+ball_scl_fct = double(max_scale / max([max(ball_slx(:)),max(corr_ball(:)),max(ball_can(:))]));
+blck_scl_fct = double(max_scale / max([max(blck_slx(:)),max(corr_blck(:)),max(blck_can(:))]));
+
+figure('Position',[1, 1, 920, 670],'visible','off');
+f2 = tiledlayout(3,3,'TileSpacing','Compact','Padding','Compact');
+nexttile;
+imshow(uint8(double(appl_slx)*appl_scl_fct));
+title('Original Image (bluish)','FontSize',16);
+nexttile;
+imshow(uint8(corr_appl*appl_scl_fct));
+title('Corrected Image','FontSize',16);
+nexttile;
+imshow(uint8(double(appl_can)*appl_scl_fct));
+title('Canonical Image','FontSize',16);
+
+nexttile;
+imshow(uint8(double(ball_slx)*ball_scl_fct));
+nexttile;
+imshow(uint8(corr_ball*ball_scl_fct));
+nexttile;
+imshow(uint8(double(ball_can)*ball_scl_fct));
+
+nexttile;
+imshow(uint8(double(blck_slx)*blck_scl_fct));
+nexttile;
+imshow(uint8(corr_blck*blck_scl_fct));
+nexttile;
+imshow(uint8(double(blck_can)*blck_scl_fct));
+exportgraphics(f2, 'output/f3_gray_world_img_results.png', 'Resolution', 200);
+
+% Calculate the RMS between the canonical and solux images
+appl_orig_rms = rg_rms_error(appl_slx,appl_can);
+ball_orig_rms = rg_rms_error(ball_slx,ball_can);
+blck_orig_rms = rg_rms_error(blck_slx,blck_can);
+
+% Calculate the RMS between the canonical and corrected images
+appl_corr_rms = rg_rms_error(corr_appl,appl_can);
+ball_corr_rms = rg_rms_error(corr_ball,ball_can);
+blck_corr_rms = rg_rms_error(corr_blck,blck_can);
+
+fprintf('    The RG RMS error between the original and canonical apples image is %.2f.\n', appl_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical apples image is %.2f.\n\n', appl_corr_rms);
+fprintf('    The RG RMS error between the original and canonical balls image is %.2f.\n', ball_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical balls image is %.2f.\n\n', ball_corr_rms);
+fprintf('    The RG RMS error between the original and canonical blocks image is %.2f.\n', blck_orig_rms);
+fprintf('    The RG RMS error between the corrected and canonical blocks image is %.2f.\n\n', blck_corr_rms);
 
 
 num_questions = num_questions + 1;
@@ -234,3 +368,43 @@ function out_rgb = estimate_rgb_illum(img, output)
         error('Valid output arguments are max and avg.');
     end
 end
+
+% function D = estimate_illuminant_mapping(RGB1, RGB2, lsqr)
+%     % Function to estimate the diagonal mapping matrix between two single RGB values
+%     % Input:
+%     %   RGB1: 3x1 matrix for RGB values under the first light
+%     %   RGB2: 3x1 matrix for RGB values under the second light
+%     %   lsqr: boolean flag, if true return least squares solution
+%     % Output:
+%     %   D: 3x3 diagonal matrix for transforming RGB1 to match RGB2
+% 
+%     % Ensure the input matrices are column vectors
+%     RGB1 = double(RGB1(:));  % Convert to column vector if needed
+%     RGB2 = double(RGB2(:));  % Convert to column vector if needed
+% 
+%     % Check that RGB1 and RGB2 have 3 elements each
+%     if length(RGB1) ~= 3 || length(RGB2) ~= 3
+%         error('RGB1 and RGB2 must be 3-element vectors representing RGB values');
+%     end
+% 
+%     % Compute the diagonal factors for d_R, d_G, d_B
+%     if lsqr
+%         % Least squares solution
+%         d_R = (RGB1(1) * RGB2(1)) / (RGB1(1)^2);
+%         d_G = (RGB1(2) * RGB2(2)) / (RGB1(2)^2);
+%         d_B = (RGB1(3) * RGB2(3)) / (RGB1(3)^2);
+%     else
+%         % Derived optimal diagonal factors (same result for single RGB values)
+%         d_R = RGB1(1) * RGB2(1) / (RGB1(1)^2);
+%         d_G = RGB1(2) * RGB2(2) / (RGB1(2)^2);
+%         d_B = RGB1(3) * RGB2(3) / (RGB1(3)^2);
+%     end
+% 
+%     % Form the diagonal matrix D
+%     D = diag([d_R, d_G, d_B]);
+% 
+%     % Optional: Display the diagonal matrix (uncomment if needed)
+%     % disp('Estimated Diagonal Matrix:');
+%     % disp(D);
+% end
+
