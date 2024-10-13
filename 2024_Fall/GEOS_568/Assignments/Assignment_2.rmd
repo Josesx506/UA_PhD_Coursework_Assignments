@@ -1,0 +1,83 @@
+---
+title: "GEOS 568: Advanced Seismology HW2. Due: 10/24/24"
+subtitle: "Name: Joses Omojola"
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+1. Solve the wave equation below using the method of separation of variables. Here $\phi$ is a scalar field.
+$$
+\frac{\partial^2 \phi}{\partial t^2} = c^2 \nabla^2 \phi
+$$
+
+__Proof__  
+$\phi = \phi(\rho,\phi,\theta,t)$ and $\nabla^2$ is the Laplacian operator for spatial coordinates $(x,y,z)$.  
+
+We start by assuming that the solution $\phi(\rho,\phi,\theta,t)$ can be written as a product of a time-dependent function $h(t)$ and a 
+space-dependent function $w(\rho,\phi,\theta)$:
+
+$$
+\phi(\rho, \phi, \theta, t) = h(t)w(\rho, \phi, \theta)
+$$
+
+Substituting this into the wave equation, we get:
+
+$$
+h''(t)w(\rho, \phi, \theta) = c^2 h(t)\nabla^2 w(\rho, \phi, \theta)
+$$
+
+Dividing both sides by $c^2hw$, we obtain:
+
+$$
+\frac{h''(t)}{c^2 h(t)} = \frac{\nabla^2 w(\rho, \phi, \theta)}{w(\rho, \phi, \theta)}
+$$
+
+Boundary conditions  
+Impose Dirichlet boundary condition 
+
+Since the left side depends only on time and the right side depends only on spatial coordinates, both sides must be equal to a constant. 
+Let's call this constant $-\lambda^2$:
+
+$$
+\frac{h''(t)}{c^2 h(t)} = -\lambda^2
+$$
+$$
+\frac{\nabla^2 w(\rho, \phi, \theta)}{w(\rho, \phi, \theta)} = -\lambda^2
+$$
+
+Solving the Time-Dependent Equation
+
+The time-dependent equation becomes:
+
+$$
+h''(t) + c^2 \lambda^2 h(t) = 0
+$$
+
+This is a simple harmonic oscillator equation, with solutions of the form:
+
+$$
+h(t) = A\cos(\lambda ct) + B\sin(\lambda ct)
+$$
+
+where A and B are constants determined by the initial conditions.
+
+Solving the Space-Dependent Equation
+
+The space-dependent equation becomes:
+
+$$
+\nabla^2 w(\rho, \phi, \theta) + \lambda^2 w(\rho, \phi, \theta) = 0
+$$
+
+
+2. Using AR Box 4.1, prove that \( g(x,t) = \frac{1}{4 \pi c^2 |x|} \delta \left(t - \frac{|x|}{c} \right) \) is the solution to 
+\( \ddot{g} = \delta(x)\delta(t) + c^2 \nabla^2 g \). Show your work and include all of the details that are absent from the proof 
+in Box 4.1.
+
+3. Verify that properties (i)-(iv) of Lamé's theorem as defined in AR Section 4.1.1 are satisfied.
+    i. $$u = \nabla \phi + \nabla \times \psi$$
+    ii. $$\nabla \cdot \psi = 0$$
+    iii. $$ \ddot{\phi} = \frac{\Phi}{\rho} + \alpha^2 \nabla^2 \phi \ \ \ \ \    \left( \text{with } \alpha^2 = \frac{\lambda + 2 \mu}{\rho} \right)$$
+    iv. $$ \ddot{\psi} = \frac{\Psi}{\rho} + \beta^2 \nabla^2 \psi \ \ \ \ \    \left( \text{with } \beta^2 = \frac{\mu}{\rho} \right)$$

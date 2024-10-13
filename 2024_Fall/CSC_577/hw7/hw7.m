@@ -52,19 +52,21 @@ for i = 1:3
     corr_mcbth(:, :, i) = arr_double(:, :, i) * diag_mcbth(i, i);
 end
 
-% Estimate a single scale factor for all images so that the max RGB value is 250
-scl_fct = double(max_scale / max([max(mcbth_solux(:)),max(corr_mcbth(:)),max(mcbth(:))]));
+% Estimate a single scale factor for each image's RGB so that the max RGB value is 250
+mcbth_sx_sf = double(max_scale / max(mcbth_solux(:)));
+corr_mcbth_sf = double(max_scale / max(corr_mcbth(:)));
+mcbth_sf = double(max_scale / max(mcbth(:)));
 
 figure('Position',[1, 1, 920, 300],'visible','off');
 f1 = tiledlayout(1,3,'TileSpacing','Compact','Padding','Compact');
 nexttile;
-imshow(uint8(double(mcbth_solux)*scl_fct));
+imshow(uint8(double(mcbth_solux)*mcbth_sx_sf));
 title('Original Image (bluish)','FontSize',16);
 nexttile;
-imshow(uint8(corr_mcbth*scl_fct));
+imshow(uint8(corr_mcbth*corr_mcbth_sf));
 title('Corrected Image','FontSize',16);
 nexttile;
-imshow(uint8(double(mcbth)*scl_fct));
+imshow(uint8(double(mcbth)*mcbth_sf));
 title('Canonical Image','FontSize',16);
 exportgraphics(f1, 'output/f1_macbeth_img_results.png', 'Resolution', 200);
 
@@ -123,35 +125,43 @@ for i = 1:3
     corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
 end
 
-appl_scl_fct = double(max_scale / max([max(appl_slx(:)),max(corr_appl(:)),max(appl_can(:))]));
-ball_scl_fct = double(max_scale / max([max(ball_slx(:)),max(corr_ball(:)),max(ball_can(:))]));
-blck_scl_fct = double(max_scale / max([max(blck_slx(:)),max(corr_blck(:)),max(blck_can(:))]));
+appl_sx_sf = double(max_scale / max(appl_slx(:)));
+corr_appl_sf = double(max_scale / max(corr_appl(:)));
+appl_sf = double(max_scale / max(appl_can(:)));
+
+ball_sx_sf = double(max_scale / max(ball_slx(:)));
+corr_ball_sf = double(max_scale / max(corr_ball(:)));
+ball_sf = double(max_scale / max(corr_ball(:)));
+
+blck_sx_sf = double(max_scale / max(blck_slx(:)));
+corr_blck_sf = double(max_scale / max(corr_blck(:)));
+blck_sf = double(max_scale / max(blck_can(:)));
 
 figure('Position',[1, 1, 920, 670],'visible','off');
 f2 = tiledlayout(3,3,'TileSpacing','Compact','Padding','Compact');
 nexttile;
-imshow(uint8(double(appl_slx)*appl_scl_fct));
+imshow(uint8(double(appl_slx)*appl_sx_sf));
 title('Original Image (bluish)','FontSize',16);
 nexttile;
-imshow(uint8(corr_appl*appl_scl_fct));
+imshow(uint8(corr_appl*corr_appl_sf));
 title('Corrected Image','FontSize',16);
 nexttile;
-imshow(uint8(double(appl_can)*appl_scl_fct));
+imshow(uint8(double(appl_can)*appl_sf));
 title('Canonical Image','FontSize',16);
 
 nexttile;
-imshow(uint8(double(ball_slx)*ball_scl_fct));
+imshow(uint8(double(ball_slx)*ball_sx_sf));
 nexttile;
-imshow(uint8(corr_ball*ball_scl_fct));
+imshow(uint8(corr_ball*corr_ball_sf));
 nexttile;
-imshow(uint8(double(ball_can)*ball_scl_fct));
+imshow(uint8(double(ball_can)*ball_sf));
 
 nexttile;
-imshow(uint8(double(blck_slx)*blck_scl_fct));
+imshow(uint8(double(blck_slx)*blck_sx_sf));
 nexttile;
-imshow(uint8(corr_blck*blck_scl_fct));
+imshow(uint8(corr_blck*corr_blck_sf));
 nexttile;
-imshow(uint8(double(blck_can)*blck_scl_fct));
+imshow(uint8(double(blck_can)*blck_sf));
 exportgraphics(f2, 'output/f2_maxRGB_img_results.png', 'Resolution', 200);
 
 % Calculate the RMS between the canonical and solux images
@@ -178,7 +188,8 @@ appl_cn_illm = estimate_rgb_illum(appl_can,'avg');
 ball_cn_illm = estimate_rgb_illum(ball_can,'avg');
 blck_cn_illm = estimate_rgb_illum(blck_can,'avg');
 
-% Get the max-rgb white light equivalents of the unknown/solux images
+% Get the max-rgb gray light equivalents of the unknown/solux images and
+% multiply by 2 to get white light
 appl_av_illm = estimate_rgb_illum(appl_slx,'avg');
 ball_av_illm = estimate_rgb_illum(ball_slx,'avg');
 blck_av_illm = estimate_rgb_illum(blck_slx,'avg');
@@ -209,35 +220,43 @@ for i = 1:3
     corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
 end
 
-appl_scl_fct = double(max_scale / max([max(appl_slx(:)),max(corr_appl(:)),max(appl_can(:))]));
-ball_scl_fct = double(max_scale / max([max(ball_slx(:)),max(corr_ball(:)),max(ball_can(:))]));
-blck_scl_fct = double(max_scale / max([max(blck_slx(:)),max(corr_blck(:)),max(blck_can(:))]));
+appl_sx_sf = double(max_scale / max(appl_slx(:)));
+corr_appl_sf = double(max_scale / max(corr_appl(:)));
+appl_sf = double(max_scale / max(appl_can(:)));
+
+ball_sx_sf = double(max_scale / max(ball_slx(:)));
+corr_ball_sf = double(max_scale / max(corr_ball(:)));
+ball_sf = double(max_scale / max(corr_ball(:)));
+
+blck_sx_sf = double(max_scale / max(blck_slx(:)));
+corr_blck_sf = double(max_scale / max(corr_blck(:)));
+blck_sf = double(max_scale / max(blck_can(:)));
 
 figure('Position',[1, 1, 920, 670],'visible','off');
 f2 = tiledlayout(3,3,'TileSpacing','Compact','Padding','Compact');
 nexttile;
-imshow(uint8(double(appl_slx)*appl_scl_fct));
+imshow(uint8(double(appl_slx)*appl_sx_sf));
 title('Original Image (bluish)','FontSize',16);
 nexttile;
-imshow(uint8(corr_appl*appl_scl_fct));
+imshow(uint8(corr_appl*corr_appl_sf));
 title('Corrected Image','FontSize',16);
 nexttile;
-imshow(uint8(double(appl_can)*appl_scl_fct));
+imshow(uint8(double(appl_can)*appl_sf));
 title('Canonical Image','FontSize',16);
 
 nexttile;
-imshow(uint8(double(ball_slx)*ball_scl_fct));
+imshow(uint8(double(ball_slx)*ball_sx_sf));
 nexttile;
-imshow(uint8(corr_ball*ball_scl_fct));
+imshow(uint8(corr_ball*corr_ball_sf));
 nexttile;
-imshow(uint8(double(ball_can)*ball_scl_fct));
+imshow(uint8(double(ball_can)*ball_sf));
 
 nexttile;
-imshow(uint8(double(blck_slx)*blck_scl_fct));
+imshow(uint8(double(blck_slx)*blck_sx_sf));
 nexttile;
-imshow(uint8(corr_blck*blck_scl_fct));
+imshow(uint8(corr_blck*corr_blck_sf));
 nexttile;
-imshow(uint8(double(blck_can)*blck_scl_fct));
+imshow(uint8(double(blck_can)*blck_sf));
 exportgraphics(f2, 'output/f3_gray_world_img_results.png', 'Resolution', 200);
 
 % Calculate the RMS between the canonical and solux images
