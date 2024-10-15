@@ -13,68 +13,293 @@ $$
 $$
 
 __Proof__  
-$\phi = \phi(\rho,\phi,\theta,t)$ and $\nabla^2$ is the Laplacian operator for spatial coordinates $(x,y,z)$.  
-
-We start by assuming that the solution $\phi(\rho,\phi,\theta,t)$ can be written as a product of a time-dependent function $h(t)$ and a 
-space-dependent function $w(\rho,\phi,\theta)$:
-
-$$
-\phi(\rho, \phi, \theta, t) = h(t)w(\rho, \phi, \theta)
-$$
-
-Substituting this into the wave equation, we get:
-
-$$
-h''(t)w(\rho, \phi, \theta) = c^2 h(t)\nabla^2 w(\rho, \phi, \theta)
-$$
-
-Dividing both sides by $c^2hw$, we obtain:
-
-$$
-\frac{h''(t)}{c^2 h(t)} = \frac{\nabla^2 w(\rho, \phi, \theta)}{w(\rho, \phi, \theta)}
-$$
+Let $\phi(x,t)$ represent displacement from the $x$ axis at position $x$ and time $t$. $\nabla^2$ is the Laplacian operator for spatial 
+coordinates, and can be rewritten as  $\frac{\partial^2 \phi}{\partial t^2}(x,t)$. 
+<!-- Laplacian is the divergence of the gradient -->
 
 Boundary conditions  
-Impose Dirichlet boundary condition 
+The displacement at the left and right are held at zero  
+\begin{align}
+&\phi(0,t) = 0  & \text{for all } t > 0 \\
+&\phi(l,t) = 0  & \text{for all } t > 0
+\end{align}
 
-Since the left side depends only on time and the right side depends only on spatial coordinates, both sides must be equal to a constant. 
-Let's call this constant $-\lambda^2$:
+Initial conditions  
+The postion and speed of the wave at time 0 is represented by functions $f(x)$ and $g(x)$
+\begin{align}
+&\phi(x,0) = f(x)  & \text{for all } 0 < x < l \\
+&\phi(x,0) = g(x)  & \text{for all } 0 < x < l
+\end{align}
+  
+Using the separation of variables method, we start by finding all solutions of the original equation of the form $\phi(x,t) = X(x)T(t)$. Then 
+we impose the boundary conditions, and the initial conditions.  
+The original equation can be rewritten as 
+\begin{align*}
+\phi_{tt} = X(x)T''(t) \\
+\phi_{xx} = X''(x)T(t) \\
+X(x)T''(t) = c^2 X''(x)T(t) \\ 
+\text{grouping like terms} \\
+\frac{X''(x)}{X(x)} = \frac{1}{c^2}\frac{T''(t)}{T(t)}
+\end{align*}
+Both sides are independent of each other and equal, indicating that they are equal to a constant which can be represented as $\lambda$.
+\begin{gather}
+\tag{5}
+\begin{aligned}
+\frac{X''(x)}{X(x)} & = \lambda  & \frac{1}{c^2}\frac{T''(t)}{T(t)} = \lambda \\
+\Longleftrightarrow X''(x) - \lambda X(x) & = 0 & T''(t) - c^2 \lambda T(t) = 0
+\end{aligned}
+\end{gather}
 
+We can solve the two constant coefficient ordinary differential equations, by trying $X(x)=e^{rx}$ and $T(t)=e^{st}$ for some constants r and s 
+to be determined. These solution only hold if  and only if
 $$
-\frac{h''(t)}{c^2 h(t)} = -\lambda^2
+\begin{array}{lrrr}
+&  & \frac{d^2}{dx^2}e^{rx} - \lambda e^{rx} = 0    & \frac{d^2}{dt^2}e^{st} - c^2 \lambda e^{st} = 0 \\
+& \Longleftrightarrow & (r^2 - \lambda)e^{rx} = 0     & (s^2 - c^2 \lambda)e^{st} = 0 \\
+& \Longleftrightarrow & r^2 - \lambda = 0             & s^2 - c^2 \lambda = 0 \\
+& \Longleftrightarrow & r = \pm \sqrt{\lambda}        & s = \pm c\sqrt{\lambda}
+\end{array}
 $$
+If $\lambda \neq 0$, we obtain two independent solutions, namely $e^{\sqrt{\lambda} x}$ and $e^{-\sqrt{\lambda} x}$ for $X(x)$, and two independent 
+solutions namely, $e^{c\sqrt{\lambda} t}$ and $e^{-c\sqrt{\lambda} t}$ for $T(t)$. If $\lambda \neq 0$, the general solution to (5) is
+\begin{align*}
+& X(x) = d_1 e^{\sqrt{\lambda} x} + d_2 e^{-\sqrt{\lambda} x}   & T(t) = d_3 e^{c\sqrt{\lambda} t} + d_4 e^{-c\sqrt{\lambda} t}
+\end{align*}
+for arbitrary constants $d_1, d_2, d_3, \text{ and } d_4$. If $\lambda \neq 0$, equation (5) can be simplified to 
+\begin{align*}
+& X''(x) = 0   & T''(t) = 0
+\end{align*}
+and the general solution is
+\begin{align*}
+& X(x) = d_1 + d_2 x   & T(t) = d_3 + d_4 x
+\end{align*}
+
+We proceed by imposing the bounding conditions in (1) and (2) above. If $X_i(x)T_i(t), \ i=1,2,3,...$ all solve the wave equation, then 
+$\Sigma_i a_iX_i(x)T_i(t)$ is also a solution for any choice of the constant $a_i$. This solution satisfies the boundary condition (1) if and 
+only if
 $$
-\frac{\nabla^2 w(\rho, \phi, \theta)}{w(\rho, \phi, \theta)} = -\lambda^2
+\sum_i a_i X_i(0)T_i(t) = 0 \ \ \ \  \text{ for all }t > 0
 $$
-
-Solving the Time-Dependent Equation
-
-The time-dependent equation becomes:
-
+Similarly $\phi(x,t) = \Sigma_i a_iX_i(x)T_i(t)$ satisfies the boundary condition (2) if and only if 
 $$
-h''(t) + c^2 \lambda^2 h(t) = 0
+\sum_i a_i X_i(l)T_i(t) = 0 \ \ \ \  \text{ for all }t > 0
 $$
-
-This is a simple harmonic oscillator equation, with solutions of the form:
-
+By iterating through the solutions of coefficient ordinary differential equations, we can discard all of those that fail to satisfy 
+$X(0) = X(l) = 0$. We consider $\lambda \neq 0$. The condition $X(0)=0$ is satisfied if and only if $d_1 + d_2 = 0$. So we require that $d_2 = -d_1$.
+The condition $X(l)=0$ is satisfied if and only if
 $$
-h(t) = A\cos(\lambda ct) + B\sin(\lambda ct)
+0 = d_1 e^{\sqrt{\lambda} t} + d_2 e^{-\sqrt{\lambda} t} = d_1 \left( e^{\sqrt{\lambda} t} - e^{-\sqrt{\lambda} t} \right)
 $$
-
-where A and B are constants determined by the initial conditions.
-
-Solving the Space-Dependent Equation
-
-The space-dependent equation becomes:
-
+If $d_1$ were zero, then $X(x)$ would again be identically zero and hence useless. So instead, we discard any $\lambda$ that doesn't obey.
 $$
-\nabla^2 w(\rho, \phi, \theta) + \lambda^2 w(\rho, \phi, \theta) = 0
+e^{\sqrt{\lambda} l} - e^{-\sqrt{\lambda} l} = 0 \Longleftrightarrow e^{\sqrt{\lambda} l} = e^{-\sqrt{\lambda} l} 
+\Longleftrightarrow e^{2 \sqrt{\lambda} l} = 1
 $$
+In the last step, we multiplied both sides of $e^{\sqrt{\lambda} l}$. One $\lambda$ that obeys $e^{2 \sqrt{\lambda} l} = 1$ is $\lambda = 0$. Since 
+we're only considering $\lambda \neq 0$, we can't use it, however, there are infinitely many complex numbers that work. In fact 
+$e^{2 \sqrt{\lambda} l} = 1$ if and only if there is an integer $k$ such that 
+$$
+2 \sqrt{\lambda} l = 2 k \pi l \Longleftrightarrow \sqrt{\lambda} = k \frac{\pi}{l} l \Longleftrightarrow \lambda = -k^2 \frac{\pi^2}{l^2}
+$$ 
+With $\sqrt{\lambda} = k \frac{\pi}{l} l$ and $d_2 = -d_1$
+\begin{align*}
+X(x)T(t) &= d_1 \left( e^{l \frac{k \pi}{l} x} - e^{-l \frac{k \pi}{l} x} \right) (d_3 e^{l \frac{ck \pi}{l} t} + d_4 e^{-l \frac{ck \pi}{l} t}) \\
+&= 2 l d_1 \sin \left( \frac{k \pi}{l} x \right) \left[ (d_3 + d_4) \cos \left( \frac{ck \pi}{l} t \right) + l(d_3 - d_4) \sin \left( \frac{ck \pi}{l} t \right) \right] \\
+&= \sin \left( \frac{k \pi}{l} x \right) \left[ \alpha_k \cos \left( \frac{ck \pi}{l} t \right) + \beta_k \sin \left( \frac{ck \pi}{l} t \right) \right]
+\end{align*}
+where $\alpha_k = 2l d_1 (d_3 + d_4)$ and $\beta_k = -2 d_1 (d_3 - d_4)$. Note that, to this point, $d_1, d_3, \text{ and } d_4$ are allowed to be 
+any complex numbers so that $\alpha_k$ and $\beta_k$ are allowed to be any complex numbers.  
 
+We now know that 
+$$
+u(x,t) = \sum_{k=1}^{\infty} sin \left(\frac{k\pi}{l}x\right) \left[ \alpha_k cos \left(\frac{ck\pi}{l}t\right) + \beta_k sin \left(\frac{ck\pi}{l}t\right) \right]
+$$
+obeys the wave equation and the boundary conditions (1) and (2), for any choice of the constants $\alpha_k, \beta_k$. It remains only to see if we can 
+choose the $\alpha_k$'s and $\beta_k$'s to satisfy
+\begin{align}
+& f(x) = u(x,0) = \sum_{k=1}^{\infty} \alpha_k sin \left(\frac{k\pi}{l}x \right) \\
+& g(x) = u_t(x,0) = \sum_{k=1}^{\infty} \beta_k \frac{ck\pi}{l} sin \left(\frac{k\pi}{l}x \right)
+\end{align}
+But any (reasonably smooth) function, $h(x)$, defined on the interval $0 < x < l$, has a unique representation
+\begin{equation}
+h(x) = \sum_{k=1}^{\infty} b_k sin \frac{k\pi x}{l}
+\end{equation}
+as a linear combination of $sin \frac{k\pi x}{l}$'s and we also know the formula
+$$
+b_k = \frac{2}{l} \int_0^l h(x) sin \frac{k\pi x}{l} dx
+$$
+for the coefficients. We can make (7) match (5) by choosing $h(x) = f(x)$ and $b_k = \alpha_k$. This tells us that 
+$\alpha_k = \frac{2}{l} \int_0^l f(x) sin \frac{k\pi x}{l} dx$. Similarly, we can make (7) match (6) by choosing $h(x) = f(x)$ and 
+$b_k = \beta_k \frac{ck\pi}{l}$. This tells us that $\frac{ck\pi}{l} \beta_k = \frac{2}{l} \int_0^l g(x) sin \frac{k\pi x}{l} dx$. So we have a solution:
+\begin{equation}
+\phi(x,t) = \sum_{k=1}^{\infty} sin (\frac{k\pi}{l}x) \left[\alpha_k cos (\frac{ck\pi}{l} t) + \beta_k sin (\frac{ck\pi}{l} t) \right]
+\end{equation}
+with 
+\begin{align*}
+& \alpha_k = \frac{2}{l} \int_0^l f(x) sin \frac{k\pi x}{l} dx  & \beta_k = \frac{2}{ck\pi} \int_0^l g(x) sin \frac{k\pi x}{l} dx 
+\end{align*}
+  
+---
+
+\vspace{10em}
+  
 
 2. Using AR Box 4.1, prove that \( g(x,t) = \frac{1}{4 \pi c^2 |x|} \delta \left(t - \frac{|x|}{c} \right) \) is the solution to 
 \( \ddot{g} = \delta(x)\delta(t) + c^2 \nabla^2 g \). Show your work and include all of the details that are absent from the proof 
 in Box 4.1.
+
+__Proof__ 
+\begin{enumerate} 
+\item[i] In the wave equation \( \ddot{g} = \delta(x)\delta(t) + c^2 \nabla^2 g \), $\ddot{g}$ represents the second time derivative of  $g(x,t)$, and $\nabla^2 g$ represents the Laplacian 
+of $g(x,t)$ in space. The term $\delta(x)\delta(t)$ represents a source term localized at $x=0$ and $t=0$, corresponding to a point source.  
+\item[ii] Assuming zero initial conditions and a radially symmetric point source at $x=0$. The source is located at the origin and has no preferred direction in space,
+hence the solution only depends on the distance from the origin, i.e. $r = |x|$, and not individual coordinates $(x_1,x_2,x_3)$.  
+\item[iii] When $\mathbf{g}$ is radially symmetric, the Laplacian $\nabla^2 g$ for a function $g = g(r, t )$ that depends only on the radial coordinate $r$ and time $t$
+is given by
+$$
+\nabla^2 g = \frac{1}{r^2}\frac{\partial}{\partial r} \left(r^2 \frac{\partial g}{\partial r}\right)
+$$
+\item[iv] The Laplacian can be expanded to:
+$$
+\nabla^2 g = \frac{1}{r^2} \frac{\partial}{\partial r} \left( r^2 \frac{\partial g}{\partial r} \right) = 
+\frac{1}{r^2} \left( 2r \frac{\partial g}{\partial r} + r^2 \frac{\partial^2 g}{\partial r^2} \right) =
+\frac{2}{r} \frac{\partial g}{\partial r} + \frac{\partial^2 g}{\partial r^2}
+$$
+
+\item[v] The expression for \( \nabla^2 g \) can be substituted into the 3D wave equation:
+$$
+\ddot{g} = c^2 \left( \frac{2}{r} \frac{\partial g}{\partial r} + \frac{\partial^2 g}{\partial r^2} \right) = 
+\frac{2c^2}{r} \frac{\partial g}{\partial r} + c^2 \frac{\partial^2 g}{\partial r^2}
+$$
+
+\item[vi] Considering \( h(r, t) = r g(r, t) \), we can express the wave equation in terms of \( h \), and compute the spatial derivatives of \( h \) with respect to \( r \):
+$$
+g = \frac{h}{r}, \quad \frac{\partial g}{\partial r} = \frac{1}{r} \frac{\partial h}{\partial r} - \frac{h}{r^2}
+$$
+Substituting these into the expression for \( \nabla^2 g \), the first term becomes:
+$$
+\frac{2}{r} \frac{\partial g}{\partial r} = \frac{2}{r} \left( \frac{1}{r} \frac{\partial h}{\partial r} - \frac{h}{r^2} \right) = \frac{2}{r^2} \frac{\partial h}{\partial r} - \frac{2h}{r^3}
+$$
+and the second term:
+$$
+\frac{\partial^2 g}{\partial r^2} = \frac{\partial}{\partial r} \left( \frac{1}{r} \frac{\partial h}{\partial r} - \frac{h}{r^2} \right)
+$$
+This expands as:
+$$
+\frac{\partial^2 g}{\partial r^2} = \frac{1}{r} \frac{\partial^2 h}{\partial r^2} - \frac{2}{r^2} \frac{\partial h}{\partial r} + \frac{2h}{r^3}
+$$
+Substituting these into the wave equation gives:
+$$
+\ddot{g} = c^2 \left( \frac{2}{r^2} \frac{\partial h}{\partial r} - \frac{2h}{r^3} + \frac{1}{r} \frac{\partial^2 h}{\partial r^2} - \frac{2}{r^2} \frac{\partial h}{\partial r} + \frac{2h}{r^3} \right)
+$$
+that can be simplified to:
+$$
+\ddot{g} = c^2 \frac{1}{r} \frac{\partial^2 h}{\partial r^2}
+$$
+
+\item[vii] The wave equation can be expressed in terms of \( h = rg \), since \( g = \frac{h}{r} \):
+$$
+\ddot{g} = \frac{c^2}{r} \frac{\partial^2 h}{\partial r^2}
+$$
+Because \( h = r g \), so this equation becomes:
+$$
+\ddot{g} = \frac{1}{r} \frac{\partial^2 (r g)}{\partial r^2}
+$$
+The resulting $(rg)''$:
+$$
+(rg)'' = \frac{r \ddot{g}}{c^2}
+$$
+satisfies the one-dimensional wave equation.
+
+\item[viii] The general solution to \( r g \) can be represented as 
+\[
+r g(r, t) = f\left(t - \frac{r}{c}\right) + h\left(t + \frac{r}{c}\right)
+\]
+where \( f \) represents an outgoing wave and \( h \) represents an incoming wave. Since we are concerned with only the outgoing waves from the source at \( r = 0 \), we set 
+\( h(t + \frac{r}{c}) = 0 \), hence 
+\[
+r g(r, t) = f\left( t - \frac{r}{c} \right)
+\]
+and $\mathbf{g}$ can be represented as 
+\[
+g(r, t) = \frac{1}{r} f\left( t - \frac{r}{c} \right)
+\]
+
+\item[ix] To show that \( f(\tau) = \frac{\delta(\tau)}{4 \pi c^2} \), where \( \tau = t - \frac{r}{c} \), We must establish that \( 4 \pi c^2 f(\tau) \) has the same properties as 
+the Dirac delta function \( \delta(\tau) \) when integrated over time. We introduce the function:
+\[
+F(r, \epsilon_1, \epsilon_2) \equiv 4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} g(r, t) \, dt
+\]
+Substitute \( g(r,t) = \frac{1}{r} f\left( t - \frac{r}{c} \right) \) into this expression:
+\[
+F(r, \epsilon_1, \epsilon_2) = 4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \frac{1}{r} f\left( t - \frac{r}{c} \right) \, dt
+\]
+Performing change of variables \( \tau = t - \frac{r}{c} \), \( dt = d\tau \) and the integration limits change to:
+\[
+F(r, \epsilon_1, \epsilon_2) = \frac{4 \pi c^2}{r} \int_{-\epsilon_1}^{\epsilon_2} f(\tau) \, d\tau
+\]
+
+\item[x] We apply the Laplacian \( \nabla^2 \) to \( F(r, \epsilon_1, \epsilon_2) \). Using the definition of \( F \) and the properties of \( g(r, t) \), we need to differentiate both 
+the limits of integration and the integrand \( g(r, t) \) with respect to \( r \). The expression for \( \nabla^2 F \) becomes:
+\[
+\nabla^2 F = 4 \pi c \left[ 2g'(r,t) + \frac{2}{r} g(r, t) + \frac{\dot{g}(r,t)}{c} \right]_{t = \frac{r}{c} + \epsilon_2}^{t = \frac{r}{c} - \epsilon_1}
++ 4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \nabla^2 g(r, t) \, dt
+\]
+
+\item[xi] Substitute the wave equation $\ddot{g} = c^2 \nabla^2 g + \delta(x)\delta(t)$ to replace $\nabla^2 g$ in the integral to get
+\begin{align*}
+\nabla^2 F &= 4 \pi c \left[ 2g'(r,t) + \frac{2}{r} g(r, t) + \frac{\dot{g}(r,t)}{c} \right]_{\frac{r}{c} + \epsilon_2}^{\frac{r}{c} - \epsilon_1}
++ 4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \left( \frac{\ddot{g}}{c^2} - \delta(x)\delta(t) \right) \, dt \\
+&= 4 \pi c \left[ 2g'(r,t) + \frac{2}{r} g(r, t) + \frac{\dot{g}(r,t)}{c} \right]_{\frac{r}{c} + \epsilon_2}^{\frac{r}{c} - \epsilon_1}
++  4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \frac{\ddot{g}}{c^2} \, dt 
+-  4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \delta(x)\delta(t) \, dt 
+\end{align*}
+For $r \neq 0$, the solution $g(r,t)$ satisfies the homogenous equation t
+
+Considering the initial conditions at zero, the contribution of the green's function in the second term integrates to zero. In the third term, since $\delta(x)$ is a function of space, integrating it 
+with respect to time will not affect it, and we can pull it out. 
+\[
+\nabla^2 F = 4 \pi c \left[ 2g'(r,t) + \frac{2}{r} g(r,t) + \frac{\dot{g}(r,t)}{c} \right]_{\frac{r}{c} + \epsilon_2}^{\frac{r}{c} - \epsilon_1}
+- 4 \pi \delta(x) \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \delta(t) \, dt
+\]
+
+\item[xii] Using the fact that \( rg = f\left(t - \frac{r}{c}\right) \), which implies that:
+\[
+g'(r,t) = -\frac{g(r,t)}{r} - \frac{\dot{g}(r,t)}{c}
+\]
+Substituting this into the equation for \( \nabla^2 F \), we find that all the terms involving \( g(r,t) \), \( g'(r,t) \), and \( \dot{g}(r,t) \) cancel out. This leaves us with the simplified expression:
+\[
+\nabla^2 F = - 4 \pi \delta(x) \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \delta(t) \, dt
+\]
+
+\item[xiii] The Dirac delta function integrates to 1 over any interval containing $t=0$. 
+\[
+\int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \delta(t) \, dt = \int_{- \epsilon_1}^{\epsilon_2} \delta(t) \, dt = 1
+\]
+This reduces the expression for $\nabla^2 F$ to 
+\[
+\nabla^2 F = - 4 \pi \delta(x)
+\]
+
+\item[xiv] Using the green's function property that $\nabla^2 \left( \frac{1}{r} \right) = - 4 \pi \delta(x)$ we conclude that 
+\[
+F(r, \epsilon_1, \epsilon_2) = \frac{1}{r} \int_{- \epsilon_1}^{\epsilon_2} \delta(t) \, dt
+\]
+From (iv), we can show that 
+\[
+4 \pi c^2 \int_{- \epsilon_1}^{\epsilon_2} f(\tau) \, d\tau = \int_{- \epsilon_1}^{\epsilon_2} \delta(t) \, dt
+\]
+for all \( (\epsilon_1, \epsilon_2) \). Hence, \( f(\tau) = \frac{\delta(\tau)}{4 \pi c^2} \) and 
+\[
+g(r, t) = g(x, t) = \frac{1}{4 \pi c^2 |x|} \delta\left(t - \frac{|x|}{c}\right)
+\]
+
+\end{enumerate} 
+
+---
+
+\vspace{10em}
+  
 
 3. Verify that properties (i)-(iv) of Lamé's theorem as defined in AR Section 4.1.1 are satisfied.
     i. $$u = \nabla \phi + \nabla \times \psi$$
