@@ -24,3 +24,12 @@ Configuration can be defined in the `lem2dpackage/input.txt`. The current grid d
 - Right-click on the image-stack and uncheck the `Read as Image Stack` option, then  apply the `Warp by Scalar` filter to the image stack.
 - Right-click on the topo image in the 3D window and select *Edit Color* -> Change the "Automatic Rescale Range Mode" to `Grow and update every timestep`.
 - Adjust the view and window size in the layout window, then click on `File -> Save Animation` to export the animation as a video.
+
+
+### Final Project
+- Download DEM files for New Zealand Waipaoa River Basin - https://data.linz.govt.nz/layer/51768-nz-8m-digital-elevation-model-2012/
+- Merge the DEM tiles with gdal `gdal_merge.py -o merge.tif HO.tif HP.tif`. I had to use the lsu conda environment. Gdal had issues with pip and brew installations.
+- Check tif properties with `gdalinfo merge.tif`
+- Resample the resolution to 100 by 100 m - `gdalwarp -tr 100 100 merge.tif rsmp_merge.tif`
+- Resample to (100,100m) and crop the coords to boundary `gdalwarp -te xmin ymin xmax ymax -tr 100 100 merge.tif rsmp_merge.tif` e.g. *gdalwarp -te 1.9985e6 5.7019e6 2.0441e6 5.7576e6 -tr 100 100 merge.tif rsmp_merge.tif*
+- Convert the tif to a xrarray - `python ../dem_to_xarray.py rsmp_merge.tif --output dem_100x100.nc`
