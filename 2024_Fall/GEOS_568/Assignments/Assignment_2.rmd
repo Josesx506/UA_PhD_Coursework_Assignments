@@ -254,7 +254,6 @@ the limits of integration and the integrand \( g(r, t) \) with respect to \( r \
 +  4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \frac{\ddot{g}}{c^2} \, dt 
 -  4 \pi c^2 \int_{\frac{r}{c} - \epsilon_1}^{\frac{r}{c} + \epsilon_2} \delta(x)\delta(t) \, dt 
 \end{align*}
-For $r \neq 0$, the solution $g(r,t)$ satisfies the homogenous equation t
 
 Considering the initial conditions at zero, the contribution of the green's function in the second term integrates to zero. In the third term, since $\delta(x)$ is a function of space, integrating it 
 with respect to time will not affect it, and we can pull it out. 
@@ -302,7 +301,163 @@ g(r, t) = g(x, t) = \frac{1}{4 \pi c^2 |x|} \delta\left(t - \frac{|x|}{c}\right)
   
 
 3. Verify that properties (i)-(iv) of Lamé's theorem as defined in AR Section 4.1.1 are satisfied.
-    i. $$u = \nabla \phi + \nabla \times \psi$$
-    ii. $$\nabla \cdot \psi = 0$$
-    iii. $$ \ddot{\phi} = \frac{\Phi}{\rho} + \alpha^2 \nabla^2 \phi \ \ \ \ \    \left( \text{with } \alpha^2 = \frac{\lambda + 2 \mu}{\rho} \right)$$
-    iv. $$ \ddot{\psi} = \frac{\Psi}{\rho} + \beta^2 \nabla^2 \psi \ \ \ \ \    \left( \text{with } \beta^2 = \frac{\mu}{\rho} \right)$$
+
+__Proof__  
+From AR, the governing displacement equation is 
+\begin{equation}
+\tag{3}
+\rho \ddot{u} = f + (\lambda + 2\mu)\nabla(\nabla \cdot u) - \mu \nabla \times (\nabla \times u)
+\end{equation}
+with a body force $\mathbf{f} = \nabla \Phi + \nabla \times \Psi$. Substituting $f$ into the displacement equation 
+\begin{equation}
+\tag{3.1}
+\rho \ddot{u} = \nabla \Phi + \nabla \times \Psi + (\lambda + 2\mu)\nabla(\nabla \cdot u) - \mu \nabla \times (\nabla \times u)
+\end{equation}
+
+$\nabla \phi$ and $\nabla \times \psi$ are called the P-wave and S-wave components of $u$, respectively. The proof entails constructing $\phi$ and $\psi$ 
+by integrations of $\ddot{\phi}$ and $\ddot{\psi}$ as follows:
+\begin{equation}
+\tag{3.2}
+\phi(x,t) = \rho^{-1} \int^t_0 (t-\tau) \{\Phi(x,\tau) + (\lambda + 2\mu) \nabla \cdot u(x,\tau) \} d\tau + tA + C
+\end{equation}
+\begin{equation}
+\tag{3.3}
+\psi(x,t) = \rho^{-1} \int^t_0 (t-\tau) \{\Psi(x,\tau) - \mu \nabla \times u(x,\tau) \} d\tau + tB + D
+\end{equation}
+and verifying that all the properties (i)-(iv) are indeed satisfied if we use (3.2) and (3.3) to define $\phi$ and $\psi$.  
+
+Differentiating $\phi$ and $\psi$ with respect to time
+\begin{align} 
+\tag{3.4}
+\dot{\phi}(x,t) &= \frac{\Phi(x,t) + (\lambda + 2\mu) \nabla \cdot u(x,t)}{\rho} + A \\
+\tag{3.5}
+\ddot{\phi}(x,t) &= \frac{\Phi(x,t) + (\lambda + 2\mu) \nabla \cdot u(x,t)}{\rho} \\
+\tag{3.6}
+\dot{\psi}(x,t) &= \frac{\Psi(x,t) - \mu \nabla \times u(x,t)}{\rho} + B \\
+\tag{3.7}
+\ddot{\psi}(x,t) &= \frac{\Psi(x,t) - \mu \nabla \times u(x,t)}{\rho}
+\end{align}
+
+\vspace{2em}
+
+\begin{enumerate}
+
+\item[i] $\boldsymbol{u = \nabla \phi + \nabla \times \psi}$
+
+Using the definitions of $\phi$ and $\psi$ from equations (3.2) and (3.2) to express $u$ in terms of the given quantities
+\begin{align*}
+u(x,t) &= \nabla \left[ \rho^{-1} \int^t_0 (t-\tau) {\Phi(x,\tau) + (\lambda + 2\mu) \nabla \cdot u(x,\tau) } d\tau + tA + C \right] \\
+& + \nabla \times \left[ \rho^{-1} \int^t_0 (t-\tau) {\Psi(x,\tau) - \mu \nabla \times u(x,\tau) } d\tau + tB + D \right]
+\end{align*}
+ 
+Since $\nabla$ is a linear operator, we can simplify the expression by distributing it inside the integral and over the sum
+\begin{align*}
+u(x,t) &= \rho^{-1} \int^t_0 (t-\tau) \left[ \nabla \Phi(x,\tau) + (\lambda + 2\mu) \nabla (\nabla \cdot u(x,\tau)) \right] d\tau + t \nabla A + \nabla C \\
+&+ \rho^{-1} \int^t_0 (t-\tau) \left[ \nabla \times \Psi(x,\tau) - \mu \nabla \times (\nabla \times u(x,\tau)) \right] d\tau + t \nabla \times B + \nabla \times D
+\end{align*}
+
+Grouping all the integrand terms
+\begin{align*}
+u(x,t) &= \rho^{-1} \int^t_0 (t-\tau) \left[ \nabla \Phi(x,\tau) + \nabla \times \Psi(x,\tau) + (\lambda + 2\mu) \nabla (\nabla \cdot u(x,\tau)) - \mu \nabla \times (\nabla \times u(x,\tau)) \right] d\tau \\ 
+&+ t \nabla A + t \nabla \times B + \nabla C + \nabla \times D
+\end{align*}
+
+Using the Leibniz rule for differentiation under the integral sign, and differentiating twice with respect to time, we obtain
+$$
+\ddot{u}(x,t) = \rho^{-1} \left[ \nabla \Phi(x,\tau) + \nabla \times \Psi(x,\tau) + (\lambda + 2\mu) \nabla (\nabla \cdot u(x,\tau)) - \mu \nabla \times (\nabla \times u(x,\tau)) \right]
+$$
+
+Multiplying both sides by $\rho$ and rewriting the equation gives us the original expression in (3.1)
+$$
+\boxed{\rho \ddot{u} = \nabla \Phi + \nabla \times \Psi + (\lambda + 2\mu)\nabla(\nabla \cdot u) - \mu \nabla \times (\nabla \times u)}
+$$
+
+\vspace{4em}
+
+\item[ii] $\boldsymbol{\nabla \cdot \psi = 0}$  
+
+Recalling $\psi$ from equation (3.3)
+$$
+\nabla \cdot \psi = \nabla \cdot \left(\rho^{-1} \int^t_0 (t-\tau) \{\Psi(x,\tau) - \mu \nabla \times u(x,\tau) \} d\tau + tB + D \right) = 0
+$$
+From AR eqn (4.10), 
+$$
+\nabla \cdot \Psi, \, \nabla \cdot B \, , \nabla \cdot D \,\,\,\,\, \text{all zero,}
+$$
+From vector identities, we also know that the divergence of a curl always yields zero, hence the terms
+\begin{align*}
+\nabla \cdot \Psi(x,\tau) &= 0 \\
+\nabla \cdot (-\mu \nabla \times u(x,\tau)) &= -\mu (\nabla \cdot (\nabla \times u)) = -\mu(0) = 0 \\
+\nabla \cdot tB &= t(\nabla \cdot B) = t(0) = 0 \\
+\nabla \cdot D &= 0
+\end{align*}
+
+All the evaluated terms in the integral and on the RHS of the equation equal zero , hence $\boxed{\nabla \cdot \psi = 0}$
+
+\vspace{4em}
+
+\item[iii] $\boldsymbol{\ddot{\phi} = \frac{\Phi}{\rho} + \alpha^2 \nabla^2 \phi \ \ \ \ \    \left( \text{with } \alpha^2 = \frac{\lambda + 2 \mu}{\rho} \right)}$
+
+We can proceed to calculate the divergence and curl of $u$\\
+\textbf{1. Divergence}
+$$
+\nabla \cdot u = \nabla \cdot (\nabla \phi + \nabla \times \psi) = \nabla^2 \phi + \nabla \cdot (\nabla \times \psi) = \nabla^2 \phi
+$$
+because the divergence of a curl is zero $\nabla \cdot (\nabla \times \psi) = 0$. \\
+\textbf{2. Curl}
+\begin{align*}
+\nabla \times u &= \nabla \times (\nabla \phi + \nabla \times \psi) \\
+&= \nabla \times (\nabla \phi) + \nabla \times (\nabla \times \psi) \\
+&= 0 + \nabla \times (\nabla \times \psi) \\
+\nabla \times u &= \nabla \times (\nabla \times \psi)
+\end{align*}
+because the curl of a gradient is zero $\nabla \times (\nabla \phi) = 0$. \\ 
+Using the vector Laplacian $\nabla \times (\nabla \times \psi) = \nabla (\nabla \cdot \psi) - \nabla^2 \psi$, and the Helmotz potential (AR eqn 4.10) $\nabla \cdot \psi = 0$,
+we can rewrite
+$$
+\nabla \times u = - \nabla^2 \psi
+$$
+Substituting $\mathbf{u}$ into the governing equation (3), we get
+\begin{align*}
+\rho \ddot{u} &= \nabla \Phi + \nabla \times \Psi + (\lambda + 2\mu)\nabla(\nabla \cdot u) - \mu \nabla \times (\nabla \times u) \\
+\rho(\nabla \ddot{\phi} + \nabla \times \ddot{\psi}) &= \nabla \Phi + \nabla \times \Psi + (\lambda + 2\mu)\nabla \nabla^2 \phi - \mu \nabla \times (- \nabla^2 \psi) \\
+\rho \nabla \ddot{\phi} + \rho \nabla \times \ddot{\psi} &= \nabla \Phi + \nabla \times \Psi + (\lambda + 2\mu)\nabla \nabla^2 \phi + \mu \nabla^2(\nabla \times \psi) \ \ \ \ \text{from vector identity}
+\end{align*}
+
+Separating the gradient and curl terms gives \\
+- gradient
+\begin{align*}
+\rho \nabla \ddot{\phi} &= \nabla \Phi + (\lambda + 2\mu)\nabla \nabla^2 \phi \\
+&\text{divide through by }\nabla \\
+\rho \ddot{\phi} &= \Phi + (\lambda + 2\mu) \nabla^2 \phi \\
+&\text{divide through by }\rho \\
+\ddot{\phi} &= \frac{\Phi}{\rho} + \alpha^2 \nabla^2 \phi \ \ \ \ \    \left( \text{with } \alpha^2 = \frac{\lambda + 2 \mu}{\rho} \right)
+\end{align*}
+
+- curl
+\begin{align*}
+\rho \nabla \times \ddot{\psi} &= \nabla \times \Psi + \mu \nabla^2(\nabla \times \psi) \\
+\rho \nabla \ddot{\psi} &= \nabla \Psi + \mu \nabla^2(\nabla \times \psi) \\
+&\text{divide through by }\nabla \\
+\rho \ddot{\psi} &= \Psi + \mu \nabla^2 \psi \\
+&\text{divide through by }\rho \\
+\ddot{\psi} &= \frac{\Psi}{\rho} + \beta^2 \nabla^2 \psi \ \ \ \ \    \left( \text{with } \beta^2 = \frac{\mu}{\rho} \right)
+\end{align*}
+
+This results in two wave equations representing the scalar potential $\phi$ and the vector potential $\psi$. 
+
+From the second time derivative of $\phi$ in (3.5) and the third Lamé's propetry that was derived above,
+\[
+\ddot{\phi} = \frac{\Phi(x,t) + (\lambda + 2\mu) \nabla \cdot u(x,t)}{\rho} = \frac{\Phi + (\lambda + 2\mu) \nabla^2 \phi}{\rho}
+\]
+We obtain $\nabla \cdot u = \nabla^2 \phi$ satisfying the divergence term obtained above.
+
+\item[iv] $\boldsymbol{\ddot{\psi} = \frac{\Psi}{\rho} + \beta^2 \nabla^2 \psi \ \ \ \ \    \left( \text{with } \beta^2 = \frac{\mu}{\rho} \right)}$
+
+From the second time derivative of $\psi$ in (3.7) and the third Lamé's propetry that was derived in (Q3iii),
+\[
+\ddot{\psi} = \frac{\Psi(x,t) - \mu \nabla \times u(x,t)}{\rho} = \frac{\Psi + \mu \nabla^2 \psi}{\rho}
+\]
+We get the curl term of $u$ as $- \nabla \times u = \nabla^2 \psi$, and flipping our negative sign gives us the original expression derived in Q3i (i.e. $\nabla \times u = -\nabla^2 \psi$)
+
+\end{enumerate} 
