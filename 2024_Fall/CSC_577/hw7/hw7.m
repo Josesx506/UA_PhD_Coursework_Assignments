@@ -41,16 +41,11 @@ fprintf('3). The angular error between both images is %.2f˚.\n\n', mcbth_ae);
 
 % Problem 4
 diag_mcbth = create_diagonal_matrix(mcbth_illm_col,mcbth_slx_illm_col);
-% diag_mcbth = estimate_illuminant_mapping(mcbth_illm_col,mcbth_slx_illm_col,true);
 fprintf('4). The diagonal matrix is \n');
 disp(diag_mcbth);
 
-corr_mcbth = zeros(size(mcbth_solux)); % Preallocate for the scaled array
 % Scale the RGB array
-for i = 1:3
-    arr_double = double(mcbth_solux);
-    corr_mcbth(:, :, i) = arr_double(:, :, i) * diag_mcbth(i, i);
-end
+corr_mcbth = applyDiagonalMap(diag_mcbth, mcbth_solux);
 
 % Estimate a single scale factor for each image's RGB so that the max RGB value is 250
 mcbth_sx_sf = double(max_scale / max(mcbth_solux(:)));
@@ -111,19 +106,10 @@ appl_scl = appl_cn_illm ./ appl_mx_illm;
 ball_scl = ball_cn_illm ./ ball_mx_illm;
 blck_scl = blck_cn_illm ./ blck_mx_illm;
 
-% Preallocate for the corrected arrays
-corr_appl = zeros(size(appl_slx));
-corr_ball = zeros(size(ball_slx));
-corr_blck = zeros(size(blck_slx));
-% Scale the RGB array
-for i = 1:3
-    appl_double = double(appl_slx);
-    ball_double = double(ball_slx);
-    blck_double = double(blck_slx);
-    corr_appl(:, :, i) = appl_double(:, :, i) * appl_scl(i);
-    corr_ball(:, :, i) = ball_double(:, :, i) * ball_scl(i);
-    corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
-end
+% Estimate the corrected arrays
+corr_appl = applyDiagonalMap(diag(appl_scl), appl_slx);
+corr_ball = applyDiagonalMap(diag(ball_scl), ball_slx);
+corr_blck = applyDiagonalMap(diag(blck_scl), blck_slx);
 
 appl_sx_sf = double(max_scale / max(appl_slx(:)));
 corr_appl_sf = double(max_scale / max(corr_appl(:)));
@@ -206,19 +192,10 @@ appl_scl = appl_cn_illm ./ appl_av_illm;
 ball_scl = ball_cn_illm ./ ball_av_illm;
 blck_scl = blck_cn_illm ./ blck_av_illm;
 
-% Preallocate for the corrected arrays
-corr_appl = zeros(size(appl_slx));
-corr_ball = zeros(size(ball_slx));
-corr_blck = zeros(size(blck_slx));
-% Scale the RGB array
-for i = 1:3
-    appl_double = double(appl_slx);
-    ball_double = double(ball_slx);
-    blck_double = double(blck_slx);
-    corr_appl(:, :, i) = appl_double(:, :, i) * appl_scl(i);
-    corr_ball(:, :, i) = ball_double(:, :, i) * ball_scl(i);
-    corr_blck(:, :, i) = blck_double(:, :, i) * blck_scl(i);
-end
+% Estimate the corrected arrays
+corr_appl = applyDiagonalMap(diag(appl_scl), appl_slx);
+corr_ball = applyDiagonalMap(diag(ball_scl), ball_slx);
+corr_blck = applyDiagonalMap(diag(blck_scl), blck_slx);
 
 appl_sx_sf = double(max_scale / max(appl_slx(:)));
 corr_appl_sf = double(max_scale / max(corr_appl(:)));
@@ -282,8 +259,62 @@ num_questions = num_questions + 1;
 %% Part B
 fprintf("\nPart B\n")
 
+% Problem 9 (custom sse error (incorrect) and lsqr (correct))
+% Custom formula
+[cust_dm_mcbth, cust_mc_rmse, corr_mcbth] = customDiagonal(mcbth,mcbth_solux);
+[cust_dm_appl, cust_ap_rmse, corr_appl] = customDiagonal(appl_can,appl_slx);
+[cust_dm_ball, cust_ba_rmse, corr_ball] = customDiagonal(ball_can,ball_slx);
+[cust_dm_blck, cust_bl_rmse, corr_blck] = customDiagonal(blck_can,blck_slx);
+% LSQR solution
+[lsqr_dm_mcbth, lsqr_mc_rmse, corr_mcbth] = lsqrDiagonal(mcbth,mcbth_solux);
+[lsqr_dm_appl, lsqr_ap_rmse, corr_appl] = lsqrDiagonal(appl_can,appl_slx);
+[lsqr_dm_ball, lsqr_ba_rmse, corr_ball] = lsqrDiagonal(ball_can,ball_slx);
+[lsqr_dm_blck, lsqr_bl_rmse, corr_blck] = lsqrDiagonal(blck_can,blck_slx);
 
-num_questions = num_questions + 1;
+cust_rmse = [cust_mc_rmse;cust_ap_rmse;cust_ba_rmse;cust_bl_rmse];
+lsqr_rmse = [lsqr_mc_rmse;lsqr_ap_rmse;lsqr_ba_rmse;lsqr_bl_rmse];
+
+T = table(cust_rmse, lsqr_rmse, ...
+    RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'Custom SSE','LSQR'});
+fprintf("RMSE across images\n")
+disp(round(T,3));
+
+% Initial guess for the diagonal elements [d_R, d_G, d_B]
+% d_init = [1,1,1];
+
+% Oracle color constancy startpoint from QA5
+orcl_mc_rmse = mcbth_corr_rms;
+orcl_ap_rmse = rg_rms_error(applyDiagonalMap(diag_mcbth, appl_slx),appl_can);
+orcl_ba_rmse = rg_rms_error(applyDiagonalMap(diag_mcbth, ball_slx),ball_can);
+orcl_bl_rmse = rg_rms_error(applyDiagonalMap(diag_mcbth, blck_slx),blck_can);
+
+[~, fm_mc_rmse, ~] = optimizeDiagonalMatrix(diag(diag_mcbth)',mcbth,mcbth_solux);
+[~, fm_ap_rmse, ~] = optimizeDiagonalMatrix(diag(diag_mcbth)',appl_can,appl_slx);
+[~, fm_ba_rmse, ~] = optimizeDiagonalMatrix(diag(diag_mcbth)',ball_can,ball_slx);
+[~, fm_bl_rmse, ~] = optimizeDiagonalMatrix(diag(diag_mcbth)',blck_can,blck_slx);
+
+orcl_origin_rms = [orcl_mc_rmse;orcl_ap_rmse;orcl_ba_rmse;orcl_bl_rmse];
+fm_orcl_origin_rms = [fm_mc_rmse;fm_ap_rmse;fm_ba_rmse;fm_bl_rmse];
+
+T = table(orcl_origin_rms, fm_orcl_origin_rms, ...
+    RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'oracle','fminsearch'});
+fprintf("RMSE from oracle color constancy startpoint across images\n")
+disp(round(T,3));
+
+% LSQR startpoints from QB9
+[~, fm_mc_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_mcbth,mcbth,mcbth_solux);
+[~, fm_ap_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_appl,appl_can,appl_slx);
+[~, fm_ba_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_ball,ball_can,ball_slx);
+[~, fm_bl_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_blck,blck_can,blck_slx);
+
+fm_lsqr_origin_rms = [fm_mc_rmse;fm_ap_rmse;fm_ba_rmse;fm_bl_rmse];
+
+T = table(lsqr_rmse, fm_lsqr_origin_rms, ...
+    RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'LSQR','fminsearch'});
+fprintf("RMSE from optimized LQSR startpoint across images\n")
+disp(round(T,3));
+
+num_questions = num_questions + 2;
 
 
 
@@ -330,9 +361,7 @@ end
 
 function diag_mat = create_diagonal_matrix(can_light,bluish_light)
     div = can_light./bluish_light;
-    diag_mat = [div(1),0,0;
-                0,div(2),0;
-                0,0,div(3)];
+    diag_mat = diag(div);
 end
 
 function rms_error = rg_rms_error(input_image, target_image)
@@ -388,42 +417,126 @@ function out_rgb = estimate_rgb_illum(img, output)
     end
 end
 
-% function D = estimate_illuminant_mapping(RGB1, RGB2, lsqr)
-%     % Function to estimate the diagonal mapping matrix between two single RGB values
-%     % Input:
-%     %   RGB1: 3x1 matrix for RGB values under the first light
-%     %   RGB2: 3x1 matrix for RGB values under the second light
-%     %   lsqr: boolean flag, if true return least squares solution
-%     % Output:
-%     %   D: 3x3 diagonal matrix for transforming RGB1 to match RGB2
-% 
-%     % Ensure the input matrices are column vectors
-%     RGB1 = double(RGB1(:));  % Convert to column vector if needed
-%     RGB2 = double(RGB2(:));  % Convert to column vector if needed
-% 
-%     % Check that RGB1 and RGB2 have 3 elements each
-%     if length(RGB1) ~= 3 || length(RGB2) ~= 3
-%         error('RGB1 and RGB2 must be 3-element vectors representing RGB values');
-%     end
-% 
-%     % Compute the diagonal factors for d_R, d_G, d_B
-%     if lsqr
-%         % Least squares solution
-%         d_R = (RGB1(1) * RGB2(1)) / (RGB1(1)^2);
-%         d_G = (RGB1(2) * RGB2(2)) / (RGB1(2)^2);
-%         d_B = (RGB1(3) * RGB2(3)) / (RGB1(3)^2);
-%     else
-%         % Derived optimal diagonal factors (same result for single RGB values)
-%         d_R = RGB1(1) * RGB2(1) / (RGB1(1)^2);
-%         d_G = RGB1(2) * RGB2(2) / (RGB1(2)^2);
-%         d_B = RGB1(3) * RGB2(3) / (RGB1(3)^2);
-%     end
-% 
-%     % Form the diagonal matrix D
-%     D = diag([d_R, d_G, d_B]);
-% 
-%     % Optional: Display the diagonal matrix (uncomment if needed)
-%     % disp('Estimated Diagonal Matrix:');
-%     % disp(D);
-% end
+function [d_opt, final_rmse, corrected_img] = customDiagonal(img1, img2)
+    % Inputs:
+    % img1: RGB image under first (canocical) light (dimensions: x, y, 3)
+    % img2: RGB image under second (unknown) light (target image with same dimensions)
+    
+    % Outputs:
+    % d_opt: Optimized diagonal matrix (3x3 diagonal matrix)
+    % final_rmse: Final RMSE from diagonal matrix (doublle)
+    % corrected_img: Corrected image after applying the diagonal map
 
+    % Flatten the images into n x 3 matrices (where n is the number of pixels)
+    R1 = reshape(img1(:,:,1), [], 1);  % Red channel of img1
+    G1 = reshape(img1(:,:,2), [], 1);  % Green channel of img1
+    B1 = reshape(img1(:,:,3), [], 1);  % Blue channel of img1
+
+    R2 = reshape(img2(:,:,1), [], 1);  % Red channel of img2
+    G2 = reshape(img2(:,:,2), [], 1);  % Green channel of img2
+    B2 = reshape(img2(:,:,3), [], 1);  % Blue channel of img2
+
+    % Compute the sums of products for each channel
+    d_R = sum(R1 .* R2) / sum(R1);  % Optimal scaling factor for Red channel
+    d_G = sum(G1 .* G2) / sum(G1);  % Optimal scaling factor for Green channel
+    d_B = sum(B1 .* B2) / sum(B1);  % Optimal scaling factor for Blue channel
+
+    % Construct the final diagonal matrix using the optimized values
+    d_opt = [d_R, d_G, d_B];
+    D_opt = diag(d_opt);
+
+    % Apply the optimized diagonal map to img2
+    corrected_img = applyDiagonalMap(D_opt, img2);
+
+    % Display final RMSE
+    final_rmse = computeRMSE(d_opt, img1, img2);
+end
+
+function [d_opt, final_rmse, corrected_img] = lsqrDiagonal(img1, img2)
+    % Inputs:
+    % img1: RGB image under first (canocical) light (dimensions: x, y, 3)
+    % img2: RGB image under second (unknown) light (target image with same dimensions)
+    
+    % Outputs:
+    % d_opt: Optimized diagonal matrix (3x3 diagonal matrix)
+    % final_rmse: Final RMSE from diagonal matrix (doublle)
+    % corrected_img: Corrected image after applying the diagonal map
+
+    % Flatten the images into n x 3 matrices (where n is the number of pixels)
+    X = double(reshape(img1, [], 3));  % img1 as an n x 3 matrix
+    Y = double(reshape(img2, [], 3));  % img2 as an n x 3 matrix
+
+    % Initialize the diagonal scaling factors (d_R, d_G, d_B)
+    d_opt = zeros(1, 3);
+
+    % Solve the least squares problem for each channel (R, G, B)
+    for k = 1:3
+        Xk = X(:,k);  % Channel k of img1
+        Yk = Y(:,k);  % Channel k of img2
+        
+        % Compute the least squares solution for the k-th channel
+        d_opt(k) = (Yk \ Xk);
+    end
+
+    % Construct the final diagonal matrix using the optimized values
+    D_opt = diag(d_opt);
+
+    % Apply the optimized diagonal map to img2
+    corrected_img = applyDiagonalMap(D_opt, img1);
+
+    % Display final RMSE
+    final_rmse = computeRMSE(d_opt, img1, img2);
+end
+
+
+function [d_opt, final_rmse, corrected_img] = optimizeDiagonalMatrix(d_init, img1, img2)
+    % Inputs:
+    % img1: RGB image under first (canocical) light (dimensions: x, y, 3)
+    % final_rmse: Final RMSE from diagonal matrix (doublle)
+    % img2: RGB image under second (unknown) light (target image with same dimensions)
+    
+    % Outputs:
+    % d_opt: Optimized diagonal matrix (3x3 diagonal matrix)
+    % corrected_img: Corrected image after applying the diagonal map
+    
+    % Objective function that computes the RMSE between the corrected image and img2
+    obj_fun = @(d) computeRMSE(d, img1, img2);
+    
+    % Optimization options: specify tolerance, display option, etc.
+    options = optimset('Display', 'off', 'TolFun', 1e-10, 'TolX', 1e-4, 'MaxIter', 1000); % use `iter` to display each step
+    
+    % Use fminsearch to minimize RMSE by adjusting the diagonal values
+    d_opt = fminsearch(obj_fun, d_init, options);
+    % options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton', 'TolFun', 1e-6, 'MaxIter', 1000);
+    % d_opt = fminunc(obj_fun, d_init, options);
+    
+    % Construct the final diagonal matrix using the optimized values
+    D_opt = diag(d_opt);
+    
+    % Apply the optimized diagonal map to img2
+    corrected_img = applyDiagonalMap(D_opt, img2);
+    
+    % Display final RMSE
+    final_rmse = computeRMSE(d_opt, img1, img2);
+end
+
+% Helper function to apply diagonal map to the image
+function corrected_img = applyDiagonalMap(D, img)
+    % Apply the diagonal map (D is 3x3 diagonal matrix) to the RGB channels of img
+    corrected_img = img; % Preallocate corrected image
+    for c = 1:3
+        corrected_img(:,:,c) = D(c,c) * img(:,:,c);  % Apply the diagonal scaling
+    end
+end
+
+% Helper function to compute RMSE between the corrected and target image
+function rmse = computeRMSE(d, img1, img2)
+    % Construct the diagonal matrix from the vector d = [d_R, d_G, d_B]
+    D = diag(d);
+
+    % Apply diagonal map to img1 to get the corrected image
+    corrected_img = applyDiagonalMap(D, img2);
+
+    % Compute RMSE (Root Mean Square Error)
+    rmse = rg_rms_error(corrected_img, img1);
+end
