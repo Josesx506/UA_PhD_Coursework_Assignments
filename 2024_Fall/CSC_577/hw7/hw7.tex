@@ -1,0 +1,309 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw7.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw7.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#7 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A-B were completed in matlab and saved in the \emph{hw7.m} program. The program creates an \emph{output} folder to save images, so that the 
+root directory is not always cluttered, and it can be run using the \textit{hw7()} command. This prints the results to coding questions within terminal. All numbers 
+are rounded to \emph{3 s.f} for reporting purposes and actual values are more precise.
+
+\begin{enumerate}
+
+    \item[Q-A1.]
+    \ \\
+    The white light values from the macbeth image were gotten by plotting the macbeth image with \emph{imshow()} and \emph{datacursormode on}. The array limits 
+    of the white pixels were selected using colon notation and averaged to get a white light color of $[238,220,250]$.
+    
+    \item[Q-A2.]
+    \ \\
+    The same workflow in QA1 was applied to the macbeth solux image (unknown light source) to get a white light color of $[132,159,250]$.
+    
+    \item[Q-A3.]
+    \ \\
+    The angular error was estimated by measuring the cosine angles between both color vectors in the previous questions, and the resulting value was $13.8^o$.
+    
+    \item[Q-A4.]
+    \ \\
+    The diagonal matrix was used to correct the solux image and the comparison between the solux, corrected, and canonical images are shown in \autoref{fig:Figure1}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f1_macbeth_img_results.png}
+        \caption{Comparison of macbeth images. The bluish effect is removed from the corrected image in the middle panel. All images have been scaled to have a 
+        max RGB pixel value of 250 using a single scale factor.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \FloatBarrier 
+
+    The derived diagonal matrix (“oracle” color constancy illuminant) was 
+    $$
+    D = 
+    \begin{bmatrix}
+    1.80 & 0 & 0 \\
+    0 & 1.39 & 0 \\
+    0 & 0 & 1
+    \end{bmatrix}
+    $$
+
+    \item[Q-A5.]
+    \ \\
+    The RMS error was calculated in chromaticity coordinates for all 3 images, using the canonical image as a baseline. The RMS between the canonical and solux 
+    image was 0.11. The RMS between the canonical and corrected image dropped to 0.05.
+
+    \item[Q-A6.]
+    \ \\
+    The angular errors for the MaxRGB algorithm for the Apple, Ball, and Block images were 9.77, 3.71, 19.9 degrees respectively. Personally, it was unclear why 
+    the comparison was made with the solux unknown light and not the canonical known light source.
+
+    \item[Q-A7.]
+    \ \\
+    The workflow in QA5 was repeated for the Apple, Ball, and Block images and the results are shown in \autoref{fig:Figure2}. All images were scaled to a max 
+    value of 250 to avoid confusion of pixel brighness, and the RMS values for each image is shown in \autoref{tab:Table1}. The blue channel appears to be 
+    overcompensated for when the MaxRGB algorithm is used irrespective of the scaling factor used to minimize confusion. This results in a higher RMS error in 
+    the corrected image vs the solux light in \autoref{tab:Table1}. I didn't observe any trend between the angular errors and the RMS errors. This might be 
+    because I was comparing it to a fixed macbeth solux illuminant but even when I compared it to the canonical macbeth white color estimate, I didn't observe 
+    a correlation.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ | c | c | c | } 
+        \hline
+        Image Name & Canonical vs Solux & Canonical vs Corrected \\ 
+        \hline \hline
+        Apples & 0.08 & 0.03 \\ 
+        Balls  & 0.12 & 0.10 \\ 
+        Blocks & 0.08 & 0.09 \\
+        \hline
+    \end{tabular}
+    \caption{RMS error estimates for the Canonical images vs. the solux (unknown light) and MaxRGB corrected illuminant image.}
+    \label{tab:Table1}
+    \end{center}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f2_maxRGB_img_results.png}
+        \caption{Comparison of Apple, Ball, and Block images arranged on each row. The bluish effect is removed from the corrected images in the middle panel. 
+        Note the overly bright blue block in the 3rd row 2nd column.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Q-A8.]
+    \ \\
+    The same workflow for the QA7 was repeated for the same images but with the gray-world algorithm. The angular errors for the gray-world method for the Apple, Ball, 
+    and Block images were 19.7, 1.40, 23.4 degrees respectively. The RMS error values for each image is shown in \autoref{tab:Table2}. The gray-world method gives 
+    lower RMS errors than the MaxRGB algorithm on this dataset and the bright blue channel amplitudes are better compensated for (\autoref{fig:Figure3}).
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ | c | c | c | } 
+        \hline
+        Image Name & Canonical vs Solux & Canonical vs Corrected \\ 
+        \hline \hline
+        Apples & 0.08 & 0.02 \\ 
+        Balls  & 0.12 & 0.09 \\ 
+        Blocks & 0.08 & 0.03 \\
+        \hline
+    \end{tabular}
+    \caption{RMS error estimates for the Canonical images vs. the solux (unknown light) and gray-world corrected illuminant image.}
+    \label{tab:Table2}
+    \end{center}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f3_gray_world_img_results.png}
+        \caption{Comparison of Apple, Ball, and Block images arranged on each row. The bluish effect is removed from the corrected images in the middle panel. 
+        Improved correction of bright blue amplitudes in the Ball and Block images.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    \FloatBarrier 
+
+    \item[Q-A9.]
+    \ \\
+    I tried to derive an optimal formula to no avail, it was never as performant as the prior RMS solutions, so I just settled for the LSQR solution. Based on my
+    derivation alone, it was not guaranteed to be more performant (I was too tired to try and resolve it).
+    \begin{align*}
+    [d_R,d_G,d_B] &= [R_U(R_C^{-1}), G_U(G_C^{-1}), B_U(B_C^{-1})] \\
+    D &= 
+    \begin{bmatrix}
+    d_R & 0 & 0 \\
+    0 & d_G & 0 \\
+    0 & 0 & d_B
+    \end{bmatrix}
+    \end{align*}
+    where \\
+    - R,G,B - represent pixels across the red, green, and blue channels \\
+    - U represents pixels from the unknown light \\
+    - C represents pixels from the canonical light \\
+    The RMS comparison between my \textbf{custom formula} and the LSQR diagonal matrix solution is shown in \autoref{tab:Table3}.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ | c | c | c | } 
+        \hline
+        Image Name & Custom Formula & LSQR Solution \\ 
+        \hline \hline
+        Macbeth & 0.13 & 0.05 \\ 
+        Apples & 0.11 & 0.02 \\ 
+        Ball & 0.13 & 0.09 \\ 
+        Block & 0.18 & 0.03 \\ 
+        \hline
+    \end{tabular}
+    \caption{RMS error estimates from using two methods to estimate the diagonal matrix. The LSQR solution is more performant than the custom formula.}
+    \label{tab:Table3}
+    \end{center}
+    \end{table}
+
+
+    \item[Q-A10.]
+    \ \\
+    I was encountering errors using the \emph{fminunc()} in Matlab. Irrespective of the starting point, I encountered the error below
+    \begin{lstlisting}[language=Matlab]
+    Initial point is a local minimum.
+    Optimization completed because the size of the gradient at the 
+    initial point is less than the value of the optimality tolerance.
+    \end{lstlisting}
+    I was able to get \emph{fminsearch()} to work. I used two starting points, namely the oracle illuminant from QA5 and the lsqr solution from Q9. The optimization 
+    algorithm improved the results by a few points but the precision is below the number of significant numbers required for this report, hence the values look very similar. \\
+    The RMS comparison when I used the oracle illuminant is shown in \autoref{tab:Table4}, while the RMS comparison for the lsqr diagonal matrix startpoint is shown 
+    \autoref{tab:Table5}. In the report, both tables look exactly the same but the start point affects the optimal solution and the LSQR start point solution was more 
+    precise than the oracle illuminant start point. I could barely improve on the results from B9.
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ | c | c | c | } 
+        \hline
+        Image Name & Oracle Illuminant & fminsearch \\ 
+        \hline \hline
+        Macbeth & 0.05 & 0.04 \\ 
+        Apples & 0.02 & 0.02 \\ 
+        Ball & 0.09 & 0.09 \\ 
+        Block & 0.03 & 0.03 \\ 
+        \hline
+    \end{tabular}
+    \caption{RMS error estimates for before and after applying fminsearch to optimize the diagonal matrix. Oracle lluminant matrix is used as start point.}
+    \label{tab:Table4}
+    \end{center}
+    \end{table}
+
+    \begin{table}[h!]
+    \begin{center}
+    \begin{tabular}{ | c | c | c | } 
+        \hline
+        Image Name & LSQR & fminsearch \\ 
+        \hline \hline
+        Macbeth & 0.05 & 0.04 \\  
+        Apples & 0.02 & 0.02 \\ 
+        Ball & 0.09 & 0.09 \\ 
+        Block & 0.03 & 0. \\ 
+        \hline
+    \end{tabular}
+    \caption{RMS error estimates for before and after applying fminsearch to optimize the diagonal matrix. LSQR diagonal matrix is used as start point.}
+    \label{tab:Table5}
+    \end{center}
+    \end{table}
+    
+
+\end{enumerate}
+
+\end{document}

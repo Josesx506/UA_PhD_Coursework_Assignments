@@ -93,9 +93,9 @@ appl_mx_illm = estimate_rgb_illum(appl_slx,'max');
 ball_mx_illm = estimate_rgb_illum(ball_slx,'max');
 blck_mx_illm = estimate_rgb_illum(blck_slx,'max');
 
-appl_ae = angular_error(mcbth_illm_col,appl_mx_illm);
-ball_ae = angular_error(mcbth_illm_col,ball_mx_illm);
-blck_ae = angular_error(mcbth_illm_col,blck_mx_illm);
+appl_ae = angular_error(mcbth_slx_illm_col,appl_mx_illm);
+ball_ae = angular_error(mcbth_slx_illm_col,ball_mx_illm);
+blck_ae = angular_error(mcbth_slx_illm_col,blck_mx_illm);
 fprintf('6). The angular error for the apple image is %.2f˚.\n', appl_ae);
 fprintf('    The angular error for the ball image is %.2f˚.\n', ball_ae);
 fprintf('    The angular error for the block image is %.2f˚.\n\n', blck_ae);
@@ -180,9 +180,9 @@ appl_av_illm = estimate_rgb_illum(appl_slx,'avg');
 ball_av_illm = estimate_rgb_illum(ball_slx,'avg');
 blck_av_illm = estimate_rgb_illum(blck_slx,'avg');
 
-appl_ae = angular_error(mcbth_illm_col,appl_av_illm);
-ball_ae = angular_error(mcbth_illm_col,ball_av_illm);
-blck_ae = angular_error(mcbth_illm_col,blck_av_illm);
+appl_ae = angular_error(mcbth_slx_illm_col,appl_av_illm);
+ball_ae = angular_error(mcbth_slx_illm_col,ball_av_illm);
+blck_ae = angular_error(mcbth_slx_illm_col,blck_av_illm);
 fprintf('8). The angular error for the apple image is %.2f˚.\n', appl_ae);
 fprintf('    The angular error for the ball image is %.2f˚.\n', ball_ae);
 fprintf('    The angular error for the block image is %.2f˚.\n\n', blck_ae);
@@ -261,23 +261,23 @@ fprintf("\nPart B\n")
 
 % Problem 9 (custom sse error (incorrect) and lsqr (correct))
 % Custom formula
-[cust_dm_mcbth, cust_mc_rmse, corr_mcbth] = customDiagonal(mcbth,mcbth_solux);
-[cust_dm_appl, cust_ap_rmse, corr_appl] = customDiagonal(appl_can,appl_slx);
-[cust_dm_ball, cust_ba_rmse, corr_ball] = customDiagonal(ball_can,ball_slx);
-[cust_dm_blck, cust_bl_rmse, corr_blck] = customDiagonal(blck_can,blck_slx);
+[~, cust_mc_rmse, ~] = customDiagonal(mcbth,mcbth_solux);
+[~, cust_ap_rmse, ~] = customDiagonal(appl_can,appl_slx);
+[~, cust_ba_rmse, ~] = customDiagonal(ball_can,ball_slx);
+[~, cust_bl_rmse, ~] = customDiagonal(blck_can,blck_slx);
 % LSQR solution
-[lsqr_dm_mcbth, lsqr_mc_rmse, corr_mcbth] = lsqrDiagonal(mcbth,mcbth_solux);
-[lsqr_dm_appl, lsqr_ap_rmse, corr_appl] = lsqrDiagonal(appl_can,appl_slx);
-[lsqr_dm_ball, lsqr_ba_rmse, corr_ball] = lsqrDiagonal(ball_can,ball_slx);
-[lsqr_dm_blck, lsqr_bl_rmse, corr_blck] = lsqrDiagonal(blck_can,blck_slx);
+[lsqr_dm_mcbth, lsqr_mc_rmse, ~] = lsqrDiagonal(mcbth,mcbth_solux);
+[lsqr_dm_appl, lsqr_ap_rmse, ~] = lsqrDiagonal(appl_can,appl_slx);
+[lsqr_dm_ball, lsqr_ba_rmse, ~] = lsqrDiagonal(ball_can,ball_slx);
+[lsqr_dm_blck, lsqr_bl_rmse, ~] = lsqrDiagonal(blck_can,blck_slx);
 
 cust_rmse = [cust_mc_rmse;cust_ap_rmse;cust_ba_rmse;cust_bl_rmse];
 lsqr_rmse = [lsqr_mc_rmse;lsqr_ap_rmse;lsqr_ba_rmse;lsqr_bl_rmse];
 
 T = table(cust_rmse, lsqr_rmse, ...
     RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'Custom SSE','LSQR'});
-fprintf("RMSE across images\n")
-disp(round(T,3));
+fprintf("9). RMSE across images\n")
+disp(round(T,2));
 
 % Initial guess for the diagonal elements [d_R, d_G, d_B]
 % d_init = [1,1,1];
@@ -298,8 +298,8 @@ fm_orcl_origin_rms = [fm_mc_rmse;fm_ap_rmse;fm_ba_rmse;fm_bl_rmse];
 
 T = table(orcl_origin_rms, fm_orcl_origin_rms, ...
     RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'oracle','fminsearch'});
-fprintf("RMSE from oracle color constancy startpoint across images\n")
-disp(round(T,3));
+fprintf("10). RMSE from oracle color constancy startpoint across images\n")
+disp(round(T,2));
 
 % LSQR startpoints from QB9
 [~, fm_mc_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_mcbth,mcbth,mcbth_solux);
@@ -311,8 +311,8 @@ fm_lsqr_origin_rms = [fm_mc_rmse;fm_ap_rmse;fm_ba_rmse;fm_bl_rmse];
 
 T = table(lsqr_rmse, fm_lsqr_origin_rms, ...
     RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'LSQR','fminsearch'});
-fprintf("RMSE from optimized LQSR startpoint across images\n")
-disp(round(T,3));
+fprintf("    RMSE from optimized LQSR startpoint across images\n")
+disp(round(T,2));
 
 num_questions = num_questions + 2;
 
@@ -476,6 +476,7 @@ function [d_opt, final_rmse, corrected_img] = lsqrDiagonal(img1, img2)
         
         % Compute the least squares solution for the k-th channel
         d_opt(k) = (Yk \ Xk);
+        % d_opt(k) = (Xk' * Yk)/(Xk' * Xk);
     end
 
     % Construct the final diagonal matrix using the optimized values
@@ -504,7 +505,7 @@ function [d_opt, final_rmse, corrected_img] = optimizeDiagonalMatrix(d_init, img
     
     % Optimization options: specify tolerance, display option, etc.
     options = optimset('Display', 'off', 'TolFun', 1e-10, 'TolX', 1e-4, 'MaxIter', 1000); % use `iter` to display each step
-    
+
     % Use fminsearch to minimize RMSE by adjusting the diagonal values
     d_opt = fminsearch(obj_fun, d_init, options);
     % options = optimoptions('fminunc', 'Display', 'iter', 'Algorithm', 'quasi-newton', 'TolFun', 1e-6, 'MaxIter', 1000);
