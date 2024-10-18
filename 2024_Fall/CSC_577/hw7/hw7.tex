@@ -155,10 +155,10 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
     \ \\
     The workflow in QA5 was repeated for the Apple, Ball, and Block images and the results are shown in \autoref{fig:Figure2}. All images were scaled to a max 
     value of 250 to avoid confusion of pixel brighness, and the RMS values for each image is shown in \autoref{tab:Table1}. The blue channel appears to be 
-    overcompensated for when the MaxRGB algorithm is used irrespective of the scaling factor used to minimize confusion. This results in a higher RMS error in 
-    the corrected image vs the solux light in \autoref{tab:Table1}. I didn't observe any trend between the angular errors and the RMS errors. This might be 
-    because I was comparing it to a fixed macbeth solux illuminant but even when I compared it to the canonical macbeth white color estimate, I didn't observe 
-    a correlation.
+    overcompensated when the MaxRGB algorithm is used irrespective of the scaling factor used to minimize confusion. This results in a higher RMS error in 
+    the corrected \textbf{block} image vs the solux light in \autoref{tab:Table1}. I didn't observe any trend between the angular errors and the RMS errors. 
+    This might be because I was comparing it to a fixed macbeth solux illuminant. I also tried comparing it to the canonical macbeth white color estimate, and 
+    I didn't observe a correlation.
 
     \begin{table}[h!]
     \begin{center}
@@ -190,7 +190,9 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
     \ \\
     The same workflow for the QA7 was repeated for the same images but with the gray-world algorithm. The angular errors for the gray-world method for the Apple, Ball, 
     and Block images were 19.7, 1.40, 23.4 degrees respectively. The RMS error values for each image is shown in \autoref{tab:Table2}. The gray-world method gives 
-    lower RMS errors than the MaxRGB algorithm on this dataset and the bright blue channel amplitudes are better compensated for (\autoref{fig:Figure3}).
+    lower RMS errors than the MaxRGB algorithm on this dataset and the bright blue channel amplitudes are better compensated for (\autoref{fig:Figure3}). Again, I didn't 
+    observe a correlation between the angular and RMS errors. If anything, the Ball image with the worst RMS error had the lowest angular error. Might be because the 
+    predicted matrix is close enough to the original matrix reducing the angle between both vectors.
 
     \begin{table}[h!]
     \begin{center}
@@ -220,8 +222,37 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
 
     \item[Q-A9.]
     \ \\
-    I tried to derive an optimal formula to no avail, it was never as performant as the prior RMS solutions, so I just settled for the LSQR solution. Based on my
-    derivation alone, it was not guaranteed to be more performant (I was too tired to try and resolve it).
+    The sum of squared errors per pixel between two images $I_u \text{ and } I_c$ can be written as 
+    \[
+    e_i = DI_{u,i} - I_{c,i}
+    \]
+    where the sum of squared errors between them can be represented as
+    \begin{align*}
+    L(d_R,d_G,d_B) &= \sum_{i=1}^n \left[(d_R I_{u,iR} - I_{c,iR})^2 + (d_G I_{u,iG} - I_{c,iG})^2 + (d_B I_{u,iB} - I_{c,iB})^2 \right]  \\
+    L(d_R,d_G,d_B) &= \sum_{i=1}^n (d_R I_{u,iR} - I_{c,iR})^2 + \sum_{i=1}^n (d_G I_{u,iG} - I_{c,iG})^2 + \sum_{i=1}^n (d_B I_{u,iB} - I_{c,iB})^2
+    \end{align*}
+    Getting the derivatives of each channel
+    \begin{align*}
+    \frac{\partial L}{\partial d_R} &= 2 \sum_{i=1}^n (d_R I_{u,iR} - I_{c,iR}) I_{u,iR} = 0 \\
+    \frac{\partial L}{\partial d_G} &= 2 \sum_{i=1}^n (d_G I_{u,iG} - I_{c,iG}) I_{u,iG} = 0 \\
+    \frac{\partial L}{\partial d_B} &= 2 \sum_{i=1}^n (d_B I_{u,iB} - I_{c,iB}) I_{u,iB} = 0
+    \end{align*}
+    Divide both sides by the constants. Since zero is on the RHS, they're all equivalent to zero and the resulting expression is 
+    \begin{align*}
+    \sum_{i=1}^n (d_R I_{u,iR} - I_{c,iR}) &= 0 \\
+    \sum_{i=1}^n (d_G I_{u,iG} - I_{c,iG}) &= 0 \\
+    \sum_{i=1}^n (d_B I_{u,iB} - I_{c,iB}) &= 0
+    \end{align*}
+    Solving for the diagonal terms gives 
+    \begin{align*}
+    d_R = \frac{\sum_{i=1}^n I_{c,iR}}{\sum_{i=1}^n I_{u,iR}} \\
+    d_G = \frac{\sum_{i=1}^n I_{c,iG}}{\sum_{i=1}^n I_{u,iG}} \\
+    d_B = \frac{\sum_{i=1}^n I_{c,iB}}{\sum_{i=1}^n I_{u,iB}} 
+    \end{align*}
+    This derivation accounts for the sum of errors across all pixels for each channel and is as performant as the gray-world method. Regarding being better than any 
+    algorithm I might invent, I don't know. There are always opportunities for improvement. The diagonal mapping with the custom technique is better than oracle 
+    illuminant and MaxRGB method, and has a comparable performance with the gray-world method. I also derived an LSQR solution described below, and the custom SSE 
+    slightly outperforms the LSQR solution on some images (\autoref{tab:Table3}).
     \begin{align*}
     [d_R,d_G,d_B] &= [R_U(R_C^{-1}), G_U(G_C^{-1}), B_U(B_C^{-1})] \\
     D &= 
@@ -243,13 +274,13 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
         \hline
         Image Name & Custom Formula & LSQR Solution \\ 
         \hline \hline
-        Macbeth & 0.13 & 0.05 \\ 
-        Apples & 0.11 & 0.02 \\ 
-        Ball & 0.13 & 0.09 \\ 
-        Block & 0.18 & 0.03 \\ 
+        Macbeth & 0.04 & 0.05 \\ 
+        Apples & 0.02 & 0.02 \\ 
+        Ball & 0.09 & 0.09 \\ 
+        Block & 0.03 & 0.03 \\ 
         \hline
     \end{tabular}
-    \caption{RMS error estimates from using two methods to estimate the diagonal matrix. The LSQR solution is more performant than the custom formula.}
+    \caption{RMS error estimates from using two methods to estimate the diagonal matrix. The LSQR solution is less performant than the custom formula.}
     \label{tab:Table3}
     \end{center}
     \end{table}
@@ -263,11 +294,12 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
     Optimization completed because the size of the gradient at the 
     initial point is less than the value of the optimality tolerance.
     \end{lstlisting}
-    I was able to get \emph{fminsearch()} to work. I used two starting points, namely the oracle illuminant from QA5 and the lsqr solution from Q9. The optimization 
-    algorithm improved the results by a few points but the precision is below the number of significant numbers required for this report, hence the values look very similar. \\
-    The RMS comparison when I used the oracle illuminant is shown in \autoref{tab:Table4}, while the RMS comparison for the lsqr diagonal matrix startpoint is shown 
-    \autoref{tab:Table5}. In the report, both tables look exactly the same but the start point affects the optimal solution and the LSQR start point solution was more 
-    precise than the oracle illuminant start point. I could barely improve on the results from B9.
+    I was able to get \emph{fminsearch()} to work. I used two starting points, namely the oracle illuminant from QA5 and the custom SSE solution from Q9. The optimization 
+    algorithm improved the results by a few decimal points but the precision is below the number of significant numbers required for this report, hence the values look 
+    very similar. \\
+    The RMS comparison when I used the oracle illuminant is shown in \autoref{tab:Table4}, while the RMS comparison for the custom SSE diagonal matrix startpoint is shown 
+    in \autoref{tab:Table5}. In the report, both tables look exactly the same but the start point affects the optimal solution and the custom SSE start point solution was 
+    more precise than the oracle illuminant start point. I could barely improve on the results from B9.
 
     \begin{table}[h!]
     \begin{center}
@@ -290,15 +322,15 @@ are rounded to \emph{3 s.f} for reporting purposes and actual values are more pr
     \begin{center}
     \begin{tabular}{ | c | c | c | } 
         \hline
-        Image Name & LSQR & fminsearch \\ 
+        Image Name & Custom SSE & fminsearch \\ 
         \hline \hline
-        Macbeth & 0.05 & 0.04 \\  
+        Macbeth & 0.04 & 0.04 \\  
         Apples & 0.02 & 0.02 \\ 
         Ball & 0.09 & 0.09 \\ 
-        Block & 0.03 & 0. \\ 
+        Block & 0.03 & 0.03 \\ 
         \hline
     \end{tabular}
-    \caption{RMS error estimates for before and after applying fminsearch to optimize the diagonal matrix. LSQR diagonal matrix is used as start point.}
+    \caption{RMS error estimates for before and after applying fminsearch to optimize the diagonal matrix. Custom SSE diagonal matrix is used as start point.}
     \label{tab:Table5}
     \end{center}
     \end{table}

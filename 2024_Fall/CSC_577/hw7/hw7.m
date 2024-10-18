@@ -261,15 +261,15 @@ fprintf("\nPart B\n")
 
 % Problem 9 (custom sse error (incorrect) and lsqr (correct))
 % Custom formula
-[~, cust_mc_rmse, ~] = customDiagonal(mcbth,mcbth_solux);
-[~, cust_ap_rmse, ~] = customDiagonal(appl_can,appl_slx);
-[~, cust_ba_rmse, ~] = customDiagonal(ball_can,ball_slx);
-[~, cust_bl_rmse, ~] = customDiagonal(blck_can,blck_slx);
+[cdm_mcbth, cust_mc_rmse, ~] = customDiagonal(mcbth,mcbth_solux);
+[cdm_appl, cust_ap_rmse, ~] = customDiagonal(appl_can,appl_slx);
+[cdm_ball, cust_ba_rmse, ~] = customDiagonal(ball_can,ball_slx);
+[cdm_blck, cust_bl_rmse, ~] = customDiagonal(blck_can,blck_slx);
 % LSQR solution
-[lsqr_dm_mcbth, lsqr_mc_rmse, ~] = lsqrDiagonal(mcbth,mcbth_solux);
-[lsqr_dm_appl, lsqr_ap_rmse, ~] = lsqrDiagonal(appl_can,appl_slx);
-[lsqr_dm_ball, lsqr_ba_rmse, ~] = lsqrDiagonal(ball_can,ball_slx);
-[lsqr_dm_blck, lsqr_bl_rmse, ~] = lsqrDiagonal(blck_can,blck_slx);
+[~, lsqr_mc_rmse, ~] = lsqrDiagonal(mcbth,mcbth_solux);
+[~, lsqr_ap_rmse, ~] = lsqrDiagonal(appl_can,appl_slx);
+[~, lsqr_ba_rmse, ~] = lsqrDiagonal(ball_can,ball_slx);
+[~, lsqr_bl_rmse, ~] = lsqrDiagonal(blck_can,blck_slx);
 
 cust_rmse = [cust_mc_rmse;cust_ap_rmse;cust_ba_rmse;cust_bl_rmse];
 lsqr_rmse = [lsqr_mc_rmse;lsqr_ap_rmse;lsqr_ba_rmse;lsqr_bl_rmse];
@@ -302,15 +302,15 @@ fprintf("10). RMSE from oracle color constancy startpoint across images\n")
 disp(round(T,2));
 
 % LSQR startpoints from QB9
-[~, fm_mc_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_mcbth,mcbth,mcbth_solux);
-[~, fm_ap_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_appl,appl_can,appl_slx);
-[~, fm_ba_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_ball,ball_can,ball_slx);
-[~, fm_bl_rmse, ~] = optimizeDiagonalMatrix(lsqr_dm_blck,blck_can,blck_slx);
+[~, fm_mc_rmse, ~] = optimizeDiagonalMatrix(cdm_mcbth,mcbth,mcbth_solux);
+[~, fm_ap_rmse, ~] = optimizeDiagonalMatrix(cdm_appl,appl_can,appl_slx);
+[~, fm_ba_rmse, ~] = optimizeDiagonalMatrix(cdm_ball,ball_can,ball_slx);
+[~, fm_bl_rmse, ~] = optimizeDiagonalMatrix(cdm_blck,blck_can,blck_slx);
 
 fm_lsqr_origin_rms = [fm_mc_rmse;fm_ap_rmse;fm_ba_rmse;fm_bl_rmse];
 
-T = table(lsqr_rmse, fm_lsqr_origin_rms, ...
-    RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'LSQR','fminsearch'});
+T = table(cust_rmse, fm_lsqr_origin_rms, ...
+    RowNames={'Macbeth','Apples','Ball','Block'}, VariableNames={'Custom SSE','fminsearch'});
 fprintf("    RMSE from optimized LQSR startpoint across images\n")
 disp(round(T,2));
 
@@ -437,9 +437,9 @@ function [d_opt, final_rmse, corrected_img] = customDiagonal(img1, img2)
     B2 = reshape(img2(:,:,3), [], 1);  % Blue channel of img2
 
     % Compute the sums of products for each channel
-    d_R = sum(R1 .* R2) / sum(R1);  % Optimal scaling factor for Red channel
-    d_G = sum(G1 .* G2) / sum(G1);  % Optimal scaling factor for Green channel
-    d_B = sum(B1 .* B2) / sum(B1);  % Optimal scaling factor for Blue channel
+    d_R = sum(R1) / sum(R2);  % Optimal scaling factor for Red channel
+    d_G = sum(G1) / sum(G2);  % Optimal scaling factor for Green channel
+    d_B = sum(B1) / sum(B2);  % Optimal scaling factor for Blue channel
 
     % Construct the final diagonal matrix using the optimized values
     d_opt = [d_R, d_G, d_B];
