@@ -1,0 +1,324 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     lem2d.o
+relocations:
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x100000E70, symSize: 0x6D0 }
+  - { offset: 0x4D, size: 0x8, addend: 0x0, symName: _sqrarg, symObjAddr: 0x1EB58, symBinAddr: 0x100017000, symSize: 0x0 }
+  - { offset: 0x69, size: 0x8, addend: 0x0, symName: _spatiallyvariableupliftmode, symBinAddr: 0x1000176E0, symSize: 0x0 }
+  - { offset: 0x85, size: 0x8, addend: 0x0, symName: _sweep, symBinAddr: 0x100017730, symSize: 0x0 }
+  - { offset: 0x9A, size: 0x8, addend: 0x0, symName: _maxsweep, symBinAddr: 0x1000174E0, symSize: 0x0 }
+  - { offset: 0xAF, size: 0x8, addend: 0x0, symName: _mini, symBinAddr: 0x100017538, symSize: 0x0 }
+  - { offset: 0xC4, size: 0x8, addend: 0x0, symName: _minj, symBinAddr: 0x10001753C, symSize: 0x0 }
+  - { offset: 0xD9, size: 0x8, addend: 0x0, symName: _sedimentfluxdrivenincisionmode, symBinAddr: 0x100017610, symSize: 0x0 }
+  - { offset: 0xEE, size: 0x8, addend: 0x0, symName: _upslopecount, symBinAddr: 0x100017820, symSize: 0x0 }
+  - { offset: 0x103, size: 0x8, addend: 0x0, symName: _downslopecount, symBinAddr: 0x100017280, symSize: 0x0 }
+  - { offset: 0x118, size: 0x8, addend: 0x0, symName: _pass, symBinAddr: 0x100017590, symSize: 0x0 }
+  - { offset: 0x12D, size: 0x8, addend: 0x0, symName: _rillspacingmode, symBinAddr: 0x100017600, symSize: 0x0 }
+  - { offset: 0x142, size: 0x8, addend: 0x0, symName: _structuralcontrolmode, symBinAddr: 0x100017720, symSize: 0x0 }
+  - { offset: 0x157, size: 0x8, addend: 0x0, symName: _BCmask, symBinAddr: 0x100017010, symSize: 0x0 }
+  - { offset: 0x176, size: 0x8, addend: 0x0, symName: _divideadjacenttomaskedge, symBinAddr: 0x100017270, symSize: 0x0 }
+  - { offset: 0x18B, size: 0x8, addend: 0x0, symName: _hillslopevsconfinedvalleyvsfloodplain, symBinAddr: 0x1000173D0, symSize: 0x0 }
+  - { offset: 0x1A0, size: 0x8, addend: 0x0, symName: _faultmask, symBinAddr: 0x100017318, symSize: 0x0 }
+  - { offset: 0x1B5, size: 0x8, addend: 0x0, symName: _advected, symBinAddr: 0x100017088, symSize: 0x0 }
+  - { offset: 0x1CA, size: 0x8, addend: 0x0, symName: _counter, symBinAddr: 0x10001719C, symSize: 0x0 }
+  - { offset: 0x1DF, size: 0x8, addend: 0x0, symName: _routingmethod, symBinAddr: 0x100017604, symSize: 0x0 }
+  - { offset: 0x1F4, size: 0x8, addend: 0x0, symName: _pitsandflatsis, symBinAddr: 0x1000175A8, symSize: 0x0 }
+  - { offset: 0x209, size: 0x8, addend: 0x0, symName: _pitsandflatsjs, symBinAddr: 0x1000175B0, symSize: 0x0 }
+  - { offset: 0x21E, size: 0x8, addend: 0x0, symName: _iup, symBinAddr: 0x100017418, symSize: 0x0 }
+  - { offset: 0x233, size: 0x8, addend: 0x0, symName: _idown, symBinAddr: 0x1000173F8, symSize: 0x0 }
+  - { offset: 0x248, size: 0x8, addend: 0x0, symName: _jup, symBinAddr: 0x100017450, symSize: 0x0 }
+  - { offset: 0x25D, size: 0x8, addend: 0x0, symName: _jdown, symBinAddr: 0x100017440, symSize: 0x0 }
+  - { offset: 0x272, size: 0x8, addend: 0x0, symName: _iup2, symBinAddr: 0x100017420, symSize: 0x0 }
+  - { offset: 0x287, size: 0x8, addend: 0x0, symName: _idown2, symBinAddr: 0x100017400, symSize: 0x0 }
+  - { offset: 0x29C, size: 0x8, addend: 0x0, symName: _jup2, symBinAddr: 0x100017458, symSize: 0x0 }
+  - { offset: 0x2B1, size: 0x8, addend: 0x0, symName: _jdown2, symBinAddr: 0x100017448, symSize: 0x0 }
+  - { offset: 0x2C6, size: 0x8, addend: 0x0, symName: _draindiri, symBinAddr: 0x1000172A0, symSize: 0x0 }
+  - { offset: 0x2DB, size: 0x8, addend: 0x0, symName: _draindirj, symBinAddr: 0x1000172B0, symSize: 0x0 }
+  - { offset: 0x2F0, size: 0x8, addend: 0x0, symName: _draindiriup, symBinAddr: 0x1000172A8, symSize: 0x0 }
+  - { offset: 0x305, size: 0x8, addend: 0x0, symName: _draindirjup, symBinAddr: 0x1000172B8, symSize: 0x0 }
+  - { offset: 0x31A, size: 0x8, addend: 0x0, symName: _residi, symBinAddr: 0x1000175E0, symSize: 0x0 }
+  - { offset: 0x32F, size: 0x8, addend: 0x0, symName: _residj, symBinAddr: 0x1000175E4, symSize: 0x0 }
+  - { offset: 0x344, size: 0x8, addend: 0x0, symName: _i, symBinAddr: 0x1000173E0, symSize: 0x0 }
+  - { offset: 0x359, size: 0x8, addend: 0x0, symName: _j, symBinAddr: 0x100017428, symSize: 0x0 }
+  - { offset: 0x36E, size: 0x8, addend: 0x0, symName: _ic, symBinAddr: 0x1000173E4, symSize: 0x0 }
+  - { offset: 0x383, size: 0x8, addend: 0x0, symName: _jc, symBinAddr: 0x10001742C, symSize: 0x0 }
+  - { offset: 0x398, size: 0x8, addend: 0x0, symName: _ic2, symBinAddr: 0x1000173E8, symSize: 0x0 }
+  - { offset: 0x3AD, size: 0x8, addend: 0x0, symName: _icup, symBinAddr: 0x1000173F4, symSize: 0x0 }
+  - { offset: 0x3C2, size: 0x8, addend: 0x0, symName: _jcup, symBinAddr: 0x100017438, symSize: 0x0 }
+  - { offset: 0x3D7, size: 0x8, addend: 0x0, symName: _icdown, symBinAddr: 0x1000173EC, symSize: 0x0 }
+  - { offset: 0x3EC, size: 0x8, addend: 0x0, symName: _jcdown, symBinAddr: 0x100017430, symSize: 0x0 }
+  - { offset: 0x401, size: 0x8, addend: 0x0, symName: _icdowndown, symBinAddr: 0x1000173F0, symSize: 0x0 }
+  - { offset: 0x416, size: 0x8, addend: 0x0, symName: _jcdowndown, symBinAddr: 0x100017434, symSize: 0x0 }
+  - { offset: 0x42B, size: 0x8, addend: 0x0, symName: _t, symBinAddr: 0x100017734, symSize: 0x0 }
+  - { offset: 0x440, size: 0x8, addend: 0x0, symName: _count, symBinAddr: 0x100017198, symSize: 0x0 }
+  - { offset: 0x455, size: 0x8, addend: 0x0, symName: _lattice_size_x, symBinAddr: 0x100017478, symSize: 0x0 }
+  - { offset: 0x46A, size: 0x8, addend: 0x0, symName: _lattice_size_y, symBinAddr: 0x10001747C, symSize: 0x0 }
+  - { offset: 0x47F, size: 0x8, addend: 0x0, symName: _topovecind, symBinAddr: 0x1000177C0, symSize: 0x0 }
+  - { offset: 0x494, size: 0x8, addend: 0x0, symName: _topovecind2, symBinAddr: 0x1000177C8, symSize: 0x0 }
+  - { offset: 0x4A9, size: 0x8, addend: 0x0, symName: _neighboringareasind, symBinAddr: 0x100017560, symSize: 0x0 }
+  - { offset: 0x4BE, size: 0x8, addend: 0x0, symName: _diag, symBinAddr: 0x100017238, symSize: 0x0 }
+  - { offset: 0x4D3, size: 0x8, addend: 0x0, symName: _minareaneighbor, symBinAddr: 0x100017528, symSize: 0x0 }
+  - { offset: 0x4E8, size: 0x8, addend: 0x0, symName: _maxareaneighbor, symBinAddr: 0x1000174C0, symSize: 0x0 }
+  - { offset: 0x4FD, size: 0x8, addend: 0x0, symName: _bankerosion, symBinAddr: 0x100017150, symSize: 0x0 }
+  - { offset: 0x512, size: 0x8, addend: 0x0, symName: _volumeofbankfailure, symBinAddr: 0x100017838, symSize: 0x0 }
+  - { offset: 0x527, size: 0x8, addend: 0x0, symName: _bankheight, symBinAddr: 0x100017158, symSize: 0x0 }
+  - { offset: 0x53C, size: 0x8, addend: 0x0, symName: _criticalbankheight, symBinAddr: 0x1000171A8, symSize: 0x0 }
+  - { offset: 0x551, size: 0x8, addend: 0x0, symName: _bankretreatrate, symBinAddr: 0x100017168, symSize: 0x0 }
+  - { offset: 0x566, size: 0x8, addend: 0x0, symName: _accumulatedbankretreat, symBinAddr: 0x100017080, symSize: 0x0 }
+  - { offset: 0x585, size: 0x8, addend: 0x0, symName: _erodeddepth, symBinAddr: 0x1000172E0, symSize: 0x0 }
+  - { offset: 0x59A, size: 0x8, addend: 0x0, symName: _entrainment, symBinAddr: 0x1000172C8, symSize: 0x0 }
+  - { offset: 0x5AF, size: 0x8, addend: 0x0, symName: _deposition, symBinAddr: 0x1000171E0, symSize: 0x0 }
+  - { offset: 0x5C4, size: 0x8, addend: 0x0, symName: _topovec, symBinAddr: 0x1000177B0, symSize: 0x0 }
+  - { offset: 0x5D9, size: 0x8, addend: 0x0, symName: _topovec2, symBinAddr: 0x1000177B8, symSize: 0x0 }
+  - { offset: 0x5EE, size: 0x8, addend: 0x0, symName: _neighboringareas, symBinAddr: 0x100017558, symSize: 0x0 }
+  - { offset: 0x603, size: 0x8, addend: 0x0, symName: _soilporosity, symBinAddr: 0x1000176D8, symSize: 0x0 }
+  - { offset: 0x618, size: 0x8, addend: 0x0, symName: _depositionvelocity, symBinAddr: 0x1000171F0, symSize: 0x0 }
+  - { offset: 0x62D, size: 0x8, addend: 0x0, symName: _maxareaup, symBinAddr: 0x1000174C8, symSize: 0x0 }
+  - { offset: 0x642, size: 0x8, addend: 0x0, symName: _maxareadown, symBinAddr: 0x1000174B8, symSize: 0x0 }
+  - { offset: 0x657, size: 0x8, addend: 0x0, symName: _meanupslopearea, symBinAddr: 0x100017510, symSize: 0x0 }
+  - { offset: 0x66C, size: 0x8, addend: 0x0, symName: _meandownslopearea, symBinAddr: 0x100017508, symSize: 0x0 }
+  - { offset: 0x681, size: 0x8, addend: 0x0, symName: _stddevupslopearea, symBinAddr: 0x100017718, symSize: 0x0 }
+  - { offset: 0x696, size: 0x8, addend: 0x0, symName: _stddevdownslopearea, symBinAddr: 0x100017710, symSize: 0x0 }
+  - { offset: 0x6AB, size: 0x8, addend: 0x0, symName: _discharge, symBinAddr: 0x100017240, symSize: 0x0 }
+  - { offset: 0x6C0, size: 0x8, addend: 0x0, symName: _depositionrate, symBinAddr: 0x1000171E8, symSize: 0x0 }
+  - { offset: 0x6D5, size: 0x8, addend: 0x0, symName: _entrainmentthreshold, symBinAddr: 0x1000172D0, symSize: 0x0 }
+  - { offset: 0x6EA, size: 0x8, addend: 0x0, symName: _topo2, symBinAddr: 0x100017768, symSize: 0x0 }
+  - { offset: 0x6FF, size: 0x8, addend: 0x0, symName: _area2c, symBinAddr: 0x1000170E8, symSize: 0x0 }
+  - { offset: 0x714, size: 0x8, addend: 0x0, symName: _area2cp, symBinAddr: 0x1000170F0, symSize: 0x0 }
+  - { offset: 0x729, size: 0x8, addend: 0x0, symName: _frac, symBinAddr: 0x1000173B0, symSize: 0x0 }
+  - { offset: 0x73E, size: 0x8, addend: 0x0, symName: _rillspacing, symBinAddr: 0x1000175F8, symSize: 0x0 }
+  - { offset: 0x753, size: 0x8, addend: 0x0, symName: _microtopographiccurvature, symBinAddr: 0x100017518, symSize: 0x0 }
+  - { offset: 0x768, size: 0x8, addend: 0x0, symName: _ratiooflargetosmallareas, symBinAddr: 0x1000175C8, symSize: 0x0 }
+  - { offset: 0x77D, size: 0x8, addend: 0x0, symName: _maxvelocity, symBinAddr: 0x1000174F8, symSize: 0x0 }
+  - { offset: 0x792, size: 0x8, addend: 0x0, symName: _sqrfractionnearS_c, symBinAddr: 0x1000176F0, symSize: 0x0 }
+  - { offset: 0x7A7, size: 0x8, addend: 0x0, symName: _nearS_c, symBinAddr: 0x100017550, symSize: 0x0 }
+  - { offset: 0x7BC, size: 0x8, addend: 0x0, symName: _timetoremovesoil, symBinAddr: 0x100017758, symSize: 0x0 }
+  - { offset: 0x7D1, size: 0x8, addend: 0x0, symName: _fractionaldistance, symBinAddr: 0x1000173B8, symSize: 0x0 }
+  - { offset: 0x7E6, size: 0x8, addend: 0x0, symName: _mincurvatureforwidthestimation, symBinAddr: 0x100017530, symSize: 0x0 }
+  - { offset: 0x7FB, size: 0x8, addend: 0x0, symName: _slopenew, symBinAddr: 0x100017660, symSize: 0x0 }
+  - { offset: 0x810, size: 0x8, addend: 0x0, symName: _a1, symBinAddr: 0x100017078, symSize: 0x0 }
+  - { offset: 0x825, size: 0x8, addend: 0x0, symName: _b1, symBinAddr: 0x100017148, symSize: 0x0 }
+  - { offset: 0x83A, size: 0x8, addend: 0x0, symName: _maxtopo, symBinAddr: 0x1000174F0, symSize: 0x0 }
+  - { offset: 0x84F, size: 0x8, addend: 0x0, symName: _distance, symBinAddr: 0x100017250, symSize: 0x0 }
+  - { offset: 0x864, size: 0x8, addend: 0x0, symName: _timeremaining, symBinAddr: 0x100017740, symSize: 0x0 }
+  - { offset: 0x879, size: 0x8, addend: 0x0, symName: _erodibility, symBinAddr: 0x1000172F8, symSize: 0x0 }
+  - { offset: 0x88E, size: 0x8, addend: 0x0, symName: _maxtimestep, symBinAddr: 0x1000174E8, symSize: 0x0 }
+  - { offset: 0x8A3, size: 0x8, addend: 0x0, symName: _sqrnearS_c, symBinAddr: 0x1000176F8, symSize: 0x0 }
+  - { offset: 0x8B8, size: 0x8, addend: 0x0, symName: _factor, symBinAddr: 0x100017310, symSize: 0x0 }
+  - { offset: 0x8CD, size: 0x8, addend: 0x0, symName: _widthlowest, symBinAddr: 0x100017850, symSize: 0x0 }
+  - { offset: 0x8E2, size: 0x8, addend: 0x0, symName: _totalerosion, symBinAddr: 0x1000177E8, symSize: 0x0 }
+  - { offset: 0x8F7, size: 0x8, addend: 0x0, symName: _erosionintobedrock, symBinAddr: 0x100017308, symSize: 0x0 }
+  - { offset: 0x90C, size: 0x8, addend: 0x0, symName: _erodibilitycontrast, symBinAddr: 0x100017300, symSize: 0x0 }
+  - { offset: 0x921, size: 0x8, addend: 0x0, symName: _slopetrial, symBinAddr: 0x100017668, symSize: 0x0 }
+  - { offset: 0x936, size: 0x8, addend: 0x0, symName: _totslopesqr1, symBinAddr: 0x1000177F8, symSize: 0x0 }
+  - { offset: 0x94B, size: 0x8, addend: 0x0, symName: _totslopesqr2, symBinAddr: 0x100017800, symSize: 0x0 }
+  - { offset: 0x960, size: 0x8, addend: 0x0, symName: _totslopesqr3, symBinAddr: 0x100017808, symSize: 0x0 }
+  - { offset: 0x975, size: 0x8, addend: 0x0, symName: _totslopesqr4, symBinAddr: 0x100017810, symSize: 0x0 }
+  - { offset: 0x98A, size: 0x8, addend: 0x0, symName: _mintopo, symBinAddr: 0x100017540, symSize: 0x0 }
+  - { offset: 0x99F, size: 0x8, addend: 0x0, symName: _maxarea, symBinAddr: 0x1000174B0, symSize: 0x0 }
+  - { offset: 0x9B4, size: 0x8, addend: 0x0, symName: _areavalleybottom, symBinAddr: 0x100017138, symSize: 0x0 }
+  - { offset: 0x9C9, size: 0x8, addend: 0x0, symName: _topovalleybottom, symBinAddr: 0x1000177A8, symSize: 0x0 }
+  - { offset: 0x9DE, size: 0x8, addend: 0x0, symName: _velocity, symBinAddr: 0x100017828, symSize: 0x0 }
+  - { offset: 0x9F3, size: 0x8, addend: 0x0, symName: _dist, symBinAddr: 0x100017248, symSize: 0x0 }
+  - { offset: 0xA08, size: 0x8, addend: 0x0, symName: _distbetweenup, symBinAddr: 0x100017268, symSize: 0x0 }
+  - { offset: 0xA1D, size: 0x8, addend: 0x0, symName: _distbetween, symBinAddr: 0x100017258, symSize: 0x0 }
+  - { offset: 0xA32, size: 0x8, addend: 0x0, symName: _distbetweendown, symBinAddr: 0x100017260, symSize: 0x0 }
+  - { offset: 0xA47, size: 0x8, addend: 0x0, symName: _rdown, symBinAddr: 0x1000175D0, symSize: 0x0 }
+  - { offset: 0xA5C, size: 0x8, addend: 0x0, symName: _rup, symBinAddr: 0x100017608, symSize: 0x0 }
+  - { offset: 0xA71, size: 0x8, addend: 0x0, symName: _phidown, symBinAddr: 0x100017598, symSize: 0x0 }
+  - { offset: 0xA86, size: 0x8, addend: 0x0, symName: _phiup, symBinAddr: 0x1000175A0, symSize: 0x0 }
+  - { offset: 0xA9B, size: 0x8, addend: 0x0, symName: _fup, symBinAddr: 0x1000173C0, symSize: 0x0 }
+  - { offset: 0xAB0, size: 0x8, addend: 0x0, symName: _fdown, symBinAddr: 0x100017320, symSize: 0x0 }
+  - { offset: 0xAC5, size: 0x8, addend: 0x0, symName: _topoup, symBinAddr: 0x1000177A0, symSize: 0x0 }
+  - { offset: 0xADA, size: 0x8, addend: 0x0, symName: _topodown, symBinAddr: 0x100017780, symSize: 0x0 }
+  - { offset: 0xAEF, size: 0x8, addend: 0x0, symName: _topodowndown, symBinAddr: 0x100017788, symSize: 0x0 }
+  - { offset: 0xB04, size: 0x8, addend: 0x0, symName: _bankretreatparameter, symBinAddr: 0x100017160, symSize: 0x0 }
+  - { offset: 0xB19, size: 0x8, addend: 0x0, symName: _alluvialfluxinav, symBinAddr: 0x1000170A8, symSize: 0x0 }
+  - { offset: 0xB2E, size: 0x8, addend: 0x0, symName: _alluvialfluxoutav, symBinAddr: 0x1000170C0, symSize: 0x0 }
+  - { offset: 0xB43, size: 0x8, addend: 0x0, symName: _alluvialfluxinavl, symBinAddr: 0x1000170B0, symSize: 0x0 }
+  - { offset: 0xB58, size: 0x8, addend: 0x0, symName: _alluvialfluxoutavl, symBinAddr: 0x1000170C8, symSize: 0x0 }
+  - { offset: 0xB6D, size: 0x8, addend: 0x0, symName: _averageuplanderosionrate, symBinAddr: 0x100017140, symSize: 0x0 }
+  - { offset: 0xB82, size: 0x8, addend: 0x0, symName: _totalfluxout, symBinAddr: 0x1000177F0, symSize: 0x0 }
+  - { offset: 0xB97, size: 0x8, addend: 0x0, symName: _depositedvolume, symBinAddr: 0x1000171D8, symSize: 0x0 }
+  - { offset: 0xBAC, size: 0x8, addend: 0x0, symName: _downslopeneumannbc, symBinAddr: 0x100017288, symSize: 0x0 }
+  - { offset: 0xBC1, size: 0x8, addend: 0x0, symName: _Uinitial, symBinAddr: 0x100017070, symSize: 0x0 }
+  - { offset: 0xBD6, size: 0x8, addend: 0x0, symName: _uplandarea, symBinAddr: 0x100017818, symSize: 0x0 }
+  - { offset: 0xBEB, size: 0x8, addend: 0x0, symName: _totalerodedupland, symBinAddr: 0x1000177E0, symSize: 0x0 }
+  - { offset: 0xC00, size: 0x8, addend: 0x0, symName: _totalerodedcolluvial, symBinAddr: 0x1000177D8, symSize: 0x0 }
+  - { offset: 0xC15, size: 0x8, addend: 0x0, symName: _Pl, symBinAddr: 0x100017040, symSize: 0x0 }
+  - { offset: 0xC2A, size: 0x8, addend: 0x0, symName: _Kl, symBinAddr: 0x100017028, symSize: 0x0 }
+  - { offset: 0xC3F, size: 0x8, addend: 0x0, symName: _k, symBinAddr: 0x100017460, symSize: 0x0 }
+  - { offset: 0xC54, size: 0x8, addend: 0x0, symName: _maxim, symBinAddr: 0x1000174D8, symSize: 0x0 }
+  - { offset: 0xC69, size: 0x8, addend: 0x0, symName: _initialsoilbasin, symBinAddr: 0x100017408, symSize: 0x0 }
+  - { offset: 0xC7E, size: 0x8, addend: 0x0, symName: _P_0l, symBinAddr: 0x100017038, symSize: 0x0 }
+  - { offset: 0xC93, size: 0x8, addend: 0x0, symName: _erode, symBinAddr: 0x1000172D8, symSize: 0x0 }
+  - { offset: 0xCA8, size: 0x8, addend: 0x0, symName: _erodedvolumerate, symBinAddr: 0x1000172E8, symSize: 0x0 }
+  - { offset: 0xCBD, size: 0x8, addend: 0x0, symName: _erodedvolumeratecopy, symBinAddr: 0x1000172F0, symSize: 0x0 }
+  - { offset: 0xCD2, size: 0x8, addend: 0x0, symName: _meanbasinslope, symBinAddr: 0x100017500, symSize: 0x0 }
+  - { offset: 0xCE7, size: 0x8, addend: 0x0, symName: _flow1, symBinAddr: 0x100017330, symSize: 0x0 }
+  - { offset: 0xCFC, size: 0x8, addend: 0x0, symName: _flow2, symBinAddr: 0x100017340, symSize: 0x0 }
+  - { offset: 0xD11, size: 0x8, addend: 0x0, symName: _flow3, symBinAddr: 0x100017350, symSize: 0x0 }
+  - { offset: 0xD26, size: 0x8, addend: 0x0, symName: _flow4, symBinAddr: 0x100017360, symSize: 0x0 }
+  - { offset: 0xD3B, size: 0x8, addend: 0x0, symName: _flow5, symBinAddr: 0x100017370, symSize: 0x0 }
+  - { offset: 0xD50, size: 0x8, addend: 0x0, symName: _flow6, symBinAddr: 0x100017380, symSize: 0x0 }
+  - { offset: 0xD65, size: 0x8, addend: 0x0, symName: _flow7, symBinAddr: 0x100017390, symSize: 0x0 }
+  - { offset: 0xD7A, size: 0x8, addend: 0x0, symName: _flow8, symBinAddr: 0x1000173A0, symSize: 0x0 }
+  - { offset: 0xD8F, size: 0x8, addend: 0x0, symName: _flow12, symBinAddr: 0x100017338, symSize: 0x0 }
+  - { offset: 0xDA4, size: 0x8, addend: 0x0, symName: _flow22, symBinAddr: 0x100017348, symSize: 0x0 }
+  - { offset: 0xDB9, size: 0x8, addend: 0x0, symName: _flow32, symBinAddr: 0x100017358, symSize: 0x0 }
+  - { offset: 0xDCE, size: 0x8, addend: 0x0, symName: _flow42, symBinAddr: 0x100017368, symSize: 0x0 }
+  - { offset: 0xDE3, size: 0x8, addend: 0x0, symName: _flow52, symBinAddr: 0x100017378, symSize: 0x0 }
+  - { offset: 0xDF8, size: 0x8, addend: 0x0, symName: _flow62, symBinAddr: 0x100017388, symSize: 0x0 }
+  - { offset: 0xE0D, size: 0x8, addend: 0x0, symName: _flow72, symBinAddr: 0x100017398, symSize: 0x0 }
+  - { offset: 0xE22, size: 0x8, addend: 0x0, symName: _flow82, symBinAddr: 0x1000173A8, symSize: 0x0 }
+  - { offset: 0xE37, size: 0x8, addend: 0x0, symName: _area1, symBinAddr: 0x1000170D8, symSize: 0x0 }
+  - { offset: 0xE4C, size: 0x8, addend: 0x0, symName: _area2, symBinAddr: 0x1000170E0, symSize: 0x0 }
+  - { offset: 0xE61, size: 0x8, addend: 0x0, symName: _area3, symBinAddr: 0x1000170F8, symSize: 0x0 }
+  - { offset: 0xE76, size: 0x8, addend: 0x0, symName: _area4, symBinAddr: 0x100017100, symSize: 0x0 }
+  - { offset: 0xE8B, size: 0x8, addend: 0x0, symName: _area5, symBinAddr: 0x100017108, symSize: 0x0 }
+  - { offset: 0xEA0, size: 0x8, addend: 0x0, symName: _area6, symBinAddr: 0x100017110, symSize: 0x0 }
+  - { offset: 0xEB5, size: 0x8, addend: 0x0, symName: _area7, symBinAddr: 0x100017118, symSize: 0x0 }
+  - { offset: 0xECA, size: 0x8, addend: 0x0, symName: _area8, symBinAddr: 0x100017120, symSize: 0x0 }
+  - { offset: 0xEDF, size: 0x8, addend: 0x0, symName: _slope1, symBinAddr: 0x100017620, symSize: 0x0 }
+  - { offset: 0xEF4, size: 0x8, addend: 0x0, symName: _slope2, symBinAddr: 0x100017628, symSize: 0x0 }
+  - { offset: 0xF09, size: 0x8, addend: 0x0, symName: _slope3, symBinAddr: 0x100017630, symSize: 0x0 }
+  - { offset: 0xF1E, size: 0x8, addend: 0x0, symName: _slope4, symBinAddr: 0x100017638, symSize: 0x0 }
+  - { offset: 0xF33, size: 0x8, addend: 0x0, symName: _slope5, symBinAddr: 0x100017640, symSize: 0x0 }
+  - { offset: 0xF48, size: 0x8, addend: 0x0, symName: _slope6, symBinAddr: 0x100017648, symSize: 0x0 }
+  - { offset: 0xF5D, size: 0x8, addend: 0x0, symName: _slope7, symBinAddr: 0x100017650, symSize: 0x0 }
+  - { offset: 0xF72, size: 0x8, addend: 0x0, symName: _slope8, symBinAddr: 0x100017658, symSize: 0x0 }
+  - { offset: 0xF87, size: 0x8, addend: 0x0, symName: _m, symBinAddr: 0x100017480, symSize: 0x0 }
+  - { offset: 0xF9C, size: 0x8, addend: 0x0, symName: _K, symBinAddr: 0x100017020, symSize: 0x0 }
+  - { offset: 0xFB1, size: 0x8, addend: 0x0, symName: _k_0, symBinAddr: 0x100017468, symSize: 0x0 }
+  - { offset: 0xFC6, size: 0x8, addend: 0x0, symName: _colluvialunitsedimentfluxin, symBinAddr: 0x100017180, symSize: 0x0 }
+  - { offset: 0xFDB, size: 0x8, addend: 0x0, symName: _colluvialunitsedimentfluxout, symBinAddr: 0x100017188, symSize: 0x0 }
+  - { offset: 0xFF0, size: 0x8, addend: 0x0, symName: _alluvialfluxin, symBinAddr: 0x1000170A0, symSize: 0x0 }
+  - { offset: 0x1005, size: 0x8, addend: 0x0, symName: _alluvialfluxout, symBinAddr: 0x1000170B8, symSize: 0x0 }
+  - { offset: 0x101A, size: 0x8, addend: 0x0, symName: _structuralelevation, symBinAddr: 0x100017728, symSize: 0x0 }
+  - { offset: 0x102F, size: 0x8, addend: 0x0, symName: _nextadvectiontime, symBinAddr: 0x100017568, symSize: 0x0 }
+  - { offset: 0x1044, size: 0x8, addend: 0x0, symName: _keeptimestep, symBinAddr: 0x100017470, symSize: 0x0 }
+  - { offset: 0x1059, size: 0x8, addend: 0x0, symName: _horizontalslipvector, symBinAddr: 0x1000173D8, symSize: 0x0 }
+  - { offset: 0x106E, size: 0x8, addend: 0x0, symName: _verticaltohorizontalratio, symBinAddr: 0x100017830, symSize: 0x0 }
+  - { offset: 0x1083, size: 0x8, addend: 0x0, symName: _U_h, symBinAddr: 0x100017058, symSize: 0x0 }
+  - { offset: 0x1098, size: 0x8, addend: 0x0, symName: _U_vfault, symBinAddr: 0x100017068, symSize: 0x0 }
+  - { offset: 0x10AD, size: 0x8, addend: 0x0, symName: _advectioninterval, symBinAddr: 0x100017090, symSize: 0x0 }
+  - { offset: 0x10C2, size: 0x8, addend: 0x0, symName: _advectiontimestep, symBinAddr: 0x100017098, symSize: 0x0 }
+  - { offset: 0x10D7, size: 0x8, addend: 0x0, symName: _cosfactor, symBinAddr: 0x100017190, symSize: 0x0 }
+  - { offset: 0x10EC, size: 0x8, addend: 0x0, symName: _xsectslope, symBinAddr: 0x100017858, symSize: 0x0 }
+  - { offset: 0x1101, size: 0x8, addend: 0x0, symName: _max1, symBinAddr: 0x100017498, symSize: 0x0 }
+  - { offset: 0x1116, size: 0x8, addend: 0x0, symName: _max2, symBinAddr: 0x1000174A0, symSize: 0x0 }
+  - { offset: 0x112B, size: 0x8, addend: 0x0, symName: _max3, symBinAddr: 0x1000174A8, symSize: 0x0 }
+  - { offset: 0x1140, size: 0x8, addend: 0x0, symName: _maxcurv, symBinAddr: 0x1000174D0, symSize: 0x0 }
+  - { offset: 0x1155, size: 0x8, addend: 0x0, symName: _tot, symBinAddr: 0x1000177D0, symSize: 0x0 }
+  - { offset: 0x116A, size: 0x8, addend: 0x0, symName: _areai, symBinAddr: 0x100017128, symSize: 0x0 }
+  - { offset: 0x117F, size: 0x8, addend: 0x0, symName: _areaj, symBinAddr: 0x100017130, symSize: 0x0 }
+  - { offset: 0x1194, size: 0x8, addend: 0x0, symName: _down, symBinAddr: 0x100017278, symSize: 0x0 }
+  - { offset: 0x11A9, size: 0x8, addend: 0x0, symName: _initialsoilupland, symBinAddr: 0x100017410, symSize: 0x0 }
+  - { offset: 0x11BE, size: 0x8, addend: 0x0, symName: _small, symBinAddr: 0x1000176B0, symSize: 0x0 }
+  - { offset: 0x11D3, size: 0x8, addend: 0x0, symName: _characteristicrunoffrate, symBinAddr: 0x100017178, symSize: 0x0 }
+  - { offset: 0x11E8, size: 0x8, addend: 0x0, symName: _manningsn, symBinAddr: 0x100017488, symSize: 0x0 }
+  - { offset: 0x11FD, size: 0x8, addend: 0x0, symName: _noiseamplitude, symBinAddr: 0x100017570, symSize: 0x0 }
+  - { offset: 0x1212, size: 0x8, addend: 0x0, symName: _timestepfactorincrease, symBinAddr: 0x100017750, symSize: 0x0 }
+  - { offset: 0x1227, size: 0x8, addend: 0x0, symName: _courantnumber, symBinAddr: 0x1000171A0, symSize: 0x0 }
+  - { offset: 0x123C, size: 0x8, addend: 0x0, symName: _fillincrement, symBinAddr: 0x100017328, symSize: 0x0 }
+  - { offset: 0x1251, size: 0x8, addend: 0x0, symName: _min, symBinAddr: 0x100017520, symSize: 0x0 }
+  - { offset: 0x1266, size: 0x8, addend: 0x0, symName: _max, symBinAddr: 0x100017490, symSize: 0x0 }
+  - { offset: 0x127B, size: 0x8, addend: 0x0, symName: _printcounter, symBinAddr: 0x1000175B8, symSize: 0x0 }
+  - { offset: 0x1290, size: 0x8, addend: 0x0, symName: _printinterval, symBinAddr: 0x1000175C0, symSize: 0x0 }
+  - { offset: 0x12A5, size: 0x8, addend: 0x0, symName: _weatheringrate, symBinAddr: 0x100017840, symSize: 0x0 }
+  - { offset: 0x12BA, size: 0x8, addend: 0x0, symName: _rhobedrockoverrhosoil, symBinAddr: 0x1000175F0, symSize: 0x0 }
+  - { offset: 0x12CF, size: 0x8, addend: 0x0, symName: _n, symBinAddr: 0x100017548, symSize: 0x0 }
+  - { offset: 0x12E4, size: 0x8, addend: 0x0, symName: _U_v, symBinAddr: 0x100017060, symSize: 0x0 }
+  - { offset: 0x12F9, size: 0x8, addend: 0x0, symName: _p, symBinAddr: 0x100017588, symSize: 0x0 }
+  - { offset: 0x130E, size: 0x8, addend: 0x0, symName: _P_0, symBinAddr: 0x100017030, symSize: 0x0 }
+  - { offset: 0x1323, size: 0x8, addend: 0x0, symName: _h_0, symBinAddr: 0x1000173C8, symSize: 0x0 }
+  - { offset: 0x1338, size: 0x8, addend: 0x0, symName: _d_c, symBinAddr: 0x1000171B8, symSize: 0x0 }
+  - { offset: 0x134D, size: 0x8, addend: 0x0, symName: _D, symBinAddr: 0x100017018, symSize: 0x0 }
+  - { offset: 0x1362, size: 0x8, addend: 0x0, symName: _S_c, symBinAddr: 0x100017048, symSize: 0x0 }
+  - { offset: 0x1377, size: 0x8, addend: 0x0, symName: _sqrS_c, symBinAddr: 0x1000176E8, symSize: 0x0 }
+  - { offset: 0x138C, size: 0x8, addend: 0x0, symName: _deltax, symBinAddr: 0x1000171C0, symSize: 0x0 }
+  - { offset: 0x13A1, size: 0x8, addend: 0x0, symName: _oneoverdeltax, symBinAddr: 0x100017578, symSize: 0x0 }
+  - { offset: 0x13B6, size: 0x8, addend: 0x0, symName: _oneoverdeltax2, symBinAddr: 0x100017580, symSize: 0x0 }
+  - { offset: 0x13CB, size: 0x8, addend: 0x0, symName: _duration, symBinAddr: 0x1000172C0, symSize: 0x0 }
+  - { offset: 0x13E0, size: 0x8, addend: 0x0, symName: _timestep, symBinAddr: 0x100017748, symSize: 0x0 }
+  - { offset: 0x13F5, size: 0x8, addend: 0x0, symName: _time, symBinAddr: 0x100017738, symSize: 0x0 }
+  - { offset: 0x140A, size: 0x8, addend: 0x0, symName: _resid, symBinAddr: 0x1000175D8, symSize: 0x0 }
+  - { offset: 0x141F, size: 0x8, addend: 0x0, symName: _residlast, symBinAddr: 0x1000175E8, symSize: 0x0 }
+  - { offset: 0x1434, size: 0x8, addend: 0x0, symName: _topoinitial, symBinAddr: 0x100017790, symSize: 0x0 }
+  - { offset: 0x1449, size: 0x8, addend: 0x0, symName: _draindirdistanceup, symBinAddr: 0x100017298, symSize: 0x0 }
+  - { offset: 0x145E, size: 0x8, addend: 0x0, symName: _draindirdistance, symBinAddr: 0x100017290, symSize: 0x0 }
+  - { offset: 0x1473, size: 0x8, addend: 0x0, symName: _area, symBinAddr: 0x1000170D0, symSize: 0x0 }
+  - { offset: 0x1488, size: 0x8, addend: 0x0, symName: _curv, symBinAddr: 0x1000171B0, symSize: 0x0 }
+  - { offset: 0x149D, size: 0x8, addend: 0x0, symName: _width, symBinAddr: 0x100017848, symSize: 0x0 }
+  - { offset: 0x14B2, size: 0x8, addend: 0x0, symName: _soil, symBinAddr: 0x1000176B8, symSize: 0x0 }
+  - { offset: 0x14C7, size: 0x8, addend: 0x0, symName: _bedrock, symBinAddr: 0x100017170, symSize: 0x0 }
+  - { offset: 0x14DC, size: 0x8, addend: 0x0, symName: _soilold, symBinAddr: 0x1000176D0, symSize: 0x0 }
+  - { offset: 0x14F1, size: 0x8, addend: 0x0, symName: _soilcopy, symBinAddr: 0x1000176C8, symSize: 0x0 }
+  - { offset: 0x1506, size: 0x8, addend: 0x0, symName: _slope, symBinAddr: 0x100017618, symSize: 0x0 }
+  - { offset: 0x151B, size: 0x8, addend: 0x0, symName: _topo, symBinAddr: 0x100017760, symSize: 0x0 }
+  - { offset: 0x1530, size: 0x8, addend: 0x0, symName: _topocopy, symBinAddr: 0x100017778, symSize: 0x0 }
+  - { offset: 0x1545, size: 0x8, addend: 0x0, symName: _topoold, symBinAddr: 0x100017798, symSize: 0x0 }
+  - { offset: 0x155A, size: 0x8, addend: 0x0, symName: _topoafterDL, symBinAddr: 0x100017770, symSize: 0x0 }
+  - { offset: 0x156F, size: 0x8, addend: 0x0, symName: _soilafterDL, symBinAddr: 0x1000176C0, symSize: 0x0 }
+  - { offset: 0x1584, size: 0x8, addend: 0x0, symName: _U, symBinAddr: 0x100017050, symSize: 0x0 }
+  - { offset: 0x1599, size: 0x8, addend: 0x0, symName: _depthxout1, symBinAddr: 0x100017208, symSize: 0x0 }
+  - { offset: 0x15AE, size: 0x8, addend: 0x0, symName: _depthxout2, symBinAddr: 0x100017210, symSize: 0x0 }
+  - { offset: 0x15C3, size: 0x8, addend: 0x0, symName: _depthyout1, symBinAddr: 0x100017228, symSize: 0x0 }
+  - { offset: 0x15D8, size: 0x8, addend: 0x0, symName: _depthyout2, symBinAddr: 0x100017230, symSize: 0x0 }
+  - { offset: 0x15ED, size: 0x8, addend: 0x0, symName: _depthxout, symBinAddr: 0x100017200, symSize: 0x0 }
+  - { offset: 0x1602, size: 0x8, addend: 0x0, symName: _depthxin, symBinAddr: 0x1000171F8, symSize: 0x0 }
+  - { offset: 0x1617, size: 0x8, addend: 0x0, symName: _depthyout, symBinAddr: 0x100017220, symSize: 0x0 }
+  - { offset: 0x162C, size: 0x8, addend: 0x0, symName: _depthyin, symBinAddr: 0x100017218, symSize: 0x0 }
+  - { offset: 0x1641, size: 0x8, addend: 0x0, symName: _slopexout1, symBinAddr: 0x100017680, symSize: 0x0 }
+  - { offset: 0x1656, size: 0x8, addend: 0x0, symName: _slopeyout1, symBinAddr: 0x1000176A0, symSize: 0x0 }
+  - { offset: 0x166B, size: 0x8, addend: 0x0, symName: _slopexout2, symBinAddr: 0x100017688, symSize: 0x0 }
+  - { offset: 0x1680, size: 0x8, addend: 0x0, symName: _slopeyout2, symBinAddr: 0x1000176A8, symSize: 0x0 }
+  - { offset: 0x1695, size: 0x8, addend: 0x0, symName: _slopexout, symBinAddr: 0x100017678, symSize: 0x0 }
+  - { offset: 0x16AA, size: 0x8, addend: 0x0, symName: _slopeyout, symBinAddr: 0x100017698, symSize: 0x0 }
+  - { offset: 0x16BF, size: 0x8, addend: 0x0, symName: _slopexin, symBinAddr: 0x100017670, symSize: 0x0 }
+  - { offset: 0x16D4, size: 0x8, addend: 0x0, symName: _slopeyin, symBinAddr: 0x100017690, symSize: 0x0 }
+  - { offset: 0x16E9, size: 0x8, addend: 0x0, symName: _denomin, symBinAddr: 0x1000171C8, symSize: 0x0 }
+  - { offset: 0x16FE, size: 0x8, addend: 0x0, symName: _denomout, symBinAddr: 0x1000171D0, symSize: 0x0 }
+  - { offset: 0x1713, size: 0x8, addend: 0x0, symName: _sqrslopein, symBinAddr: 0x100017700, symSize: 0x0 }
+  - { offset: 0x1728, size: 0x8, addend: 0x0, symName: _sqrslopeout, symBinAddr: 0x100017708, symSize: 0x0 }
+  - { offset: 0x1731, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x100000E70, symSize: 0x6D0 }
+  - { offset: 0x1765, size: 0x8, addend: 0x0, symName: _push, symObjAddr: 0x6D0, symBinAddr: 0x100001540, symSize: 0x60 }
+  - { offset: 0x1797, size: 0x8, addend: 0x0, symName: _pop, symObjAddr: 0x730, symBinAddr: 0x1000015A0, symSize: 0x60 }
+  - { offset: 0x17AC, size: 0x8, addend: 0x0, symName: _hydrologiccorrection, symObjAddr: 0x790, symBinAddr: 0x100001600, symSize: 0x9C0 }
+  - { offset: 0x17EC, size: 0x8, addend: 0x0, symName: _calculateslopealongsteepestquadrant, symObjAddr: 0x1150, symBinAddr: 0x100001FC0, symSize: 0xCF0 }
+  - { offset: 0x181E, size: 0x8, addend: 0x0, symName: _calculateslopeD8, symObjAddr: 0x1E40, symBinAddr: 0x100002CB0, symSize: 0x1050 }
+  - { offset: 0x1850, size: 0x8, addend: 0x0, symName: _lateraladvection, symObjAddr: 0x2E90, symBinAddr: 0x100003D00, symSize: 0x1900 }
+  - { offset: 0x1865, size: 0x8, addend: 0x0, symName: _defineinitialelevationupliftandboundaryconditions, symObjAddr: 0x4790, symBinAddr: 0x100005600, symSize: 0x1440 }
+  - { offset: 0x1889, size: 0x8, addend: 0x0, symName: _definevectorsandmatrices, symObjAddr: 0x5BD0, symBinAddr: 0x100006A40, symSize: 0xE50 }
+  - { offset: 0x189E, size: 0x8, addend: 0x0, symName: _establishinitialconditions, symObjAddr: 0x6A20, symBinAddr: 0x100007890, symSize: 0x8B0 }
+  - { offset: 0x18D2, size: 0x8, addend: 0x0, symName: _calculatecrosssectionalcurvature, symObjAddr: 0x72D0, symBinAddr: 0x100008140, symSize: 0x630 }
+  - { offset: 0x1907, size: 0x8, addend: 0x0, symName: _mfdflowroute, symObjAddr: 0x7900, symBinAddr: 0x100008770, symSize: 0x3390 }
+  - { offset: 0x193C, size: 0x8, addend: 0x0, symName: _identifyupslopevalleybottom, symObjAddr: 0xAC90, symBinAddr: 0x10000BB00, symSize: 0xD40 }
+  - { offset: 0x1971, size: 0x8, addend: 0x0, symName: _mapfloodplainupslope, symObjAddr: 0xB9D0, symBinAddr: 0x10000C840, symSize: 0x520 }
+  - { offset: 0x19A6, size: 0x8, addend: 0x0, symName: _calculatecontributingareaandvalleybottomwidth, symObjAddr: 0xBEF0, symBinAddr: 0x10000CD60, symSize: 0x1E60 }
+  - { offset: 0x19F9, size: 0x8, addend: 0x0, symName: _fluviallyentrainanddepositsediment, symObjAddr: 0xDD50, symBinAddr: 0x10000EBC0, symSize: 0x1720 }
+  - { offset: 0x1A0F, size: 0x8, addend: 0x0, symName: _upliftandproducesoil, symObjAddr: 0xF470, symBinAddr: 0x1000102E0, symSize: 0x3D0 }
+  - { offset: 0x1A25, size: 0x8, addend: 0x0, symName: _determineupperandlowerboundsofsolution, symObjAddr: 0xF840, symBinAddr: 0x1000106B0, symSize: 0x1100 }
+  - { offset: 0x1A5A, size: 0x8, addend: 0x0, symName: _solveforelevationthatconservescolluvialfluxes, symObjAddr: 0x10940, symBinAddr: 0x1000117B0, symSize: 0x4E0 }
+  - { offset: 0x1A70, size: 0x8, addend: 0x0, symName: _fx, symObjAddr: 0x10E20, symBinAddr: 0x100011C90, symSize: 0x1A00 }
+  - { offset: 0x1A9A, size: 0x8, addend: 0x0, symName: _applyneumannboundaryconditions, symObjAddr: 0x12820, symBinAddr: 0x100013690, symSize: 0x700 }
+  - { offset: 0x1AB0, size: 0x8, addend: 0x0, symName: _evolvetopography, symObjAddr: 0x12F20, symBinAddr: 0x100013D90, symSize: 0x30 }
+  - { offset: 0x1AC6, size: 0x8, addend: 0x0, symName: _updatetime, symObjAddr: 0x12F50, symBinAddr: 0x100013DC0, symSize: 0x470 }
+  - { offset: 0x1ADC, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x133C0, symBinAddr: 0x100014230, symSize: 0xF4 }
+  - { offset: 0x1D30, size: 0x8, addend: 0x0, symName: _nrerror, symObjAddr: 0x0, symBinAddr: 0x100014330, symSize: 0x70 }
+  - { offset: 0x1D85, size: 0x8, addend: 0x0, symName: _nrerror, symObjAddr: 0x0, symBinAddr: 0x100014330, symSize: 0x70 }
+  - { offset: 0x1DA9, size: 0x8, addend: 0x0, symName: _ivector, symObjAddr: 0x70, symBinAddr: 0x1000143A0, symSize: 0x60 }
+  - { offset: 0x1DED, size: 0x8, addend: 0x0, symName: _free_ivector, symObjAddr: 0xD0, symBinAddr: 0x100014400, symSize: 0x30 }
+  - { offset: 0x1E2D, size: 0x8, addend: 0x0, symName: _vector, symObjAddr: 0x100, symBinAddr: 0x100014430, symSize: 0x60 }
+  - { offset: 0x1E71, size: 0x8, addend: 0x0, symName: _dvector, symObjAddr: 0x160, symBinAddr: 0x100014490, symSize: 0x60 }
+  - { offset: 0x1EB5, size: 0x8, addend: 0x0, symName: _free_dvector, symObjAddr: 0x1C0, symBinAddr: 0x1000144F0, symSize: 0x30 }
+  - { offset: 0x1EF5, size: 0x8, addend: 0x0, symName: _imatrix, symObjAddr: 0x1F0, symBinAddr: 0x100014520, symSize: 0x150 }
+  - { offset: 0x1F7F, size: 0x8, addend: 0x0, symName: _dmatrix, symObjAddr: 0x340, symBinAddr: 0x100014670, symSize: 0x150 }
+  - { offset: 0x2009, size: 0x8, addend: 0x0, symName: _indexx, symObjAddr: 0x490, symBinAddr: 0x1000147C0, symSize: 0x480 }
+  - { offset: 0x20D6, size: 0x8, addend: 0x0, symName: _zbrent, symObjAddr: 0x910, symBinAddr: 0x100014C40, symSize: 0x5F8 }
+  - { offset: 0x2261, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100015240, symSize: 0x1B0 }
+  - { offset: 0x227A, size: 0x8, addend: 0x0, symName: _sqrarg, symObjAddr: 0x11D8, symBinAddr: 0x100017008, symSize: 0x0 }
+  - { offset: 0x228A, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100015240, symSize: 0x1B0 }
+  - { offset: 0x22C0, size: 0x8, addend: 0x0, symName: _colluvialunitsedimentfluxfunction, symObjAddr: 0x1B0, symBinAddr: 0x1000153F0, symSize: 0x1C0 }
+  - { offset: 0x2312, size: 0x8, addend: 0x0, symName: _erosionanddepositionfunction, symObjAddr: 0x370, symBinAddr: 0x1000155B0, symSize: 0x675 }
+...
