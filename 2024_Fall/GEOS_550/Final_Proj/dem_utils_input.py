@@ -7,7 +7,7 @@ def create_uplift_mask(dem,cutoff=150):
     mask = dem.data
     mask = np.where(mask<cutoff,0,1)
     # Flatten the array, and scale between 0-255
-    fmask = mask.flatten() * 255
+    fmask = mask.flatten("F") * 255
     # Save as a text file
     np.savetxt("faultmask.txt", fmask, fmt="%d")
     return mask
@@ -28,7 +28,7 @@ def create_input_elv(dem,div_pct=1.1):
     max_val = elv.max()*div_pct
     elv = elv/max_val
     # Flatten the array
-    felv = elv.flatten()
+    felv = elv.flatten("F")
     # Save as a text file
     np.savetxt("inputtopo.txt", felv, fmt="%f")
     return elv
@@ -51,7 +51,7 @@ def create_boundary_conditions(dem,bcv=[2,2,2,2]):
     bc_mask[:,-1] = bcv[2]
     bc_mask[-1,:] = bcv[3]
     # Flatten the array
-    fbc = bc_mask.flatten()
+    fbc = bc_mask.flatten("F")
     # Save as a text file
     np.savetxt("BCmask.txt", fbc, fmt="%d")
     return bc_mask
