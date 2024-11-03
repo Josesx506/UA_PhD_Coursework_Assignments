@@ -1,0 +1,271 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw87.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw8.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+\usepackage{float, wrapfig, multicol}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#8 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A-C1 were completed in matlab and saved in the \emph{hw8.m} program. The program creates an \emph{output} folder to save images, so that the 
+root directory is not always cluttered, and it can be run using the \textit{hw8()} command. Most of the results are exported as graphics, and only question B6 is 
+printed to terminal. All numbers are rounded to \emph{3 s.f} for reporting purposes.
+
+\begin{enumerate}
+
+    \item[Part A.]
+    \ \\
+    Completed the three class examples on correlation and convolution. No discussion because we were instructed not to write it up. The results are shown in 
+    \autoref{fig:Figure1}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f0_corr_vs_conv.png}
+        \caption{Difference between correlation and convolution based on class examples in lecture 13.}
+        \label{fig:Figure1}
+    \end{figure}
+    
+    \item[Part B.]
+    \item[B1.] Two finite difference kernels $G_x$ and $G_y$ were convolved with the input image, and the gradient was obtained by squaring the sum of convolutions 
+    along the row and column dimensions. The output was scaled between 0-255, and the resulting image is shown in \autoref{fig:Figure2}.
+
+    \noindent
+    \begin{minipage}{0.3\textwidth}
+        \begin{flalign*}
+        &G_x = \begin{bmatrix}
+            -1 & 0 & 1 \\
+            -2 & 0 & 2 \\
+            -1 & 0 & 1
+            \end{bmatrix}
+        \\
+        &G_y = \begin{bmatrix}
+            1 & 2 & 1 \\
+            0 & 0 & 0 \\
+            -1 & -2 & -1
+            \end{bmatrix}
+        \end{flalign*}
+    \end{minipage}
+    \begin{minipage}{0.7\columnwidth}
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale=0.5]{output/f1_gradient_climber.png}
+            \caption{Magnitude of the gradient of the input climber image. Edges in the image have brighter colors.}
+            \label{fig:Figure2}
+        \end{figure}
+    \end{minipage}
+
+
+    \item[B2.] Using a threshold of \textbf{35}, the edges in the image are shown in \autoref{fig:Figure3}. Values above the threshold are shown as white and smaller 
+    values are shown as black.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f2_edge_detection.png}
+        \caption{Edge detection obtained by thresholding the magnitude of the gradient for the input climber image.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    \item[B3.] A gaussian filter with a standard deviation of 2 was convolved with the input image, to smooth out noisy pixels. The input gaussian mask and the resulting 
+    figure are shown in \autoref{fig:Figure4}. This assumes that the noise removal process is sensitve to outliers.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.8]{output/f3_gaussian_smoothing.png}
+        \caption{Effect of gaussian smoothing on input image. Gaussian mask with $(\sigma=2)$ is shown on left, and the smoothed image with less noisy pixels is shown on the 
+        right.}
+        \label{fig:Figure4}
+    \end{figure}
+
+    \item[B4.] The gradient magnitude of the blurred (denoised) image was computed and a threshold of \textbf{70} was used for edge detection. The resulting image is shown 
+    in \autoref{fig:Figure5}. The rolling hills in the background of the image were grayed out during the denoising operation, and are not clearly detected as edges in the 
+    resulting figure. Using the same threshold as question \emph{B2} resulted in fat edges from the denoising operation, hence the higher threshold.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.5]{output/f4_gaussian_smoothing_edge_detect.png}
+        \caption{Edge detection on denoised image. A gaussian filter $(\sigma=2)$ was applied prior to estimating the gradient magnitude, and a threshold of 70 was applied 
+        for edge detection.}
+        \label{fig:Figure5}
+    \end{figure}
+
+    \item[B5.] To highlight the associativity of the convolution operator, the input image was filtered twice. The first filter combines the blurring and gradient filters, 
+    and convolves the input image with this merged filter. The second filter does the blurring and gradient filtering steps as 2 separate operations. The gaussian filter has 
+    $(\sigma=2)$, and an edge threshold of \emph{20} is used for both filters. The resulting images are shown in \autoref{fig:Figure6}. Because convolution is associative, both 
+    images look very similar irrespective of whether the filters are combined or applied separately.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.7]{output/f5_filter_comparison.png}
+        \caption{Gradient magnitude on denoised image with gaussian filter $(\sigma=4)$ and edge threshold of 20. The blurring and edge detection filters are merged on the left 
+        image, and applied separately for the right image. Both operations provide similar results.}
+        \label{fig:Figure6}
+    \end{figure}
+
+    \item[B6.] A 2D Gaussian function with standard deviation \(\sigma\) can be expressed as:
+    \[
+    f(x, y) = \frac{1}{2 \pi \sigma^2} e^{-\frac{x^2 + y^2}{2 \sigma^2}}
+    \]
+
+    To show separability, we can rewrite \(f(x, y)\) as a product of two 1D Gaussian functions.
+    \[
+    f(x, y) = \frac{1}{2 \pi \sigma^2} e^{-\frac{x^2}{2 \sigma^2}} e^{-\frac{y^2}{2 \sigma^2}}
+    \]
+    This can be separated into:
+    \[
+    f(x, y) = g(x) \cdot h(y)
+    \]
+    where:
+    \[
+    g(x) = \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{x^2}{2 \sigma^2}}, \quad h(y) = \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{y^2}{2 \sigma^2}}
+    \]
+    \( g(x) \) and \( h(y) \) are 1D Gaussian functions with standard deviation \(\sigma\). This allows us to convolve the input image rows with \( g(x) \), and the resulting 
+    matrix with \( h(y) \) along each column, as two separate convolution operations.  
+
+    A direct 2D convolution has $O(n \times m \times k^2)$ complexity, where $n \times m$ is the image size and $k \times k$ is the kernel size. Using separate filters, the 
+    complexity is reduced to $O(n \times m \times k + n \times m \times k)$, since each 1D convolution (horizontal and vertical) has only $O(n \times m \times k)$ complexity. 
+    This means the 1D convolution is faster, and we can obtain comparable results as shown in \autoref{fig:Figure7}. When using a gaussian filter with $\sigma=20$ in matlab, 
+    the 1D convolution is faster by \textit{\textbf{0.03}} seconds.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.7]{output/f6_convolution_comparison.png}
+        \caption{Comparison of 1D vs. 2D convolution with a gaussian filter $(\sigma=4)$. Both operations output similar results however, the 1D convolution has a faster runtime.}
+        \label{fig:Figure7}
+    \end{figure}
+
+    \item[Part C1.]
+    \ \\
+    The gradient based edge detector was implemented in matlab. By providing an input $\sigma$ value, the input image is first smoothed with a gaussian filter to surpress 
+    noisy pixels, and then differentiated to highlights edges. The degree of smoothing affects the recovered edges. The gradient magnitude and direction are estimated, and 
+    the gradient direction is used to create a neighboring pixels matrix, showing diagonal angles from $0-360$ at increments of $45^o$. Using non-max-suppression (nms), the 
+    neighboring pixel matrix is used to identify the maximum gradient magnitude values along the gradient which helps to highlight edge points. Because the maximum value is dynamic 
+    depending on the image, I set it to a percentage of the \emph{nms} matrix. This percentage can be altered in the function input arguments to increase or decrease the 
+    edge detection threshold. Because edge points form along curves, we can construct the tangent to the edge curve using the neighbor matrix and try to predict where the 
+    next edge point should be in a process known as edge-linking. To implement this, I set a weak edge percentage threshold, and a strong edge threshold. Pixels in the nms matrix 
+    that are $ \textit{pixel} \ge \textit{lower threshold} < \textit{upper threshold}$, are assigned as weak edges, while all the pixels stronger than the \textit{upper threshold} 
+    have strong edges. The program loops through each pixel and checks whether it is a strong edge or not. It then looks at the eight neighboring pixels to identify any weak 
+    edges, and using the weak edge matrix to link nearby edge points that are not very clear.  
+    
+    This creates a two-fold workflow, where non-max-suppression reduces the width of blurred edges to identify the max edge, and the edges are linked to create continuous edges 
+    in images. Tests were run for 3 different scenarios and the results are shown in  \autoref{fig:Figure8}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.7]{output/f7_gradient_based_edge_detec.png}
+        \caption{Gradient-based edge detection with linking applied. (a) Fine scale smoothing with high threshold. (b) Coarse scale smoothing with high threshold. (c) Coarse scale 
+        smoothing with low threshold.}
+        \label{fig:Figure8}
+    \end{figure}
+
+    When fine-scale smoothing is applied (smaller $\sigma$), the resolved edges are thinner and small edges can be easily resolved. However, depending on the feature of interest, it 
+    can create noisy edges as seen along the rock face in \emph{Figure 8a}. Coarse filters with high-thresholds can be used to suppress the small-scale edges along the rock face, and 
+    allows us to focus on larger features like the background mountains, however, smaller features like the climbers outline are poorly resolved (\emph{Figure 8b}). Lowering the 
+    threshold when using a coarse filter can improve resolution of smaller edge features like the background mountains / rock face while still suppressing extremely small edge features 
+    that can make the image noisy (\emph{Figure 8c}). In the end, the choice of the filter scale and threshold depends on the structure scale that the user wants to highlight. Tweaking 
+    these values affects which edges come into focus, and which edges are blurred out.  
+    
+    Overall, the gradient-based edge linking filter gives thinner edges that are better connected, than edge-detectors that do not implement linking \autoref{fig:Figure9}. Edges 
+    are better resolved when linked, and they tend to extend across longer pixel distances.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.7]{output/f8_linked_vs_unlinked.png}
+        \caption{Effect of linking on edge-detection. Both images have the same degree of gaussian smoothing, however, the left image has linked edges and provides higher resolution 
+        results than the unlinked edge detector algorithm (right), with lower edge artifacts at the image boundaries.}
+        \label{fig:Figure9}
+    \end{figure}
+
+
+    
+
+\end{enumerate}
+
+\end{document}
