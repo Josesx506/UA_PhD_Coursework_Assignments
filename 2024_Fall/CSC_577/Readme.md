@@ -33,3 +33,5 @@ e.g.`\usepackage{algorithms,amsmath}`. One or more packages can be imported simu
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw6.tex`
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw7.tex`
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw8.tex`
+    - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw9.tex`
+6. Install the `vlfeat` matlab toolbox manually from https://www.vlfeat.org/install-matlab.html for `hw9`.

@@ -17,7 +17,7 @@ fprintf("Part A\n")
 
 % Question 1
 createBestPointCollage('slide1.tiff','frame1.jpg','output/f01_img1_best_eucl_dist.png','y',2);
-createBestPointCollage('slide2.tiff','frame2.jpg','output/f02_img2_best_eucl_dist.png','y',2,1);
+createBestPointCollage('slide2.tiff','frame2.jpg','output/f02_img2_best_eucl_dist.png','g',2,1);
 createBestPointCollage('slide3.tiff','frame3.jpg','output/f03_img3_best_eucl_dist.png','r',2,2);
 
 % N pairs
@@ -47,9 +47,9 @@ npnts = 5;
 % Question 3 - pruning with the Lowe Ratio threshold
 prb = 0.3;
 npnts = 1;
-[~] = createNPointsCollage('slide1.tiff','frame1.jpg','output/f16_img1_top20pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','y',1,1,true);
-[~] = createNPointsCollage('slide2.tiff','frame2.jpg','output/f17_img2_top20pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','g',1,1,true);
-[~] = createNPointsCollage('slide3.tiff','frame3.jpg','output/f18_img3_top20pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','r',1,1,true);
+[~] = createNPointsCollage('slide1.tiff','frame1.jpg','output/f16_img1_top30pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','y',1,1,true);
+[~] = createNPointsCollage('slide2.tiff','frame2.jpg','output/f17_img2_top30pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','g',1,1,true);
+[~] = createNPointsCollage('slide3.tiff','frame3.jpg','output/f18_img3_top30pct_eucl_dist_1N_prune.png',npnts,prb,'euclidean','r',1,1,true);
 
 % Question 4 - Plot confusion matrix
 prb = 1;
