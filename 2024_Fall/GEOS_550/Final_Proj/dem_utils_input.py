@@ -1,7 +1,7 @@
 import numpy as np
 import xarray as xr
 
-dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/dem_100x100.nc")
+dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/smooth_dem_100x100.nc")
 
 def create_uplift_mask(dem,cutoff=150):
     mask = dem.data
@@ -26,7 +26,7 @@ def create_input_elv(dem,div_pct=1.1):
     """
     elv = dem.data
     max_val = elv.max()*div_pct
-    elv = elv/max_val
+    # elv = elv/max_val
     # Flatten the array
     felv = elv.flatten("F")
     # Save as a text file

@@ -21,7 +21,7 @@
 0.001	K_0(m^(1-p)/kyr)
 1	erodibilitycontrast
 0	entrainmentthreshold
-0	depositionvelocity(m/kyr)
+1e-6	depositionvelocity(m/kyr)
 1	p
 1	n
 2.7e-6 	characteristicrunoffrate(m/s)

@@ -33,4 +33,7 @@ Configuration can be defined in the `lem2dpackage/input.txt`. The current grid d
 - Check tif properties with `gdalinfo merge.tif`
 - Resample the resolution to 100 by 100 m - `gdalwarp -tr 100 100 merge.tif rsmp_merge.tif`
 - Resample to (100,100m) and crop the coords to boundary `gdalwarp -te xmin ymin xmax ymax -tr 100 100 merge.tif rsmp_merge.tif` e.g. *gdalwarp -te 1.9985e6 5.7019e6 2.0441e6 5.7576e6 -tr 100 100 merge.tif rsmp_merge.tif*
-- Convert the tif to a xrarray - `python ../dem_to_xarray.py rsmp_merge.tif --output dem_100x100.nc`. uses the `uaenv` virtual environment
+- Use the `uaenv` virtual environment and navigate into the data folder `lds-nz-8m-DEM12-GTiff`
+    - Convert the tif to a xrarray - `python ../dem_to_xarray.py rsmp_merge.tif --output dem_100x100.nc`. 
+    - Smooth the input dem drainage system to create initial conditions for the lem model - `python ../smooth_drainage.py --input_file dem_100x100.nc --out_file smooth_dem_100x100.nc`.
+    - Navigate to the project folder and run - `python dem_utils_input.py` to create the input files for LEM2D.

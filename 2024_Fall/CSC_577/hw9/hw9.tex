@@ -102,10 +102,10 @@
 Questions from Part A and B were completed in matlab and saved in the \emph{hw9.m} program. The program creates an \emph{output} folder to save images, so that the 
 root directory is not always cluttered (it exports 28 images), and it can be run using the \textit{hw9()} command. Most of the results are exported as graphics, and 
 nothing significant is printed in terminal. To run the program, I had to install \emph{vlfeat-0.9.21} manually in Matlab. Using the provided binaries and moving back and forth 
-between terminal was not too convenient, and if I can do it, you probably can too (@TA). Some questions were confusing, so I had duplicate answers to try to cover all 
+between terminal was not too convenient, and it was easier to use only matlab. Some questions were confusing, so I had duplicate answers to try to cover all 
 my bases. If you encounter multiple responses, please grade the correct one.  Many images were plotted within functions so adding descriptive titles, axis labels, and 
 legends were not easy because of the high number of images exported. All image measurements are in pixels, and I described images within captions and preceding paragraphs
-where necessary. Without further ado, let's start.
+where necessary.
 
 \begin{enumerate}
 
@@ -121,7 +121,7 @@ where necessary. Without further ado, let's start.
 
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.5]{output/f01_img1_best_eucl_dist.png}
+        \includegraphics[scale=0.75]{output/f01_img1_best_eucl_dist.png}
         \caption{Best keypoint for slide1 and frame1 image pair. Directional vectors of keypoints with yellow arrows indicating scale and orientation. Yellow circles 
         show keypoint locations on the left. Coordinates of matched keypoints are shown with magenta circles and joined with the yellow line (right).}
         \label{fig:Figure1}
@@ -129,7 +129,7 @@ where necessary. Without further ado, let's start.
 
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.5]{output/f02_img2_best_eucl_dist.png}
+        \includegraphics[scale=0.75]{output/f02_img2_best_eucl_dist.png}
         \caption{Best keypoint for slide2 and frame2 image pair. Directional vectors of keypoints with green arrows indicating scale and orientation. Green circles 
         show keypoint locations on the left. Coordinates of matched keypoints are shown with magenta circles and joined with the green line (right).}
         \label{fig:Figure2}
@@ -137,7 +137,7 @@ where necessary. Without further ado, let's start.
 
     \begin{figure}[H]
         \centering
-        \includegraphics[scale=0.5]{output/f03_img3_best_eucl_dist.png}
+        \includegraphics[scale=0.75]{output/f03_img3_best_eucl_dist.png}
         \caption{Best keypoint for slide3 and frame3 image pair. Directional vectors of keypoints with red arrows indicating scale and orientation. Red circles 
         show keypoint locations on the left. Coordinates of matched keypoints are shown with magenta circles and joined with the red line (right).}
         \label{fig:Figure3}
@@ -171,7 +171,7 @@ where necessary. Without further ado, let's start.
     testing different P values below and above 20, I settled on using 20 because it provided a good blend of highlighting enough points that the plots didn't appear sparse 
     for slide2-frame2 (has the least number of matched pairs overall). P=10\% gave more accurate results but very few points. Plots for other P value tests are not shown 
     here, and a subset of N=5 points is used for related figures. Output images are shown in \Cref{fig:Figure7,fig:Figure8,fig:Figure9}. The plots are less cluttered and 
-    the quality of matched points is better that what was obtained in Figure 1. The right-hand side of the powerpoint is covered by the speaker in frame2, and correspoints 
+    the quality of matched points is better than what was obtained in Figure 1. The right-hand side of the powerpoint is covered by the speaker in frame2, and correspoints 
     keypoints in the slide image are incorrectly matched (\autoref{fig:Figure8}).
 
     \begin{figure}[H]
@@ -231,7 +231,7 @@ where necessary. Without further ado, let's start.
     \[
     \chi^2 = \frac{1}{2} \Sigma^n_{i=1} \frac{(x_i - y_i)^2}{(x_i + y_i)}
     \]
-    It was passed as a custom function to matlab \emph{knnsearch()}. The resulting keypoints on the slide3-frame3 pair was very good and even better than the euclidean 
+    It was passed as a custom function to matlab \emph{knnsearch()}. The resulting keypoints on the slide3-frame3 pair were very good and even better than the euclidean 
     distance result but it performed rather badly on the remaining two image pairs. The P value of 20, and N=5 subsets was also used for this question. The resulting 
     images are shown in \Cref{fig:Figure13,fig:Figure14,fig:Figure15}.
 
@@ -366,7 +366,7 @@ where necessary. Without further ado, let's start.
     \hfil
         \begin{subfigure}{0.45\textwidth}
         \includegraphics[scale=0.25]{output/outdoor-large-scale.png}
-        \caption{Using a \textbf{large} $(\sigma=20)$ scale to identify fine edges. Edgepoints are better spaced out and cluster of edegepoints are eliminated.}
+        \caption{Using a \textbf{large} $(\sigma=10)$ scale to identify fine edges. Edgepoints are better spaced out and cluster of edegepoints are eliminated.}
         \label{fig:Figure23b}
         \end{subfigure}
         \caption{Effect of changing $\sigma$ and window scale on edge detection in an outdoor image. Edgepoints are shown as red squares. Input arguments are shown in 
@@ -399,7 +399,7 @@ where necessary. Without further ado, let's start.
     where: \\
     - \( \text{det}(M) = S_{I_x^2} S_{I_y^2} - (S_{I_x I_y})^2 \) \\
     - \( \text{trace}(M) = S_{I_x^2} + S_{I_y^2} \) \\
-    - \( k \) is a sensitivity parameter, typically between 0.04 and 0.06.  
+    - \( k \) is a sensitivity parameter.  
     
     When the image is rotated by an angle \( \theta \), the gradients \( I_x \) and \( I_y \) transform to become:
     \[
