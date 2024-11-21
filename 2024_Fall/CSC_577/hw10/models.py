@@ -142,13 +142,13 @@ class ConvAutoencoder(nn.Module):
         
         ## decoder layers ##
         self.conv5 = nn.Conv2d(8, 8, kernel_size=3, padding=1)
-        self.upsample1 = nn.Upsample(scale_factor=2, mode='nearest')
+        self.upsample1 = nn.Upsample(scale_factor=2, mode="nearest")
         
         self.conv6 = nn.Conv2d(8, 16, kernel_size=3, padding=1)
-        self.upsample2 = nn.Upsample(scale_factor=2, mode='nearest')
+        self.upsample2 = nn.Upsample(scale_factor=2, mode="nearest")
         
         self.conv7 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-        self.upsample3 = nn.Upsample(scale_factor=2, mode='nearest')
+        self.upsample3 = nn.Upsample(scale_factor=2, mode="nearest")
         
         self.conv8 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
         
@@ -199,5 +199,5 @@ class SaveBestModel:
 #     cudnn.benchmark = False
 #     cudnn.deterministic = True
 # model.load_state_dict(torch.load("saved/best_model.pth", weights_only=True), strict=False)
-# torch.save(model.module.to("cpu").state_dict(), 'saved/best_model_cpu.pth') # ensure .module is used to convert it from nn.DataParallel
+# torch.save(model.module.to("cpu").state_dict(), "saved/best_model_cpu.pth") # ensure .module is used to convert it from nn.DataParallel
 

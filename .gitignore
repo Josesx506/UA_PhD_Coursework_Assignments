@@ -21,6 +21,9 @@ __pycache__
 2024_Spring/GEN_580/Files/Cropped_Cable_Mtn_Profiles
 2024_Spring/STAT_675/Projects/Project_03_Probablistic_EQ_Loc/Figures
 2024_Fall/CSC_577/*/output
+2024_Fall/CSC_577/*/saved
+2024_Fall/CSC_577/*/metrics
+2024_Fall/CSC_577/*/data
 2024_Fall/CSC_577/*/*.aux
 2024_Fall/CSC_577/*/*.out
 2024_Fall/CSC_577/*/*.log
@@ -28,6 +31,11 @@ __pycache__
 2024_Fall/CSC_577/*/*.pdf
 2024_Fall/CSC_577/*/*.docx
 2024_Fall/CSC_577/*/*.gz
+2024_Fall/CSC_577/*/*.bbl
+2024_Fall/CSC_577/*/*.run.xml
+2024_Fall/CSC_577/*/*.bcf
+2024_Fall/CSC_577/*/*.blg
+2024_Fall/CSC_577/*/*.bib
 2024_Fall/CSC_577/*/color_constancy_images
 2024_Fall/CSC_577/*/*/figures
 2024_Fall/CSC_577/*/soln/*.txt

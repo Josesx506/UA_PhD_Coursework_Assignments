@@ -115,7 +115,6 @@ with plt.rc_context({"font.family": "Times New Roman","font.size":11}):
 
 # print(undft_smy.keys())
 
-
 def inverse_normalize(tensor, mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)):
     mean = torch.as_tensor(mean, dtype=tensor.dtype, device=tensor.device)
     std = torch.as_tensor(std, dtype=tensor.dtype, device=tensor.device)
@@ -238,7 +237,8 @@ if __name__ == "__main__":
 
     for data, _ in testloader:
         images = data.to("cpu")
-        output = net2(images)
+        break
+    output = net2(images)
 
     def display_images(original, decoded, count = 6): 
         n = count
@@ -275,9 +275,51 @@ if __name__ == "__main__":
             activation[name] = output.detach()
         return hook
 
-
+    # Plot the convolution feature maps - https://ravivaishnav20.medium.com/visualizing-feature-maps-using-pytorch-12a48cd1e573
     net3 = copy.deepcopy(net2)
-    net3.fc2.register_forward_hook(get_activation("fc2"))
-    x = torch.randn(1, 25)
-    output = net3(x)
-    print(activation["fc2"])
+    
+    model_weights = []  # we will save the conv layer weights in this list
+    conv_layers = []    # we will save the conv layers in this list
+    model_children = list(net3.children())
+
+    counter = 0                # counter to keep count of the conv layers
+    # append all the conv layers and their respective wights to the list
+    for i in range(len(model_children)):
+        if type(model_children[i]) == nn.Conv2d:
+            counter+=1
+            model_weights.append(model_children[i].weight)
+            conv_layers.append(model_children[i])
+        elif type(model_children[i]) == nn.Sequential:
+            for j in range(len(model_children[i])):
+                for child in model_children[i][j].children():
+                    if type(child) == nn.Conv2d:
+                        counter+=1
+                        model_weights.append(child.weight)
+                        conv_layers.append(child)
+    
+    # Generate feature maps
+    image = images[13] #15
+    outputs = []
+    names = []
+    processed = []
+
+    for layer in conv_layers[0:]:
+        image = layer(image)
+        outputs.append(image)
+        names.append(str(layer))
+    for feature_map in outputs:
+        # feature_map = feature_map.squeeze(0) # Squeeze is required when processing batches
+        gray_scale = torch.sum(feature_map,0)
+        gray_scale = gray_scale / feature_map.shape[0]
+        processed.append(gray_scale.data.cpu().numpy())
+
+    # 9 convolution layers
+    fig,axs = plt.subplots(3,3,figsize=(10, 10))
+    axs = axs.flatten()
+    for i,img in enumerate(processed):
+        axs[i].imshow(processed[i],aspect="auto")
+        axs[i].axis("off")
+        axs[i].set_title(names[i].split("(")[0]+f"_{i+1}", fontsize=12)
+    fig.suptitle("Autoencoder feature maps", fontsize=14, y=0.93)
+    plt.savefig(str(f"{sv_fl}/feature_maps.png"), bbox_inches="tight",dpi=200)
+    plt.close()
