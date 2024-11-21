@@ -35,3 +35,16 @@ e.g.`\usepackage{algorithms,amsmath}`. One or more packages can be imported simu
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw8.tex`
     - `pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw9.tex`
 6. Install the `vlfeat` matlab toolbox manually from https://www.vlfeat.org/install-matlab.html for `hw9`.
+7. When you have a `.bib` reference file, you have to run bibtex after running pdflatex to proccess the bib file
+    - `bibtex hw10`, where hw10 is the name of the tex file
+    - run `pdflatex hw10.tex` again after running bibtext to create the final output file
+    - If you get this type of error from pdflatex
+        ```bash
+        ! LaTeX3 Error: Mismatched LaTeX support files detected.
+        (LaTeX3)        Loading 'expl3.sty' aborted!
+        (LaTeX3)        
+        (LaTeX3)        The L3 programming layer in the LaTeX format
+        (LaTeX3)        is dated 2024-08-16, but in your TeX tree the files require
+        (LaTeX3)        at least 2024-09-10.
+        ```
+        It can be fixed by updating ***tinytex*** in *R* by run running `>tinytex::tlmgr_update()` in an R terminal window
