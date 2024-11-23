@@ -1,0 +1,32 @@
+---
+title: "GEOS 568: Advanced Seismology HW2. Due: 11/27/24"
+subtitle: "Name: Joses Omojola"
+output:
+  pdf_document: default
+header-includes:
+  - \usepackage{amsmath}
+---
+
+1. 
+\begin{align*}
+F^P &= \frac{2 ( \gamma \cdot \upsilon ) ( \gamma \cdot \dot{\overline{u}})} { \dot{\overline{u}} } \\
+&= cos \lambda \  sin \delta \ sin^2 i_{\xi} \ sin 2(\phi - \phi_s) - cos \lambda \ cos \delta \ sin 2i_{\xi} \ cos (\phi - \phi_s) \\
+& + sin \lambda \  sin 2\delta \  (cos^2 i_{\xi} - sin^2 i_{\xi} \  sin^2(\phi - \phi_s)) \\
+& + sin \lambda \  cos 2\delta \  sin 2i_{\xi} \ sin (\phi - \phi_s)
+\end{align*}
+  
+
+\begin{align*}
+F^{SV} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{p}) + ( \gamma \cdot \dot{\overline{u}}) (\upsilon \cdot \hat{p}) \right]} { \dot{\overline{u}} } \\
+&= sin \lambda \  cos 2\delta \  cos 2i_{\xi} \  sin 2(\phi - \phi_s) - cos \lambda \ cos \delta \  cos 2i_{\xi} \ cos (\phi - \phi_s) \\
+& + \frac{1}{2} cos \lambda \  sin \delta \ sin 2i_{\xi} \ sin 2(\phi - \phi_s) \\
+& - \frac{1}{2} sin \lambda \  sin 2\delta \  sin 2i_{\xi}(1 + sin^2(\phi - \phi_s))
+\end{align*}
+  
+
+\begin{align*}
+F^{SH} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{\phi}) + ( \gamma \cdot \dot{\overline{u}}) (\upsilon \cdot \hat{\phi}) \right]} { \dot{\overline{u}} } \\
+&= cos \lambda \  cos \delta \  cos i_{\xi} \  sin(\phi - \phi_s) - cos \lambda \ sin \delta \  sin i_{\xi} \ cos 2(\phi - \phi_s) \\
+& + sin \lambda \  cos 2\delta \ cos i_{\xi} \ cos(\phi - \phi_s) \\
+& - \frac{1}{2} sin \lambda \  sin 2\delta \  sin i_{\xi} \ sin 2(\phi - \phi_s)
+\end{align*}
