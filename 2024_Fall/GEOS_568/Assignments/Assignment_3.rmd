@@ -30,3 +30,32 @@ F^{SH} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{\
 & + sin \lambda \  cos 2\delta \ cos i_{\xi} \ cos(\phi - \phi_s) \\
 & - \frac{1}{2} sin \lambda \  sin 2\delta \  sin i_{\xi} \ sin 2(\phi - \phi_s)
 \end{align*}
+  
+
+Associated far field displacements
+\begin{align*}
+u^p (x,t) &= \frac {F^P \mu A}{4 \pi \rho \alpha^3 r} \dot{\overline{u}} \left( t - \frac {r}{\alpha} \right) l, \\
+u^{SV} (x,t) &= \frac {F^{SV} \mu A}{4 \pi \rho \beta^3 r} \dot{\overline{u}} \left( t - \frac {r}{\beta} \right) \hat{p}, \\
+u^{SH} (x,t) &= \frac {F^{SH} \mu A}{4 \pi \rho \beta^3 r} \dot{\overline{u}} \left( t - \frac {r}{\beta} \right) \hat{\phi},
+\end{align*}
+
+
+
+- $\dot{\overline{u}}$ is the particle velocity at the source, averaged over fault area A and evaluated
+at retarded time $t - \frac{r}{\alpha}$.
+- $\gamma$ is the longitudinal direction from the source at $\xi$ to the receiver at $x$.
+- $\phi_s$ - strike angle
+- $\delta$ - dip angle
+- $\lambda$ - rake angle
+- $i_{\xi}$ - take-off angle
+- $\phi$ - source-receiver azimuth (measured clockwise from North (the x-axis))
+- $\alpha$ - p-wave velocity
+- $\beta$ - s-wave velocity
+- $r$ - hypocentral distance
+
+
+\begin{align*}
+\text{P-wave direction } \textbf{l} &= \gamma = sin i_{\xi} \ cos \phi \ \hat{x} + sin i_{\xi} \ sin \phi \ \hat{y} + cos i_{\xi} \ \hat{z} \\
+\text{SV-wave direction } \hat{p} &= cos i_{\xi} \ cos \phi \ \hat{x} + cos i_{\xi} \ sin \phi \ \hat{y} - sin i_{\xi} \ \hat{z} \\
+\text{SH-wave direction } \hat{\phi} &= -sin \phi \ \hat{x} + cos \phi \ \hat{y}
+\end{align*}
