@@ -13,3 +13,5 @@ Assignments and projects for advanced seismology. R markdown is used for Latex e
     - [ ] What is vector rotation?
     - [ ] Difference between vector and tensor.
     - [ ] Divergence theorem
+- If you encounter issues with installing greenlet for obspy with pip, try `pip install --only-binary :all: greenlet`. The `pip install obspy`.
+- print list of cake velocity models with `cake list-models` in terminal

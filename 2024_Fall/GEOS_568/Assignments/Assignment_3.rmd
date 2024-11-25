@@ -2,12 +2,69 @@
 title: "GEOS 568: Advanced Seismology HW2. Due: 11/27/24"
 subtitle: "Name: Joses Omojola"
 output:
-  pdf_document: default
+  bookdown::pdf_document2:
+    toc: false
+    number_sections: true
 header-includes:
   - \usepackage{amsmath}
 ---
 
-1. 
+1. Comparison of radiation patterns.
+    a. The equations for the far-field equation for a double couple source from AR 4.33 are
+        \begin{align*}
+        A^{FP} &= sin2 \theta \ cos \phi \ \hat{r} \\
+        A^{FS} &= cos2 \theta \ cos \phi \ \hat{\theta} - cos \theta \ sin \phi \ \hat{\phi}
+        \end{align*}
+        The plots in the $x_1 - x_3$ and $x_1 - x_2$ planes are shown in figure \@ref(fig:fig1).
+
+        ```{r fig1, fig.cap = "Double-couple far-field p-wave radiation patterns.", out.width = "100%", echo=FALSE}
+        knitr::include_graphics("output/double-couple_rad_ptn.png")
+        ```
+    b. 
+        ```{r fig2, fig.cap = "Single-couple far-field p-wave radiation patterns.", out.width = "100%", echo=FALSE}
+        knitr::include_graphics("output/single-couple_rad_ptn.png")
+        ```
+    c. The single and double-couple p-wave radiation patterns both have four lobes and are similar (Figures \@ref(fig:fig1)-\@ref(fig:fig2)). 
+    The s-wave radiation patterns are different with the single-couple solution exhibiting a two-lobed pattern (figure \@ref(fig:fig2)), 
+    while the double-couple solution has four lobes (figure \@ref(fig:fig1)). This indicates that p-wave radiation patterns cannot be 
+    differentiated, and s-wave radiation patterns can be differentiated for both type of solutions.
+
+\clearpage
+
+2. The far-field radiation patterns and displacements from AR 4.89-4.92 were coded in python, and the variable names are defined 
+ in the appendix section \@ref(sec-appendix). The strike, dip, and rake of the fault was obtained from the USGS webpage. The scalar 
+ moment from the USGS page $M_0 = 1.046e+18 N-m$, was used to approximate the shear modulus and fault area since $M_0 = \mu AD$. 
+ Average wave velocities and density were set to 
+ \begin{align*}
+ \alpha &= 9.5 km/s \\ 
+ \beta &= 4.9 km/s \\ 
+ \rho &= 2.7 kg/m^3
+ \end{align*}
+ Azimuths and take-off angles for individual phases were modeled using ***taup***, and the *ak135* 1D velocity model. For event-station 
+ pairs with multiple arrivals, the first arrival was used. The slip was modeled as a heaviside function, and convolved 
+ with a source time function (first derivative of a gaussian) to simulate synthetic displacement amplitudes.
+ 
+    Seismic waveforms were downloaded for 4 broadband stations located $7-15^o$ from the event epicenter (figure \@ref(fig:fig3)). 
+    The vertical components of the waveforms (BHZ) were selected and the instrument response was removed to obtain displacement 
+    amplitudes. Constant body-wave velocities for approximating the arrival times are not very accurate at extended distances, so 
+    the synthetic phase arrivals do not match perfectly. Arrivals can be better approximated with the 1D velocity model as shown 
+    in the top waveform panels in figure \@ref(fig:fig3). The raw and simulated phases of the p- and s- arrivals have similar 
+    polarities but the amplitdes do not match. This can be attributed to the approximated shear modulus and fault area that were 
+    multiplied with the radiation patterns even though the $M_0$ already has a displacement term.  
+
+    All four stations have negative p-polarites. The two eastern stations (AFI and NIUE) have negative s-polarities, while the two 
+    western stations (NOUC and SANVU) have positive s-polarities \@ref(fig:fig3). The synthetic displacement waveforms do not adequately 
+    resolve the sidelobes like the small early negative phase in the s-polarities on the western stations but it provides an approximate 
+    estimate of the dominant polarities for both phases. A single synthetic displacement waveform can be obtained by adding 
+    $u^{total} = u^P + u^{SV} + u^{SH}$. Total displacement amplitudes depend on polarity directions from the s-waves because opposite 
+    $u^{SV} \text{ and } u^{SH}$ amplitudes can cancel out each other.
+
+    ```{r fig3, fig.cap = "Event station locations with observed (top) and predicted (bottom) displacement waveforms. P- and S- arrivals calculated with the ak135 1D model.", out.width = "100%", echo=FALSE}
+    knitr::include_graphics("output/Map_Wvfrms.png")
+    ```
+\clearpage
+
+## Appendix {#sec-appendix}
 \begin{align*}
 F^P &= \frac{2 ( \gamma \cdot \upsilon ) ( \gamma \cdot \dot{\overline{u}})} { \dot{\overline{u}} } \\
 &= cos \lambda \  sin \delta \ sin^2 i_{\xi} \ sin 2(\phi - \phi_s) - cos \lambda \ cos \delta \ sin 2i_{\xi} \ cos (\phi - \phi_s) \\
@@ -18,7 +75,7 @@ F^P &= \frac{2 ( \gamma \cdot \upsilon ) ( \gamma \cdot \dot{\overline{u}})} { \
 
 \begin{align*}
 F^{SV} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{p}) + ( \gamma \cdot \dot{\overline{u}}) (\upsilon \cdot \hat{p}) \right]} { \dot{\overline{u}} } \\
-&= sin \lambda \  cos 2\delta \  cos 2i_{\xi} \  sin 2(\phi - \phi_s) - cos \lambda \ cos \delta \  cos 2i_{\xi} \ cos (\phi - \phi_s) \\
+&= sin \lambda \  cos 2\delta \  cos 2i_{\xi} \  sin (\phi - \phi_s) - cos \lambda \ cos \delta \  cos 2i_{\xi} \ cos (\phi - \phi_s) \\
 & + \frac{1}{2} cos \lambda \  sin \delta \ sin 2i_{\xi} \ sin 2(\phi - \phi_s) \\
 & - \frac{1}{2} sin \lambda \  sin 2\delta \  sin 2i_{\xi}(1 + sin^2(\phi - \phi_s))
 \end{align*}
@@ -26,7 +83,7 @@ F^{SV} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{p
 
 \begin{align*}
 F^{SH} &= \frac{\left[( \gamma \cdot \upsilon ) (\dot{\overline{u}} \cdot \hat{\phi}) + ( \gamma \cdot \dot{\overline{u}}) (\upsilon \cdot \hat{\phi}) \right]} { \dot{\overline{u}} } \\
-&= cos \lambda \  cos \delta \  cos i_{\xi} \  sin(\phi - \phi_s) - cos \lambda \ sin \delta \  sin i_{\xi} \ cos 2(\phi - \phi_s) \\
+&= cos \lambda \  cos \delta \  cos i_{\xi} \  sin(\phi - \phi_s) + cos \lambda \ sin \delta \  sin i_{\xi} \ cos 2(\phi - \phi_s) \\
 & + sin \lambda \  cos 2\delta \ cos i_{\xi} \ cos(\phi - \phi_s) \\
 & - \frac{1}{2} sin \lambda \  sin 2\delta \  sin i_{\xi} \ sin 2(\phi - \phi_s)
 \end{align*}
@@ -38,8 +95,7 @@ u^p (x,t) &= \frac {F^P \mu A}{4 \pi \rho \alpha^3 r} \dot{\overline{u}} \left( 
 u^{SV} (x,t) &= \frac {F^{SV} \mu A}{4 \pi \rho \beta^3 r} \dot{\overline{u}} \left( t - \frac {r}{\beta} \right) \hat{p}, \\
 u^{SH} (x,t) &= \frac {F^{SH} \mu A}{4 \pi \rho \beta^3 r} \dot{\overline{u}} \left( t - \frac {r}{\beta} \right) \hat{\phi},
 \end{align*}
-
-
+  
 
 - $\dot{\overline{u}}$ is the particle velocity at the source, averaged over fault area A and evaluated
 at retarded time $t - \frac{r}{\alpha}$.

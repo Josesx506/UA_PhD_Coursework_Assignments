@@ -1,6 +1,7 @@
 fiona==1.9.6
 fsspec==2024.10.0
 geopandas==0.14.3
+geographiclib==2.0
 grad-cam==1.4.8
 landlab==2.6.0
 laspy==2.5.3
@@ -12,6 +13,7 @@ notebook==7.0.7
 natsort=8.4.0
 networkx==3.2.1
 numpy==1.22.1
+obspy==1.4.1
 opencv-python==4.8.0.74
 open3d==0.16.1
 pandas==2.2.0
