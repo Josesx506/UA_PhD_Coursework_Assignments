@@ -20,16 +20,59 @@ header-includes:
         ```{r fig1, fig.cap = "Double-couple far-field p-wave radiation patterns.", out.width = "100%", echo=FALSE}
         knitr::include_graphics("output/double-couple_rad_ptn.png")
         ```
-    b. 
+    b. The far-field p- and s- wave displacements for a single couple EGF in a homogenous isotropic unbounded medium from AR 4.24-4.25 is 
+        \begin{align*}
+        u_i^p (x,t) &= \frac{1}{4 \pi \rho \alpha^2} \gamma_i \gamma_j \frac{1}{r} X_0 \left( t - \frac{r}{\alpha} \right) \\
+        u_i^s (x,t) &= \frac{1}{4 \pi \rho \beta^2} (\delta_{ij} - \gamma_i \gamma_j) \frac{1}{r} X_0 \left( t - \frac{r}{\beta} \right)
+        \end{align*}
+        The radiation patterns for both body waves are determined by the cosine direction terms $\gamma_i \gamma_j \text{ and } (\delta_{ij} - \gamma_i \gamma_j)$.
+        Considering the fault normal direction $\upsilon = (0,0,1)$ indicates that the fault plane is horizontal and slip $u=(u,0,0)$ 
+        movement is along the $x$-direction, we can use the relation
+        $$\gamma = (sin \theta cos \phi, sin \theta sin \phi, cos \theta)$$
+        The fault slip can be expressed as \(M_{ij} = \upsilon_i u_j\), or equivalently:
+        $$
+        M_{ij} = \begin{bmatrix}
+        0 & 0 & u \\
+        0 & 0 & 0 \\
+        0 & 0 & 0
+        \end{bmatrix}
+        $$
+        For the radiation pattern, we compute:
+        $$R^P \propto \gamma_i M_{ij} \gamma_j.$$
+        Substituting $M_{ij}$ into this expression:
+        $$R^P \propto \gamma_1 \gamma_3.$$
+        Substituting \(M_{ij}\)
+        $$
+        u_i^P \propto \gamma_i \begin{bmatrix}
+        0 & 0 & u \\
+        0 & 0 & 0 \\
+        0 & 0 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+        \gamma_1 \\ \gamma_2 \\ \gamma_3
+        \end{bmatrix} = 
+        \gamma_i \begin{bmatrix}
+        u \gamma_3 \\ 0 \\ 0
+        \end{bmatrix}.
+        $$
+        which reduces to $u_i^P \propto u \gamma_1 \gamma_3$. In spherical coordinates, using the definition of $\gamma$, this becomes:
+        $$R^P \propto \gamma_1 \gamma_3 = \sin \theta \ \cos \phi \ \cos \theta.$$
+        The $S$-wave displacement radiation pattern is proportional to:
+        $$u_i^S \propto (\delta_{ij} - \gamma_i \gamma_j),$$
+        This can be simplified to spherical coordinates for $S_H$:
+        $$R^S_H \propto \sin\phi \cos\theta$$
+        and $S_V$ (vertical $S$-wave):
+        $$R^S_V \propto \cos\phi \cos\theta$$
         ```{r fig2, fig.cap = "Single-couple far-field p-wave radiation patterns.", out.width = "100%", echo=FALSE}
         knitr::include_graphics("output/single-couple_rad_ptn.png")
         ```
-    c. The single and double-couple p-wave radiation patterns both have four lobes and are similar (Figures \@ref(fig:fig1)-\@ref(fig:fig2)). 
-    The s-wave radiation patterns are different with the single-couple solution exhibiting a two-lobed pattern (figure \@ref(fig:fig2)), 
-    while the double-couple solution has four lobes (figure \@ref(fig:fig1)). This indicates that p-wave radiation patterns cannot be 
-    differentiated, and s-wave radiation patterns can be differentiated for both type of solutions.
-
-\clearpage
+    c. The single and double-couple p-wave radiation patterns both have four lobes and are similar (Figures \@ref(fig:fig1)-\@ref(fig:fig2))
+    along the $x_1-x_3$ plane. They exhibit differences in the $x_1-x_2$ plane where the single-couple p-wave has amplitudes that are absent 
+    in the double-couple solution. The s-wave radiation patterns are different with the single-couple solution exhibiting a two-lobed pattern 
+    (figure \@ref(fig:fig2)) along the $x_1-x_3$ plane, while the double-couple solution has four lobes (figure \@ref(fig:fig1)). This indicates 
+    that p-wave radiation patterns cannot be differentiated in the $x_1-x_3$ plane, and s-wave radiation patterns can be differentiated along 
+    both planes.
+<!-- \clearpage -->
 
 2. The far-field radiation patterns and displacements from AR 4.89-4.92 were coded in python, and the variable names are defined 
  in the appendix section \@ref(sec-appendix). The strike, dip, and rake of the fault was obtained from the USGS webpage. The scalar 
