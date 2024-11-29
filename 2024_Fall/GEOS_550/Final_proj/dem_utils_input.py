@@ -1,7 +1,8 @@
 import numpy as np
 import xarray as xr
 
-dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/smooth_dem_100x100.nc")
+dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/dem_100x100.nc")
+# dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/smooth_dem_100x100.nc")
 
 def create_uplift_mask(dem,cutoff=150):
     mask = dem.data

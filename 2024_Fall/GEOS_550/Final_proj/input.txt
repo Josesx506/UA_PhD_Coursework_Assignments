@@ -27,7 +27,7 @@
 1	n
 2.7e-6 	characteristicrunoffrate(m/s)
 0.1	manningsn(m^(1/3)/s,usedonlyifwidthmode=1)
-30	duration(kyr)
+330	duration(kyr)
 0.2	timestep(kyr)
 1.01	timestepfactorincrease
-1	printinterval(kyr)
+10	printinterval(kyr)
