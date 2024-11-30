@@ -19,7 +19,7 @@
 0.01	microtopographiccurvature(1/m)
 10	rillspacing(m)
 0.4	soilporosity
-0.0003	K_0(m^(1-p)/kyr)
+0.001	K_0(m^(1-p)/kyr)
 1	erodibilitycontrast
 0	entrainmentthreshold
 1.e-6	depositionvelocity(m/kyr)

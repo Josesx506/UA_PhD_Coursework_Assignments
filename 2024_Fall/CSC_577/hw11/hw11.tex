@@ -1,0 +1,230 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw11.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw11.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+\usepackage{float, wrapfig, multicol}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#11 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A and B1 were completed in matlab and saved in the \emph{hw11.m} program. The program creates an \emph{output} folder to save images, so that the 
+root directory is not always cluttered, and it can be run using the \textit{hw11()} command. The decreasing loss for each \emph{kmeans()} iteration can be printed out 
+by setting \verb|verbose = true| at the top of the script. I toggled it off to reduce print outs while running tests. Additional results are exported as graphics, and 
+limited captions and text descriptions are used in line with the assignment instructions. Similar figures are grouped as subplots to improve simplicity for comparison, 
+making the total number of figures smaller.
+
+\begin{enumerate}
+
+    \item[Part A.]
+    \item[A1.]  A custom k-means function was used to cluster image segements. Results for the 3 input images are shown in \Cref{fig:Figure1,fig:Figure2,fig:Figure3}, 
+    where \verb|K=5| and \verb|K=10|.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.9]{output/f1_sunset_kdiff.png}
+        \caption{K-means cluster on sunset image. Number of K clusters is 5 (left). Number of K clusters is 10 (right).}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.9]{output/f2_tiger1_kdiff.png}
+        \caption{K-means cluster on tiger-1 image. Number of K clusters is 5 (left). Number of K clusters is 10 (right).}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.9]{output/f3_tiger2_kdiff.png}
+        \caption{K-means cluster on tiger-2 image. Number of K clusters is 5 (left). Number of K clusters is 10 (right).}
+        \label{fig:Figure3}
+    \end{figure}
+
+
+    \item[A2.] Adding a $\lambda$ weight to the pixel coordinates introduces a spatial component to the feature vector. This allows stronger clustering of pixels 
+    within proximity of each other. Setting $\lambda \ = \ 0$ returns the same value as \textit{A1} because the spatial component weights are not being applied. Increasing 
+    $\lambda \ > \ 0$ allows association of proximal pixels during clustering as seen in \Cref{fig:Figure4,fig:Figure5,fig:Figure6}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.55]{output/f4_sunset_kms_spt.png}
+        \caption{K-means cluster on sunset image with spatial component ($\lambda$) feature vector. Weight of $\lambda$ increases from left to right.}
+        \label{fig:Figure4}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.55]{output/f5_tiger1_kms_spt.png}
+        \caption{K-means cluster on tiger-1 image with spatial component ($\lambda$) feature vector. Weight of $\lambda$ increases from left to right.}
+        \label{fig:Figure5}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.55]{output/f6_tiger2_kms_spt.png}
+        \caption{K-means cluster on tiger-2 image with spatial component ($\lambda$) feature vector. Weight of $\lambda$ increases from left to right.}
+        \label{fig:Figure6}
+    \end{figure}
+
+
+    \item[A3.] A fixed window size of 31 was convolved with a gaussian kernel to create horizontal and vertical texture filters for the input images. Two gaussian sigmas were 
+    used to increase the context of the feature vectors, and the output was clustered with the k-means algorithm. Results for the 3 images are shown in 
+    \Cref{fig:Figure7,fig:Figure8,fig:Figure9}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f7_sunset_fvrgbspt.png}
+        \caption{K-means cluster of the sunset image when combining RGB, spatial ($\lambda$), and textural feature vectors. Texture cluster is only in grayscale.}
+        \label{fig:Figure7}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f8_tiger1_fvrgbspt.png}
+        \caption{K-means cluster of the tiger-1 image when combining RGB, spatial ($\lambda$), and textural feature vectors. Texture cluster is only in grayscale.}
+        \label{fig:Figure8}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f9_tiger2_fvrgbspt.png}
+        \caption{K-means cluster of the tiger-2 image when combining RGB, spatial ($\lambda$), and textural feature vectors. Texture cluster is only in grayscale.}
+        \label{fig:Figure9}
+    \end{figure}
+
+    The spatial cluster weight is set to $\lambda \ = \ 10$. It's effect is diminished compared to \textit{A2}, when it is combined with the textural features.
+
+    \item[Part B1.] Lines were drawn by randomly generating 2 coordinates \verb|`2 * rand(2, 1) - 1;'| between $[-1 \text{ to } 1]$. For each pair of random coordinates created, 
+    the coefficients of the line was calculated using the equation of a line $ax + by + c = 0$. The coefficients were normalized, and points were generated by linearly interpolating 
+    the number of required points per cluster using the line coefficients. Points outside the $[-1,1]$ limits were masked out and the gaussian noise was added to offset the 
+    interpolated points within a specified noise standard deviation. Random outlier points were included in the synthetic points based on a specified input value. Generating the 
+    lines before the points was easier for me because the random points are usually clustered along a linearly interpolated trend.
+
+    \begin{enumerate}
+        \item[1] Looping over multiple realizations helps to minimize the error while avoiding local minima. A maximum iteration cutoff and minumum error tolerance is used to stop 
+        the loop.
+        \item[2] From my personal tests, (a) seems like a better initialization strategy. While the line initialization (b) worked better for some points, it appeared to lump classes of
+        points together if the clusters had similar orientations. It worked best for points with low noise spread that were oriented in different directions. The point initialization 
+        (a) is less prone to outliers and returns similar number of true \textbf{\textit{K}} clusters in its predictions.
+        \item[3] Underestimating \textbf{\textit{K}} merges lines, increasing error. Overestimating \textbf{\textit{K}} splits lines creating unnecessarily noisy clusters. Using error on 
+        validation data to evaluate \textbf{\textit{K}} can help to infer the true value, using \verb|evalclusaters()| function, or using the elbow method.
+        \item[4] When the noise is increased for synthetic points, their proximity to the true line reduces and the cluster becomes more diffuse. This makes it harder to fit a true line 
+        through the points and generate a clean cluster.
+        \item[5] Outlier points reduce the fit of a line to a single cluster (\autoref{fig:Figure10}). When outlier points saturate the entire dataset uniformly, multiple clusters can become 
+        merged into one. This reduces the quality of the overall predictions. I didn't experiment with creating a special cluster to keep track of apparent outliers, but it might help.
+        \item[6] The true model doesn't always give the lowest error. Considering that the true model doesn't have a good fit on the outliers, a fitted model can match some outliers 
+        better than the true model reducing the overall error compared to the true model. The noise that was also introduced to the synthetic points can impede the performance of the true 
+        model. However, more often than not, it gives a better error compared to the fitted model, especially for tightly clustered points.
+    \end{enumerate}
+
+    Example figures comparing the different initialization strategies are shown in \Cref{fig:Figure10,fig:Figure11}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.6]{output/f11_kmeans_lines.png}
+        \caption{K-means cluster on synthetic linear clusters ($\mathbf{K}=3$). The random line initialization strategy is affected by outliers in this example.}
+        \label{fig:Figure10}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.6]{output/f10_kmeans_lines.png}
+        \caption{K-means cluster on synthetic linear clusters ($\mathbf{K}=3$). The random point initialization strategy provides the best fit in this example.}
+        \label{fig:Figure11}
+    \end{figure}
+
+\end{enumerate}
+
+\end{document}

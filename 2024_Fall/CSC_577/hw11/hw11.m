@@ -96,36 +96,83 @@ num_questions = num_questions + 3;
 fprintf("\nPart B\n")
 
 % Generate synthetic data
-rng(577);
+rng(506); % 576
 
-[points, true_lines] = generate_lines(4, 100, 0.05, 10);
-% Apply K-means
-[lines, assignments, error] = kmeans_lines(points, 4, 100, 1e-4, 'random_points');
+[points, assgn, true_lines] = generate_lines(3, 300, 0.05, 60);
+% Apply K-means - random lines
+[lines1, assignments1, error] = kmeans_lines(points, 3, 100, 1e-4, 'random_lines');
+[lines2, assignments2, error] = kmeans_lines(points, 3, 100, 1e-4, 'random_points');
 
 
 % Visualize results
-figure('Position',[1, 1, 820, 400], 'visible','off');
-f10 = tiledlayout(1,2,'TileSpacing','Compact','Padding','Compact');
-x = linspace(-1, 2, 100);
+figure('Position',[1, 1, 920, 300], 'visible','off');
+f10 = tiledlayout(1,3,'TileSpacing','Compact','Padding','Compact');
+x = linspace(-1, 1, 100);
+colormap([0 0.7 0; 0.8 0 0; 0 0.6 0.8; 1 1 0]);
 
 nexttile; 
-hold on; scatter(points(:, 1), points(:, 2), 20, 'black');
+hold on; scatter(points(:, 1), points(:, 2), 20, assgn, 'filled');
 for i = 1:size(true_lines, 1)
     y = -(true_lines(i, 1) / true_lines(i, 2)) * x - true_lines(i, 3) / true_lines(i, 2);
     plot(x, y, 'LineWidth', 2);
 end
-ylim([-1.5 1.5]); title('Ground Truth Lines','FontSize',14);
-hold off;
-
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('Ground Truth Lines','FontSize',14); hold off;
 
 nexttile; 
-hold on; scatter(points(:, 1), points(:, 2), 20, assignments, 'filled');
-for i = 1:size(lines, 1)
-    y = -(lines(i, 1) / lines(i, 2)) * x - lines(i, 3) / lines(i, 2);
+hold on; scatter(points(:, 1), points(:, 2), 20, assignments1, 'filled');
+for i = 1:size(lines1, 1)
+    y = -(lines1(i, 1) / lines1(i, 2)) * x - lines1(i, 3) / lines1(i, 2);
     plot(x, y, 'LineWidth', 2);
 end
-ylim([-1.5 1.5]); title('K-means Line Clusters','FontSize',14); hold off;
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('K-means Random Lines','FontSize',14); hold off;
+
+nexttile; 
+hold on; scatter(points(:, 1), points(:, 2), 20, assignments2, 'filled');
+for i = 1:size(lines2, 1)
+    y = -(lines2(i, 1) / lines2(i, 2)) * x - lines2(i, 3) / lines2(i, 2);
+    plot(x, y, 'LineWidth', 2);
+end
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('K-means Random Points','FontSize',14); hold off;
 exportgraphics(f10, 'output/f10_kmeans_lines.png', 'Resolution', 200);
+
+rng(571); %
+
+[points, assgn, true_lines] = generate_lines(3, 300, 0.05, 60);
+% Apply K-means - random lines
+[lines1, assignments1, ~] = kmeans_lines(points, 3, 100, 1e-4, 'random_lines');
+[lines2, assignments2, ~] = kmeans_lines(points, 3, 100, 1e-4, 'random_points');
+
+
+% Visualize results
+figure('Position',[1, 1, 920, 300], 'visible','off');
+f10 = tiledlayout(1,3,'TileSpacing','Compact','Padding','Compact');
+x = linspace(-1, 1, 100);
+colormap([0 0.7 0; 0.8 0 0; 0 0.6 0.8; 1 1 0]);
+
+nexttile; 
+hold on; scatter(points(:, 1), points(:, 2), 20, assgn, 'filled');
+for i = 1:size(true_lines, 1)
+    y = -(true_lines(i, 1) / true_lines(i, 2)) * x - true_lines(i, 3) / true_lines(i, 2);
+    plot(x, y, 'LineWidth', 2);
+end
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('Ground Truth Lines','FontSize',14); hold off;
+
+nexttile; 
+hold on; scatter(points(:, 1), points(:, 2), 20, assignments1, 'filled');
+for i = 1:size(lines1, 1)
+    y = -(lines1(i, 1) / lines1(i, 2)) * x - lines1(i, 3) / lines1(i, 2);
+    plot(x, y, 'LineWidth', 2);
+end
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('K-means Random Lines','FontSize',14); hold off;
+
+nexttile; 
+hold on; scatter(points(:, 1), points(:, 2), 20, assignments2, 'filled');
+for i = 1:size(lines2, 1)
+    y = -(lines2(i, 1) / lines2(i, 2)) * x - lines2(i, 3) / lines2(i, 2);
+    plot(x, y, 'LineWidth', 2);
+end
+xlim([-1.2 1.2]); ylim([-1.2 1.2]); title('K-means Random Points','FontSize',14); hold off;
+exportgraphics(f10, 'output/f11_kmeans_lines.png', 'Resolution', 200);
 
 num_questions = num_questions + 1;
 
@@ -340,7 +387,23 @@ end
 
 %% Part B functions
 
-function [points, true_lines] = generate_lines(K, num_points_per_line, noise_std, num_outliers)
+function [p1, p2] = generate_points(min_dist, max_dist)
+    % Generate the first pair of points
+    p1 = 2 * rand(2, 1) - 1;
+
+    % Generate the second pair, ensuring distance constraints
+    while true
+        p2 = 2 * rand(2, 1) - 1;
+        dist = norm(p1 - p2);
+        if min_dist <= dist && dist <= max_dist
+            break;
+        end
+    end
+end
+
+
+
+function [points, labels, true_lines] = generate_lines(K, num_points_per_line, noise_std, num_outliers)
     % Generates synthetic data with points near K lines
     % Parameters:
     % K - Number of lines
@@ -349,14 +412,18 @@ function [points, true_lines] = generate_lines(K, num_points_per_line, noise_std
     % num_outliers - Number of uniformly distributed outliers
 
     points = [];
+    labels = [];
     true_lines = zeros(K, 3); % Lines in homogeneous form (ax + by + c = 0)
-
-    for i = 1:K
+       
+    i = 1;
+    while i <= K
         % Randomly generate two endpoints for a line within [-1, 1]
-        x1 = rand() * 2 - 1;
-        y1 = rand() * 2 - 1;
-        x2 = rand() * 2 - 1;
-        y2 = rand() * 2 - 1;
+        [p1, p2] = generate_points(1.5, 2);
+        % Extract coordinates
+        x1 = p1(1);
+        y1 = p1(2);
+        x2 = p2(1);
+        y2 = p2(2);
 
         % Compute the line equation ax + by + c = 0 from the two points
         % The line coefficients are given by:
@@ -371,29 +438,42 @@ function [points, true_lines] = generate_lines(K, num_points_per_line, noise_std
         b = b / norm_factor;
         c = c / norm_factor;
 
-        true_lines(i, :) = [a, b, c];
+        line_points = [];
 
-        % Generate points along the line
-        t = linspace(-1, 1, num_points_per_line)'; % Parameter for interpolation
-        x_vals = t * (x2 - x1) + x1; % Interpolated x values
-        y_vals = -(a / b) * x_vals - c / b; % Line equation for corresponding y values
+        % Generate candidate points along the line
+        t = rand(num_points_per_line*10, 1) * 2 - 1; % Random parameter for interpolation
+        x_vals = t * (x2 - x1) + x1;                   % Interpolated x values
+        y_vals = -(a / b) * x_vals - c / b;            % Line equation for corresponding y values
 
-        % Clip y_vals to keep them within [-1, 1] while keeping points on the line
-        mask = (y_vals >= -1) & (y_vals <= 1);
+        % Apply the mask to ensure points are within [-1, 1]
+        maskx = (x_vals >= -1) & (x_vals <= 1);
+        masky = (y_vals >= -1) & (y_vals <= 1);
+        mask = maskx & masky;
+
         x_vals = x_vals(mask);
         y_vals = y_vals(mask);
 
-        % Add Gaussian noise to the points
+        % Add Gaussian noise to valid points
         x_vals = x_vals + noise_std * randn(size(x_vals));
         y_vals = y_vals + noise_std * randn(size(y_vals));
+        
+        if size(x_vals,1) > 0
+            true_lines(i, :) = [a, b, c];
 
-        points = [points; x_vals, y_vals];
+            line_points = [line_points; x_vals, y_vals];
+            line_points = line_points(1:num_points_per_line, :);
+            points = [points; line_points];
+            labels = [labels; ones(num_points_per_line,1) * i];
+            i = i + 1;
+        end
+        
     end
 
     % Add outliers
     if num_outliers > 0
         outliers = rand(num_outliers, 2) * 2 - 1; % Uniformly distributed points in [-1, 1]
         points = [points; outliers];
+        labels = [labels; ones(num_outliers,1) * K+1];
     end
 end
 
@@ -478,7 +558,8 @@ function [lines, assignments, error] = kmeans_lines(points, K, max_iters, epsilo
         % Check for convergence
         if abs(prev_error - error) < epsilon
             break;
+        elseif error < prev_error
+            prev_error = error;
         end
-        prev_error = error;
     end
 end
