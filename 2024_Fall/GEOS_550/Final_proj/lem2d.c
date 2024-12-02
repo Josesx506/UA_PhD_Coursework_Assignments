@@ -5,8 +5,29 @@
 #include "globalvars.h"
 #include "userdefinedfunctions.h"
 
-int mini,minj,maxi,maxj,steps,numberofavalancheincrements,spatiallyvariableupliftmode,sweep,mini,minj,sedimentfluxdrivenincisionmode,upslopecount,downslopecount,pass,rillspacingmode,structuralcontrolmode,**BCmask,**divideadjacenttomaskedge,**hillslopevsconfinedvalleyvsfloodplain,**faultmask,advected,counter,routingmethod,*pitsandflatsis,*pitsandflatsjs,**iup,**idown,**jup,**jdown,**iup2,**idown2,**jup2,**jdown2,**draindiri,**draindirj,**draindiriup,**draindirjup,residi,residj,i,j,ic,jc,ic2,icup,jcup,icdown,jcdown,icdowndown,jcdowndown,t,count,lattice_size_x,lattice_size_y,*topovecind,*topovecind2,*neighboringareasind;
-double erode,difference,minupslopeneighbor,maxslope,**timetonextcliffretreat,**timetonextcliffretreatold,S_d,fillincrementl,topoafterfluvialnew,diag,minareaneighbor,maxareaneighbor,bankerosion,volumeofbankfailure,bankheight,criticalbankheight,bankretreatrate,**accumulatedbankretreat,**erodeddepth,**entrainment,**deposition,*topovec,*topovec2,*neighboringareas,soilporosity,depositionvelocity,maxareaup,maxareadown,meanupslopearea,meandownslopearea,stddevupslopearea,stddevdownslopearea,**discharge,**depositionrate,entrainmentthreshold,**topo2,**area2c,**area2cp,**frac,rillspacing,microtopographiccurvature,ratiooflargetosmallareas,maxvelocity,sqrfractionnearS_c,nearS_c,timetoremovesoil,fractionaldistance,mincurvatureforwidthestimation,slopenew,a1,b1,maxtopo,distance,timeremaining,erodibility,maxtimestep,sqrnearS_c,factor,widthlowest,totalerosion,erosionintobedrock,erodibilitycontrast,slopetrial,totslopesqr1,totslopesqr2,totslopesqr3,totslopesqr4,maxtopo,mintopo,maxarea,areavalleybottom,topovalleybottom,velocity,dist,distbetweenup,distbetween,distbetweendown,rdown,rup,phidown,phiup,fup,fdown,topoup,topodown,topodowndown,bankretreatparameter,**alluvialfluxinav,**alluvialfluxoutav,alluvialfluxinavl,alluvialfluxoutavl,averageuplanderosionrate,totalfluxout,depositedvolume,downslopeneumannbc,**Uinitial,uplandarea,totalerodedupland,totalerodedcolluvial,Pl,Kl,k,maxim,initialsoilbasin,P_0l,erode,**erodedvolumerate,**erodedvolumeratecopy,**meanbasinslope,**flow1,**flow2,**flow3,**flow4,**flow5,**flow6,**flow7,**flow8,**flow12,**flow22,**flow32,**flow42,**flow52,**flow62,**flow72,**flow82,**area1,**area2,**area3,**area4,**area5,**area6,**area7,**area8,slope1,slope2,slope3,slope4,m,K,k_0,**colluvialunitsedimentfluxin,**colluvialunitsedimentfluxout,**alluvialfluxin,**alluvialfluxout,**erodedvolumerate,**meanbasinslope,**structuralelevation,nextadvectiontime,keeptimestep,horizontalslipvector,verticaltohorizontalratio,U_h,U_vfault,K,advectioninterval,advectiontimestep,advectioninterval,cosfactor,xsectslope,max1,max2,max3,maxcurv,tot,areai,areaj,down,initialsoilupland,characteristicrunoffrate,manningsn,noiseamplitude,timestepfactorincrease,min,max,printcounter,printinterval,**weatheringrate,rhobedrockoverrhosoil,n,U_v,K,p,P_0,h_0,d_c,D,S_c,sqrS_c,deltax,oneoverdeltax,oneoverdeltax2,duration,timestep,time,resid,residlast,**topoinitial,**draindirdistanceup,**draindirdistance,**area,**curv,**width,**soil,**bedrock,**soilold,**soilcopy,**slope,**topo,**topocopy,**topoold,**topoafterfluvial,**soilafterfluvial,**U,depthxout1,depthxout2,depthyout1,depthyout2,depthxout,depthxin,depthyout,depthyin,slopexout1,slopeyout1,slopexout2,slopeyout2,slopexout,slopeyout,slopexin,slopeyin,denomin,denomout,sqrslopein,sqrslopeout;
+// Integer Variables
+int mini,minj,maxi,maxj,steps,numberofavalancheincrements,spatiallyvariableupliftmode,sweep,mini,minj,sedimentfluxdrivenincisionmode,upslopecount,downslopecount,pass;
+int rillspacingmode,structuralcontrolmode,**BCmask,**divideadjacenttomaskedge,**hillslopevsconfinedvalleyvsfloodplain,**faultmask,advected,counter,routingmethod;
+int *pitsandflatsis,*pitsandflatsjs,**iup,**idown,**jup,**jdown,**iup2,**idown2,**jup2,**jdown2,**draindiri,**draindirj,**draindiriup,**draindirjup,residi,residj;
+int i,j,ic,jc,ic2,icup,jcup,icdown,jcdown,icdowndown,jcdowndown,t,count,lattice_size_x,lattice_size_y,*topovecind,*topovecind2,*neighboringareasind;
+// Float Variables
+double erode,difference,minupslopeneighbor,maxslope,**timetonextcliffretreat,**timetonextcliffretreatold,S_d,fillincrementl,topoafterfluvialnew,diag,minareaneighbor;
+double maxareaneighbor,bankerosion,volumeofbankfailure,bankheight,criticalbankheight,bankretreatrate,**accumulatedbankretreat,**erodeddepth,**entrainment,**deposition;
+double *topovec,*topovec2,*neighboringareas,soilporosity,depositionvelocity,maxareaup,maxareadown,meanupslopearea,meandownslopearea,stddevupslopearea,stddevdownslopearea;
+double **discharge,**depositionrate,entrainmentthreshold,**topo2,**area2c,**area2cp,**frac,rillspacing,microtopographiccurvature,ratiooflargetosmallareas,maxvelocity;
+double sqrfractionnearS_c,nearS_c,timetoremovesoil,fractionaldistance,mincurvatureforwidthestimation,slopenew,a1,b1,maxtopo,distance,timeremaining,erodibility,maxtimestep;
+double sqrnearS_c,factor,widthlowest,totalerosion,erosionintobedrock,erodibilitycontrast,slopetrial,totslopesqr1,totslopesqr2,totslopesqr3,totslopesqr4,maxtopo,mintopo;
+double maxarea,areavalleybottom,topovalleybottom,velocity,dist,distbetweenup,distbetween,distbetweendown,rdown,rup,phidown,phiup,fup,fdown,topoup,topodown,topodowndown;
+double bankretreatparameter,**alluvialfluxinav,**alluvialfluxoutav,alluvialfluxinavl,alluvialfluxoutavl,averageuplanderosionrate,totalfluxout,depositedvolume,downslopeneumannbc;
+double **Uinitial,uplandarea,totalerodedupland,totalerodedcolluvial,Pl,Kl,k,maxim,initialsoilbasin,P_0l,erode,**erodedvolumerate,**erodedvolumeratecopy,**meanbasinslope,**flow1;
+double **flow2,**flow3,**flow4,**flow5,**flow6,**flow7,**flow8,**flow12,**flow22,**flow32,**flow42,**flow52,**flow62,**flow72,**flow82,**area1,**area2,**area3,**area4,**area5;
+double **area6,**area7,**area8,slope1,slope2,slope3,slope4,m,K,k_0,**colluvialunitsedimentfluxin,**colluvialunitsedimentfluxout,**alluvialfluxin,**alluvialfluxout,**erodedvolumerate;
+double **meanbasinslope,**structuralelevation,nextadvectiontime,keeptimestep,horizontalslipvector,verticaltohorizontalratio,U_h,U_vfault,K,advectioninterval,advectiontimestep;
+double advectioninterval,cosfactor,xsectslope,max1,max2,max3,maxcurv,tot,areai,areaj,down,initialsoilupland,characteristicrunoffrate,manningsn,noiseamplitude,timestepfactorincrease;
+double min,max,printcounter,printinterval,**weatheringrate,rhobedrockoverrhosoil,n,U_v,K,p,P_0,h_0,d_c,D,S_c,sqrS_c,deltax,oneoverdeltax,oneoverdeltax2,duration,timestep,time;
+double resid,residlast,**topoinitial,**draindirdistanceup,**draindirdistance,**area,**curv,**width,**soil,**bedrock,**soilold,**soilcopy,**slope,**topo,**topocopy,**topoold;
+double **topoafterfluvial,**soilafterfluvial,**U,depthxout1,depthxout2,depthyout1,depthyout2,depthxout,depthxin,depthyout,depthyin,slopexout1,slopeyout1,slopexout2,slopeyout2;
+double slopexout,slopeyout,slopexin,slopeyin,denomin,denomout,sqrslopein,sqrslopeout,initFluvialProcs;
 
 void printfiles()
 /* prints selected state variables to xyz files for later input into a visualization program such as Paraview */
@@ -273,6 +294,7 @@ void establishinitialconditions()
     fscanf(fpin,"%lf %s\n",&manningsn,temp);
 	//model control parameters
 	fscanf(fpin,"%lf %s\n",&duration,temp);
+	fscanf(fpin,"%lf %s\n",&initFluvialProcs,temp);
 	fscanf(fpin,"%lf %s\n",&timestep,temp);
 	fscanf(fpin,"%lf %s\n",&timestepfactorincrease,temp);
 	fscanf(fpin,"%lf %s\n",&printinterval,temp);

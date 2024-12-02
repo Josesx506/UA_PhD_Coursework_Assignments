@@ -27,7 +27,7 @@ def create_input_elv(dem,div_pct=1.1):
     """
     elv = dem.data
     max_val = elv.max()*div_pct
-    elv = elv/max_val
+    elv = elv/10#max_val
     # Flatten the array
     felv = elv.flatten("F")
     # Save as a text file

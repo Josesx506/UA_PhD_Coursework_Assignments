@@ -27,7 +27,8 @@
 1	n
 2.7e-6 	characteristicrunoffrate(m/s)
 0.1	manningsn(m^(1/3)/s,usedonlyifwidthmode=1)
-330	duration(kyr)
+173	duration(kyr)
+143	initiatefluvialprocesses(kyr)
 0.2	timestep(kyr)
 1.01	timestepfactorincrease
-10	printinterval(kyr)
+5	printinterval(kyr)
