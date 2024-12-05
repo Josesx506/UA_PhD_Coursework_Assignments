@@ -2,7 +2,7 @@
 triple:          'x86_64-apple-darwin'
 binary-path:     lem2d.o
 relocations:
-  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x1000014A0, symSize: 0x6D0 }
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x100001490, symSize: 0x6D0 }
   - { offset: 0x4D, size: 0x8, addend: 0x0, symName: _sqrarg, symObjAddr: 0x21CC8, symBinAddr: 0x10001A000, symSize: 0x0 }
   - { offset: 0x69, size: 0x8, addend: 0x0, symName: _mini, symBinAddr: 0x10001A558, symSize: 0x0 }
   - { offset: 0x85, size: 0x8, addend: 0x0, symName: _minj, symBinAddr: 0x10001A55C, symSize: 0x0 }
@@ -286,47 +286,47 @@ relocations:
   - { offset: 0x1767, size: 0x8, addend: 0x0, symName: _sqrslopein, symBinAddr: 0x10001A708, symSize: 0x0 }
   - { offset: 0x177C, size: 0x8, addend: 0x0, symName: _sqrslopeout, symBinAddr: 0x10001A710, symSize: 0x0 }
   - { offset: 0x1791, size: 0x8, addend: 0x0, symName: _initFluvialProcs, symBinAddr: 0x10001A410, symSize: 0x0 }
-  - { offset: 0x179A, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x1000014A0, symSize: 0x6D0 }
-  - { offset: 0x17CE, size: 0x8, addend: 0x0, symName: _push, symObjAddr: 0x6D0, symBinAddr: 0x100001B70, symSize: 0x60 }
-  - { offset: 0x1800, size: 0x8, addend: 0x0, symName: _pop, symObjAddr: 0x730, symBinAddr: 0x100001BD0, symSize: 0x60 }
-  - { offset: 0x1815, size: 0x8, addend: 0x0, symName: _hydrologiccorrection, symObjAddr: 0x790, symBinAddr: 0x100001C30, symSize: 0x9C0 }
-  - { offset: 0x1855, size: 0x8, addend: 0x0, symName: _calculateslopealongsteepestquadrant, symObjAddr: 0x1150, symBinAddr: 0x1000025F0, symSize: 0xC20 }
-  - { offset: 0x18CD, size: 0x8, addend: 0x0, symName: _calculateslopeD8, symObjAddr: 0x1D70, symBinAddr: 0x100003210, symSize: 0x1050 }
-  - { offset: 0x18FF, size: 0x8, addend: 0x0, symName: _lateraladvection, symObjAddr: 0x2DC0, symBinAddr: 0x100004260, symSize: 0x1900 }
-  - { offset: 0x1914, size: 0x8, addend: 0x0, symName: _defineinitialelevationupliftandboundaryconditions, symObjAddr: 0x46C0, symBinAddr: 0x100005B60, symSize: 0x1650 }
-  - { offset: 0x1938, size: 0x8, addend: 0x0, symName: _definevectorsandmatrices, symObjAddr: 0x5D10, symBinAddr: 0x1000071B0, symSize: 0xEB0 }
-  - { offset: 0x194D, size: 0x8, addend: 0x0, symName: _establishinitialconditions, symObjAddr: 0x6BC0, symBinAddr: 0x100008060, symSize: 0x910 }
-  - { offset: 0x1982, size: 0x8, addend: 0x0, symName: _calculatecrosssectionalcurvature, symObjAddr: 0x74D0, symBinAddr: 0x100008970, symSize: 0x630 }
-  - { offset: 0x19B7, size: 0x8, addend: 0x0, symName: _mfdflowroute, symObjAddr: 0x7B00, symBinAddr: 0x100008FA0, symSize: 0x3390 }
-  - { offset: 0x19EC, size: 0x8, addend: 0x0, symName: _identifyupslopevalleybottom, symObjAddr: 0xAE90, symBinAddr: 0x10000C330, symSize: 0xF40 }
-  - { offset: 0x1A21, size: 0x8, addend: 0x0, symName: _mapfloodplainupslope, symObjAddr: 0xBDD0, symBinAddr: 0x10000D270, symSize: 0x720 }
-  - { offset: 0x1A56, size: 0x8, addend: 0x0, symName: _calculatecontributingareaandvalleybottomwidth, symObjAddr: 0xC4F0, symBinAddr: 0x10000D990, symSize: 0x1E60 }
-  - { offset: 0x1AA9, size: 0x8, addend: 0x0, symName: _fluviallyentrainanddepositsediment, symObjAddr: 0xE350, symBinAddr: 0x10000F7F0, symSize: 0x16B0 }
-  - { offset: 0x1ABF, size: 0x8, addend: 0x0, symName: _depositlandslidedebris, symObjAddr: 0xFA00, symBinAddr: 0x100010EA0, symSize: 0xC00 }
-  - { offset: 0x1AF4, size: 0x8, addend: 0x0, symName: _relaxoversteepenedslopestonearS_c, symObjAddr: 0x10600, symBinAddr: 0x100011AA0, symSize: 0x6F0 }
-  - { offset: 0x1B0A, size: 0x8, addend: 0x0, symName: _upliftproducesoilandretreatcliffs, symObjAddr: 0x10CF0, symBinAddr: 0x100012190, symSize: 0x15D0 }
-  - { offset: 0x1B20, size: 0x8, addend: 0x0, symName: _solveforelevationthatconservescolluvialfluxes, symObjAddr: 0x122C0, symBinAddr: 0x100013760, symSize: 0x7B0 }
-  - { offset: 0x1B36, size: 0x8, addend: 0x0, symName: _solveformax, symObjAddr: 0x12A70, symBinAddr: 0x100013F10, symSize: 0x1C0 }
-  - { offset: 0x1B60, size: 0x8, addend: 0x0, symName: _f, symObjAddr: 0x12C30, symBinAddr: 0x1000140D0, symSize: 0x1650 }
-  - { offset: 0x1B8A, size: 0x8, addend: 0x0, symName: _applygradientbasedboundaryconditions, symObjAddr: 0x14280, symBinAddr: 0x100015720, symSize: 0x11F0 }
-  - { offset: 0x1BA0, size: 0x8, addend: 0x0, symName: _evolvetopography, symObjAddr: 0x15470, symBinAddr: 0x100016910, symSize: 0x30 }
-  - { offset: 0x1BB6, size: 0x8, addend: 0x0, symName: _updatetime, symObjAddr: 0x154A0, symBinAddr: 0x100016940, symSize: 0x500 }
-  - { offset: 0x1BCC, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x159A0, symBinAddr: 0x100016E40, symSize: 0xF4 }
-  - { offset: 0x1E20, size: 0x8, addend: 0x0, symName: _mysign, symObjAddr: 0x0, symBinAddr: 0x100016F40, symSize: 0x50 }
-  - { offset: 0x1E75, size: 0x8, addend: 0x0, symName: _mysign, symObjAddr: 0x0, symBinAddr: 0x100016F40, symSize: 0x50 }
-  - { offset: 0x1E9D, size: 0x8, addend: 0x0, symName: _nrerror, symObjAddr: 0x50, symBinAddr: 0x100016F90, symSize: 0x70 }
-  - { offset: 0x1EC1, size: 0x8, addend: 0x0, symName: _ivector, symObjAddr: 0xC0, symBinAddr: 0x100017000, symSize: 0x60 }
-  - { offset: 0x1F05, size: 0x8, addend: 0x0, symName: _free_ivector, symObjAddr: 0x120, symBinAddr: 0x100017060, symSize: 0x30 }
-  - { offset: 0x1F45, size: 0x8, addend: 0x0, symName: _vector, symObjAddr: 0x150, symBinAddr: 0x100017090, symSize: 0x60 }
-  - { offset: 0x1F89, size: 0x8, addend: 0x0, symName: _dvector, symObjAddr: 0x1B0, symBinAddr: 0x1000170F0, symSize: 0x60 }
-  - { offset: 0x1FCD, size: 0x8, addend: 0x0, symName: _free_dvector, symObjAddr: 0x210, symBinAddr: 0x100017150, symSize: 0x30 }
-  - { offset: 0x200D, size: 0x8, addend: 0x0, symName: _imatrix, symObjAddr: 0x240, symBinAddr: 0x100017180, symSize: 0x150 }
-  - { offset: 0x2097, size: 0x8, addend: 0x0, symName: _dmatrix, symObjAddr: 0x390, symBinAddr: 0x1000172D0, symSize: 0x150 }
-  - { offset: 0x2121, size: 0x8, addend: 0x0, symName: _indexx, symObjAddr: 0x4E0, symBinAddr: 0x100017420, symSize: 0x480 }
-  - { offset: 0x21EE, size: 0x8, addend: 0x0, symName: _zbrent, symObjAddr: 0x960, symBinAddr: 0x1000178A0, symSize: 0x5F8 }
-  - { offset: 0x2379, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100017EA0, symSize: 0x1B0 }
-  - { offset: 0x2392, size: 0x8, addend: 0x0, symName: _sqrarg, symObjAddr: 0x15E8, symBinAddr: 0x10001A008, symSize: 0x0 }
-  - { offset: 0x23A2, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100017EA0, symSize: 0x1B0 }
-  - { offset: 0x23D8, size: 0x8, addend: 0x0, symName: _colluvialunitsedimentfluxfunction, symObjAddr: 0x1B0, symBinAddr: 0x100018050, symSize: 0x250 }
-  - { offset: 0x2438, size: 0x8, addend: 0x0, symName: _erosionanddepositionfunction, symObjAddr: 0x400, symBinAddr: 0x1000182A0, symSize: 0x966 }
+  - { offset: 0x179A, size: 0x8, addend: 0x0, symName: _printfiles, symObjAddr: 0x0, symBinAddr: 0x100001490, symSize: 0x6D0 }
+  - { offset: 0x17CE, size: 0x8, addend: 0x0, symName: _push, symObjAddr: 0x6D0, symBinAddr: 0x100001B60, symSize: 0x60 }
+  - { offset: 0x1800, size: 0x8, addend: 0x0, symName: _pop, symObjAddr: 0x730, symBinAddr: 0x100001BC0, symSize: 0x60 }
+  - { offset: 0x1815, size: 0x8, addend: 0x0, symName: _hydrologiccorrection, symObjAddr: 0x790, symBinAddr: 0x100001C20, symSize: 0x9C0 }
+  - { offset: 0x1855, size: 0x8, addend: 0x0, symName: _calculateslopealongsteepestquadrant, symObjAddr: 0x1150, symBinAddr: 0x1000025E0, symSize: 0xC20 }
+  - { offset: 0x18CD, size: 0x8, addend: 0x0, symName: _calculateslopeD8, symObjAddr: 0x1D70, symBinAddr: 0x100003200, symSize: 0x1050 }
+  - { offset: 0x18FF, size: 0x8, addend: 0x0, symName: _lateraladvection, symObjAddr: 0x2DC0, symBinAddr: 0x100004250, symSize: 0x1900 }
+  - { offset: 0x1914, size: 0x8, addend: 0x0, symName: _defineinitialelevationupliftandboundaryconditions, symObjAddr: 0x46C0, symBinAddr: 0x100005B50, symSize: 0x1650 }
+  - { offset: 0x1938, size: 0x8, addend: 0x0, symName: _definevectorsandmatrices, symObjAddr: 0x5D10, symBinAddr: 0x1000071A0, symSize: 0xEB0 }
+  - { offset: 0x194D, size: 0x8, addend: 0x0, symName: _establishinitialconditions, symObjAddr: 0x6BC0, symBinAddr: 0x100008050, symSize: 0x910 }
+  - { offset: 0x1982, size: 0x8, addend: 0x0, symName: _calculatecrosssectionalcurvature, symObjAddr: 0x74D0, symBinAddr: 0x100008960, symSize: 0x630 }
+  - { offset: 0x19B7, size: 0x8, addend: 0x0, symName: _mfdflowroute, symObjAddr: 0x7B00, symBinAddr: 0x100008F90, symSize: 0x3390 }
+  - { offset: 0x19EC, size: 0x8, addend: 0x0, symName: _identifyupslopevalleybottom, symObjAddr: 0xAE90, symBinAddr: 0x10000C320, symSize: 0xF40 }
+  - { offset: 0x1A21, size: 0x8, addend: 0x0, symName: _mapfloodplainupslope, symObjAddr: 0xBDD0, symBinAddr: 0x10000D260, symSize: 0x720 }
+  - { offset: 0x1A56, size: 0x8, addend: 0x0, symName: _calculatecontributingareaandvalleybottomwidth, symObjAddr: 0xC4F0, symBinAddr: 0x10000D980, symSize: 0x1E60 }
+  - { offset: 0x1AA9, size: 0x8, addend: 0x0, symName: _fluviallyentrainanddepositsediment, symObjAddr: 0xE350, symBinAddr: 0x10000F7E0, symSize: 0x16B0 }
+  - { offset: 0x1ABF, size: 0x8, addend: 0x0, symName: _depositlandslidedebris, symObjAddr: 0xFA00, symBinAddr: 0x100010E90, symSize: 0xC00 }
+  - { offset: 0x1AF4, size: 0x8, addend: 0x0, symName: _relaxoversteepenedslopestonearS_c, symObjAddr: 0x10600, symBinAddr: 0x100011A90, symSize: 0x6F0 }
+  - { offset: 0x1B0A, size: 0x8, addend: 0x0, symName: _upliftproducesoilandretreatcliffs, symObjAddr: 0x10CF0, symBinAddr: 0x100012180, symSize: 0x15D0 }
+  - { offset: 0x1B20, size: 0x8, addend: 0x0, symName: _solveforelevationthatconservescolluvialfluxes, symObjAddr: 0x122C0, symBinAddr: 0x100013750, symSize: 0x7B0 }
+  - { offset: 0x1B36, size: 0x8, addend: 0x0, symName: _solveformax, symObjAddr: 0x12A70, symBinAddr: 0x100013F00, symSize: 0x1C0 }
+  - { offset: 0x1B60, size: 0x8, addend: 0x0, symName: _f, symObjAddr: 0x12C30, symBinAddr: 0x1000140C0, symSize: 0x1650 }
+  - { offset: 0x1B8A, size: 0x8, addend: 0x0, symName: _applygradientbasedboundaryconditions, symObjAddr: 0x14280, symBinAddr: 0x100015710, symSize: 0x11F0 }
+  - { offset: 0x1BA0, size: 0x8, addend: 0x0, symName: _evolvetopography, symObjAddr: 0x15470, symBinAddr: 0x100016900, symSize: 0x30 }
+  - { offset: 0x1BB6, size: 0x8, addend: 0x0, symName: _updatetime, symObjAddr: 0x154A0, symBinAddr: 0x100016930, symSize: 0x500 }
+  - { offset: 0x1BCC, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x159A0, symBinAddr: 0x100016E30, symSize: 0xF4 }
+  - { offset: 0x1E20, size: 0x8, addend: 0x0, symName: _mysign, symObjAddr: 0x0, symBinAddr: 0x100016F30, symSize: 0x50 }
+  - { offset: 0x1E75, size: 0x8, addend: 0x0, symName: _mysign, symObjAddr: 0x0, symBinAddr: 0x100016F30, symSize: 0x50 }
+  - { offset: 0x1E9D, size: 0x8, addend: 0x0, symName: _nrerror, symObjAddr: 0x50, symBinAddr: 0x100016F80, symSize: 0x70 }
+  - { offset: 0x1EC1, size: 0x8, addend: 0x0, symName: _ivector, symObjAddr: 0xC0, symBinAddr: 0x100016FF0, symSize: 0x60 }
+  - { offset: 0x1F05, size: 0x8, addend: 0x0, symName: _free_ivector, symObjAddr: 0x120, symBinAddr: 0x100017050, symSize: 0x30 }
+  - { offset: 0x1F45, size: 0x8, addend: 0x0, symName: _vector, symObjAddr: 0x150, symBinAddr: 0x100017080, symSize: 0x60 }
+  - { offset: 0x1F89, size: 0x8, addend: 0x0, symName: _dvector, symObjAddr: 0x1B0, symBinAddr: 0x1000170E0, symSize: 0x60 }
+  - { offset: 0x1FCD, size: 0x8, addend: 0x0, symName: _free_dvector, symObjAddr: 0x210, symBinAddr: 0x100017140, symSize: 0x30 }
+  - { offset: 0x200D, size: 0x8, addend: 0x0, symName: _imatrix, symObjAddr: 0x240, symBinAddr: 0x100017170, symSize: 0x150 }
+  - { offset: 0x2097, size: 0x8, addend: 0x0, symName: _dmatrix, symObjAddr: 0x390, symBinAddr: 0x1000172C0, symSize: 0x150 }
+  - { offset: 0x2121, size: 0x8, addend: 0x0, symName: _indexx, symObjAddr: 0x4E0, symBinAddr: 0x100017410, symSize: 0x480 }
+  - { offset: 0x21EE, size: 0x8, addend: 0x0, symName: _zbrent, symObjAddr: 0x960, symBinAddr: 0x100017890, symSize: 0x5F8 }
+  - { offset: 0x2379, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100017E90, symSize: 0x1B0 }
+  - { offset: 0x2392, size: 0x8, addend: 0x0, symName: _sqrarg, symObjAddr: 0x15F0, symBinAddr: 0x10001A008, symSize: 0x0 }
+  - { offset: 0x23A2, size: 0x8, addend: 0x0, symName: _maximumweatheringratefunction, symObjAddr: 0x0, symBinAddr: 0x100017E90, symSize: 0x1B0 }
+  - { offset: 0x23D8, size: 0x8, addend: 0x0, symName: _colluvialunitsedimentfluxfunction, symObjAddr: 0x1B0, symBinAddr: 0x100018040, symSize: 0x250 }
+  - { offset: 0x2438, size: 0x8, addend: 0x0, symName: _erosionanddepositionfunction, symObjAddr: 0x400, symBinAddr: 0x100018290, symSize: 0x96A }
 ...

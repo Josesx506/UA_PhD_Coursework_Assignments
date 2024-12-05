@@ -36,7 +36,7 @@
 1	printinterval(kyr)
 
 
-Test v3 - Uplift and erode from 0 - 330 with regular K0 of 0.0003. Flattend input topo - no smoothing
+# Test v3 - Uplift and erode from 0 - 330 with regular K0 of 0.0003. Flattend input topo - no smoothing
 557	lattice_size_x
 456	lattice_size_y
 100	deltax(m)
@@ -72,7 +72,7 @@ Test v3 - Uplift and erode from 0 - 330 with regular K0 of 0.0003. Flattend inpu
 10	printinterval(kyr)
 
 
-Test v4 - Uplift and erode from 0 - 300 with higher K0 of 0.001. Flattend input topo - no smoothing
+# Test v4 - Uplift and erode from 0 - 300 with higher K0 of 0.001. Flattend input topo - no smoothing
 557	lattice_size_x
 456	lattice_size_y
 100	deltax(m)
@@ -106,3 +106,77 @@ Test v4 - Uplift and erode from 0 - 300 with higher K0 of 0.001. Flattend input 
 0.2	timestep(kyr)
 1.01	timestepfactorincrease
 10	printinterval(kyr)
+
+
+# Test v5 - Uplift from 0 - 143 with K_0 of 0, increase erodibility from 143 - 173 with higher K0 of 0.001. Flattend input topo - no smoothing
+557	lattice_size_x
+456	lattice_size_y
+100	deltax(m)
+1	initialsoilupland(m,usedwhereU>0)
+0	initialsoilbasin(m,usedwhereU=0)
+0	sedimentfluxdrivenincisionmode(waterdrivenincision=0,sedimentfluxdrivenincision=1)
+0	structuralcontrolmode(nostructuralcontrol=0,structuralcontrol=1)
+0	spatiallyvariableupliftmode(uniformupliftinfaultblock=0,variableupliftinfaultblock=1)
+1	rillspacingmode(rillspacingdefinedbyuser=0,rillspacingdefinedbyS/microtopographiccurvature=1)
+0.75	U_v(m/kyr)
+0	U_h(m/kyr)
+0	horizontalslipvector(deg,U_h>0)
+0.5	P_0(m/kyr)
+0.4	h_0(m)
+1	d_c(m)
+1	D(m^2/kyr)
+0.8	S_c
+0.8	S_d
+0.01	microtopographiccurvature(1/m)
+10	rillspacing(m)
+0.4	soilporosity
+0.001	K_0(m^(1-p)/kyr)
+1	erodibilitycontrast
+0	entrainmentthreshold
+1.e-6	depositionvelocity(m/kyr)
+1	p
+1	n
+2.7e-6 	characteristicrunoffrate(m/s)
+0.1	manningsn(m^(1/3)/s,usedonlyifwidthmode=1)
+173	duration(kyr)
+143	initiatefluvialprocesses(kyr)
+0.2	timestep(kyr)
+1.01	timestepfactorincrease
+5	printinterval(kyr)
+
+
+# Test v6 - K_0 if statement is resolved, and K_0 value is too high. Deposition velocity is lowered
+557	lattice_size_x
+456	lattice_size_y
+100	deltax(m)
+1	initialsoilupland(m,usedwhereU>0)
+0	initialsoilbasin(m,usedwhereU=0)
+0	sedimentfluxdrivenincisionmode(waterdrivenincision=0,sedimentfluxdrivenincision=1)
+0	structuralcontrolmode(nostructuralcontrol=0,structuralcontrol=1)
+0	spatiallyvariableupliftmode(uniformupliftinfaultblock=0,variableupliftinfaultblock=1)
+1	rillspacingmode(rillspacingdefinedbyuser=0,rillspacingdefinedbyS/microtopographiccurvature=1)
+0.75	U_v(m/kyr)
+0	U_h(m/kyr)
+0	horizontalslipvector(deg,U_h>0)
+0.5	P_0(m/kyr)
+0.4	h_0(m)
+1	d_c(m)
+1	D(m^2/kyr)
+0.8	S_c
+0.8	S_d
+0.01	microtopographiccurvature(1/m)
+10	rillspacing(m)
+0.4	soilporosity
+0.001	K_0(m^(1-p)/kyr)
+1	erodibilitycontrast
+0	entrainmentthreshold
+1.e-7	depositionvelocity(m/kyr)
+1	p
+1	n
+2.7e-6 	characteristicrunoffrate(m/s)
+0.1	manningsn(m^(1/3)/s,usedonlyifwidthmode=1)
+80	duration(kyr)
+50	initiatefluvialprocesses(kyr)
+0.2	timestep(kyr)
+1.01	timestepfactorincrease
+2	printinterval(kyr)

@@ -26,7 +26,7 @@ double colluvialunitsedimentfluxfunction(double slopel, double totslopesqrl, dou
 double erosionanddepositionfunction(int i, int j)
 /* computes the the advection coefficient in the one-way wave equation for fluvial erosion and deposition */
 {   
-	if (time + timestep > initFluvialProcs) Kl=0; else Kl=K;
+	if (time + timestep < initFluvialProcs) Kl=0; else Kl=K;
 	erodeddepth[i][j]=topoinitial[i][j]-topoold[i][j]+U[i][j]*time;
 	if (structuralcontrolmode==1)
 	 {erodeddepth[i][j]=topoinitial[i][j]-topoold[i][j]+U[i][j]*time;
