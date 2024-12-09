@@ -57,7 +57,7 @@ def smooth_dem_drainage(input_file:str,
                         min_chn_sz:float = 1e6,
                         sigma:int = 8,
                         mask_buf:int = 5,
-                        elv_diff:int = 75
+                        elv_diff:int = 80
                         ):
     """
     Given a DEM map, estimate the drainage area. Smooth the topography only within 
@@ -112,6 +112,7 @@ def smooth_dem_drainage(input_file:str,
     chn_intrp = interpolate_mask(chn_msk, edges_data)
     smoothed_map = np.where(chn_msk, chn_intrp, dem.data)
     smoothed_map = gaussian_filter(smoothed_map, sigma=sigma)    # Smooth the output a bit
+    smoothed_map = smoothed_map - elv_diff
     smoothed_map = np.where(chn_msk, smoothed_map, dem.data)
     smoothed_map = gaussian_filter(smoothed_map, sigma=1)
     smoothed_map = np.where(smoothed_map<0, 0, smoothed_map)

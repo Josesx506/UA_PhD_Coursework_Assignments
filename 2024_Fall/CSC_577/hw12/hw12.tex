@@ -1,0 +1,175 @@
+%
+% Latex comments start with the percent symbol.
+%
+% This file should create a pdf on a mac or Linux command line by running:
+%     pdflatex hw12.tex
+% I usually add a few options
+%     pdflatex -halt-on-error -interaction=nonstopmode -file-line-error hw12.tex
+% 
+% If you are new to Latex, you might not know that you may need to run the above
+% twice for the compiler to sort out its references. (There are ways to finesse
+% this). 
+%
+
+\documentclass[12pt]{report}
+
+% Whether or not you need all these packages, or even some more will vary. These
+% are some common ones, but not all are needed for this document. There is no
+% real harm loading your favorites out of habit. 
+
+
+\usepackage{algorithm,algorithmic,alltt,amsmath,amssymb,bm,
+    cancel,color,fullpage,graphicx,listings,mathrsfs,
+    multirow,setspace,subcaption,upgreek,xcolor}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[colorlinks]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage[verbose]{placeins}
+\usepackage{caption}
+\usepackage[skip=0.1ex, belowskip=1ex,
+            labelformat=brace,
+            singlelinecheck=off]{subcaption}
+\usepackage{float, wrapfig, multicol}
+
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Your personal shortcuts. You do not need to use any. argmax and argmin
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%% Distributions
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\Poi}{{\text Poisson}}
+\newcommand{\Exp}{{\text Exp}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ber}{{\text Bern}}
+\newcommand{\Lap}{{\text Laplace}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bSigma}{\boldsymbol{\Sigma}}
+% \usepackage[left=1cm,right=2.5cm,top=2cm,bottom=1.5cm]{geometry}
+% Code blocks formatting
+
+\definecolor{MyDarkGreen}{rgb}{0.0,0.4,0.0}
+
+% For faster processing, load Matlab syntax for listings
+\lstloadlanguages{Matlab}%
+\lstset{language=Matlab,        % Use MATLAB
+        % frame=single,   % Single frame around code
+        basicstyle=\small\ttfamily,     % Use small true type font
+        keywordstyle=[1]\color{blue}\bfseries,  % MATLAB functions bold and blue
+        keywordstyle=[2]\color{purple}, % MATLAB function arguments purple
+        keywordstyle=[3]\color{blue}\underbar,  % User functions underlined and blue
+        identifierstyle=,       % Nothing special about identifiers
+        % Comments small dark green courier
+        commentstyle=\usefont{T1}{pcr}{m}{sl}\color{MyDarkGreen}\small,
+        stringstyle=\color{purple},     % Strings are purple
+        showstringspaces=false,         % Don't put marks in string spaces
+        tabsize=2,      % 2 spaces per tab
+        %%% Put standard MATLAB functions not included in the default language here
+        morekeywords={xlim,ylim,var,alpha,factorial,poissrnd,normpdf,normcdf},
+        %%% Put MATLAB function parameters here
+        morekeywords=[2]{on, off, interp},
+        %%% Put user defined functions here
+        morekeywords=[3]{hw1,hw2,},
+        gobble=4,
+        morecomment=[l][\color{blue}]{...},     % Line continuation (...) like blue comment
+        numbers=left,   % Line numbers on left
+        firstnumber=1,          % Line numbers start with line 1
+        numberstyle=\tiny\color{blue},  % Line numbers are blue
+        stepnumber=5    % Line numbers go in steps of 5
+}
+
+%% Probability
+\newcommand{\E}[1]{\mathbb{E}[#1]}
+\newcommand{\Cov}[2]{\mathbb{C}\mathrm{ov}(#1,#2)}
+
+%% Bold font for vectors from Ernesto, but I do not know how the first one
+%  works, but it seems necessary for the second?
+\def\*#1{\mathbf{#1}}
+\newcommand*{\V}[1]{\mathbf{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\centerline{\it CS 577}
+\centerline{\it HW \#12 Submission}
+\centerline{\it Name: Joses Omojola}
+
+Questions from Part A - C were completed in matlab and saved in the \emph{hw12.m} program. The program creates an \emph{output} folder to save images, so that the 
+root directory is not always cluttered, and it can be run using the \textit{hw12()} command. 
+
+\begin{enumerate}
+
+    \item[Part A.] The script reads in the Line2 data and fits a line to it (\autoref{fig:Figure1}). The resulting line equation was $0.221x + 0.423y + -0.879 = 0$, with 
+    a perpendicular distance error of 9.5. 111 inlier points were identified out of a total of 300 points.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.75]{output/f1_ransac.png}
+        \caption{RANSAC fit on Line2 data using the threshold method after 100 iterations.}
+        \label{fig:Figure1}
+    \end{figure}
+
+    \item[Part B.] Using the synthetic dataset for 10 samples between $(0,1)$, the homography transformation RMS error for 4, 5, and 6 points was 0.257, 0.255, and 0.252 
+    respectively. This indicates that using more points can help to reduce the transformation error, and verifies that the implemented DLT method is working.  
+
+    I manually selected 8 keypoints for the slide/frame pairs from \emph{hw9}. 4 of the selected points were used to compute the homography matrix, and the resulting matrix 
+    was used to predict on the holdout points. The results are shown in \Cref{fig:Figure2,fig:Figure3,fig:Figure4}. The clicked keypoints are shown as purple circles on the 
+    frame images (right). The original keypoints on the slide image and homography transformed points on the frame image are shown as red squares, connected by yellow lines.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f2_dlt_homo_fg_1.png}
+        \caption{Homography projections for image pair 1. Annotation descriptions are described in preceding paragraph.}
+        \label{fig:Figure2}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f3_dlt_homo_fg_2.png}
+        \caption{Homography projections for image pair 2. Annotation descriptions are described in preceding paragraph.}
+        \label{fig:Figure3}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f4_dlt_homo_fg_3.png}
+        \caption{Homography projections for image pair 3. Annotation descriptions are described in preceding paragraph.}
+        \label{fig:Figure4}
+    \end{figure}
+
+
+    \item[Part C.]  RANSAC was used to improve keypoint matching. The source and destination keypoints were extracted from SIFT features, by computing the Euclidean distance with a 
+    Lowe ratio cutoff of 0.8. Four random points were used to compute RANSAC for 100 iterations. Reprojection errors were computed from homography transformations, and inlier matches 
+    are plotted in \Cref{fig:Figure5,fig:Figure6,fig:Figure7}. Comparing the reconstruction error with and without RANSAC shows that the RANSAC implementation improves the accuracy of 
+    projected keypoints (This is printed in the matlab script). Image pairs 1 and 3 provided very good responses compared to image 2.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f5_sift_dlt_homo_fg_1.png}
+        \caption{Homography projections of SIFT keypoint features filtered by RANSAC inliers for image pair 1.}
+        \label{fig:Figure5}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f6_sift_dlt_homo_fg_2.png}
+        \caption{Homography projections of SIFT keypoint features filtered by RANSAC inliers for image pair 2.}
+        \label{fig:Figure6}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[scale=0.65]{output/f7_sift_dlt_homo_fg_3.png}
+        \caption{Homography projections of SIFT keypoint features filtered by RANSAC inliers for image pair 3.}
+        \label{fig:Figure7}
+    \end{figure}
+
+
+\end{enumerate}
+
+\end{document}
