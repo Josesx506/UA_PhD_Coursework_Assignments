@@ -11,7 +11,7 @@ if ~exist('output', 'dir')
     mkdir('output');
 end
 
-rng(577);
+rng(557);
 
 %% Part A
 fprintf("Part A\n")
@@ -65,23 +65,30 @@ fprintf("\nPart B\n")
 
 
 % DLT Homography Calculation and RMS Error
-mxSmps = 10;
-pointsInPlane = [4, 5, 6];              % Different n-points for DLT
-errors = zeros(length(pointsInPlane));
+numTrials = 10;
+pointsInPlane = [4, 5, 6]; % Different point sets
+errors = zeros(length(pointsInPlane), numTrials);
 
 for p = 1:length(pointsInPlane)
-    % Generate random points in [0,1]x[0,1]
-    nPnts = pointsInPlane(p);
-    srcPoints = rand(mxSmps, 2);
-    % Compute homography using DLT with n-points
-    H_est = computeHomographyDLT(srcPoints(1:nPnts),srcPoints(1:nPnts));
-    mappedPoints = applyHomography(H_est, srcPoints);
-    % Calculate RMS error
-    errors(p) = sqrt(mean(sum((mappedPoints - srcPoints).^2, 2)));
+    for t = 1:numTrials
+        % Generate random points in [0,1]x[0,1]
+        numPoints = pointsInPlane(p);
+        srcPoints = rand(numPoints, 2);
+        destPoints = rand(numPoints, 2);
+
+        % Compute homography using DLT
+        H_est = computeHomographyDLT(srcPoints, destPoints);
+
+        % Map points using the estimated homography
+        mappedPoints = applyHomography(H_est, srcPoints);
+
+        % Calculate RMS error
+        errors(p, t) = sqrt(mean(sum((mappedPoints - destPoints).^2, 2)));
+    end
 end
 
 % Report average RMS error
-avgErrors = errors; %mean(errors, 2);
+avgErrors = mean(errors, 2);
 for i = 1:length(pointsInPlane)
     fprintf('RMS Error for %d points (avg over 10 trials): %.3f\n', pointsInPlane(i), avgErrors(i));
 end
@@ -299,6 +306,12 @@ function [padIm1,padIm2] = loadAndPadColorImgPairs(path1,path2)
     % Convert because it seems to plot weirdly for some reason
     padIm1 = uint8(padIm1);
     padIm2 = uint8(padIm2);
+end
+
+function H = generateRandomHomography()
+    % Random 3x3 matrix with normalized scale
+    H = rand(3, 3);
+    H = H / H(3, 3); % Normalize
 end
 
 function destPoints = applyHomography(H, srcPoints)

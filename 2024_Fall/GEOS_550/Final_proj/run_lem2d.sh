@@ -1,4 +1,5 @@
 #!/bin/bash
+clear
 
 # Define the folder name
 folder="movie"

@@ -114,8 +114,9 @@ root directory is not always cluttered, and it can be run using the \textit{hw12
         \label{fig:Figure1}
     \end{figure}
 
-    \item[Part B.] Using the synthetic dataset for 10 samples between $(0,1)$, the homography transformation RMS error for 4, 5, and 6 points was 0.257, 0.255, and 0.252 
-    respectively. This indicates that using more points can help to reduce the transformation error, and verifies that the implemented DLT method is working.  
+    \item[Part B.] Using the synthetic dataset for 10 samples between $(0,1)$, the homography transformation RMS error for 4, 5, and 6 points was 0.0, 0.45, and 0.79 
+    respectively. This suggests that using more points can increase the transformation error, however, I noticed that including more points on the real data from the 
+    image pairs improved the quality of my transformations, verifying that the implemented DLT method is working.  
 
     I manually selected 8 keypoints for the slide/frame pairs from \emph{hw9}. 4 of the selected points were used to compute the homography matrix, and the resulting matrix 
     was used to predict on the holdout points. The results are shown in \Cref{fig:Figure2,fig:Figure3,fig:Figure4}. The clicked keypoints are shown as purple circles on the 

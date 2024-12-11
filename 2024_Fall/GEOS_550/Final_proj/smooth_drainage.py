@@ -1,11 +1,15 @@
 import argparse
 
+import geopandas as gpd
+import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 from landlab import RasterModelGrid
-from landlab.components import DepressionFinderAndRouter, FlowAccumulator
+from landlab.components import (ChannelProfiler, DepressionFinderAndRouter,
+                                FlowAccumulator)
 from scipy.interpolate import griddata
 from scipy.ndimage import binary_dilation, gaussian_filter
+from shapely import LineString
 
 
 def interpolate_mask(mask, edge_values):
@@ -57,7 +61,8 @@ def smooth_dem_drainage(input_file:str,
                         min_chn_sz:float = 1e6,
                         sigma:int = 8,
                         mask_buf:int = 5,
-                        elv_diff:int = 80
+                        elv_diff:int = 80,
+                        export:bool = False
                         ):
     """
     Given a DEM map, estimate the drainage area. Smooth the topography only within 
@@ -117,15 +122,57 @@ def smooth_dem_drainage(input_file:str,
     smoothed_map = gaussian_filter(smoothed_map, sigma=1)
     smoothed_map = np.where(smoothed_map<0, 0, smoothed_map)
 
-    # smoothed_map = gaussian_filter(dem.data, sigma=sigma)
-    # smoothed_map = smoothed_map - elv_diff
-    # smoothed_map = np.where(da_mask, smoothed_map, dem.data)
-    # smoothed_map = gaussian_filter(smoothed_map, sigma=1)
-    # smoothed_map = np.where(smoothed_map<0, 0, smoothed_map)
-
     # Update the dem data with the smoothed map and save the file
     dem.data = smoothed_map
     dem.to_netcdf(out_file)
+
+    if export:
+        # Create a geojson of active channels
+        profiler = ChannelProfiler(mg,number_of_watersheds=5,
+                                minimum_channel_threshold=min_chn_sz*5,
+                                main_channel_only=False)
+        #run profiler
+        profiler.run_one_step()
+
+        # print(profiler._outlet_nodes)
+        plt.figure(figsize=(6,5.8))
+        profiler.plot_profiles_in_map_view(cmap="viridis",color="w")
+        plt.savefig("channel_map_view.png",dpi=200,bbox_inches="tight")
+        plt.close()
+
+        plt.figure(figsize=(8,3.5))
+        profiler.plot_profiles(color="k")
+        plt.savefig("channel_profiles.png",dpi=200,bbox_inches="tight")
+        plt.close()
+
+        #extract profile dict
+        profDict = profiler.data_structure
+        #create a geopandas dataframe to store the channel network
+        multiLineList = []
+        multiLineIndex = []
+        colorList = []
+        chan_len = []
+
+        for disPoint in profDict.keys():
+            segDict = profDict[disPoint]   
+            for segItem in segDict.keys():   
+                coordList = []  
+                colors = segDict[segItem]["color"]
+                dists = segDict[segItem]["distances"]  
+                nodeArray = segDict[segItem]["ids"]
+                for node in nodeArray:
+                    coordList.append([mg.x_of_node[node],mg.y_of_node[node]])
+                multiLine = LineString(coordList)
+                multiLineList.append(multiLine)
+                multiLineIndex.append(segItem)
+                colorList.append(str(np.around(colors,2)))
+                chan_len.append(round(np.max(dists)-np.min(dists),2))
+        colDict = {"nodeStart":[a[0] for a in multiLineIndex],
+                "nodeEnd":[a[1] for a in multiLineIndex],
+                "color":colorList,"chan_len":chan_len}
+        gdf = gpd.GeoDataFrame(colDict,index=range(len(multiLineIndex)), crs="epsg:"+str(9001), geometry=multiLineList)
+        gdf = gdf.sort_values(by="chan_len",ascending=False).reset_index(drop=True)
+        gdf.to_file("waipaoa_channels.geojson",driver = "GeoJSON")
 
     return dem
 

@@ -1,5 +1,9 @@
+import os
+
 import numpy as np
 import xarray as xr
+
+os.system("clear")
 
 # dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/dem_100x100.nc")
 dem = xr.open_dataarray("lds-nz-8m-DEM12-GTiff/smooth_dem_100x100.nc")
@@ -28,7 +32,7 @@ def create_input_elv(dem,div_pct=1.1):
     elv = dem.data
     max_val = elv.max()*div_pct
     # elv = elv - 22.5 # 0.75 * 30
-    elv = elv/1.3#max_val
+    elv = elv/10#max_val
     # Flatten the array
     felv = elv.flatten("F")
     # Save as a text file
