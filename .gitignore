@@ -8,6 +8,7 @@ Geos_590_Fall_2023/.DS_Store
 */*/*/*.pdf
 */*/*/*/*.png
 */*/*/*/*.pdf
+*.docx
 __pycache__
 */__pycache__
 */*/__pycache__
